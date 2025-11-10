@@ -42,7 +42,15 @@
       "Bash(start \"\" \"C:\\Users\\lenovo\\OneDrive\\Desktop\\my_project\\hosting_guide.html\")",
       "Bash(start \"\" \"C:\\Users\\lenovo\\OneDrive\\Desktop\\my_project\\DEPLOY.html\")",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(start \"\" \"https://github.com/new\")",
+      "Bash(git remote set-url:*)",
+      "Bash(start \"\" \"https://github.com/DivyanshRajSoni/ProductLens\")",
+      "Bash(start \"\" \"https://vercel.com/new\")"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,61 @@
+🚀 GITHUB REPOSITORY CREATE KARNE KE STEPS
+==========================================
+
+✅ Git files tayyar hain! Ab bas GitHub pe repository banana hai.
+
+STEP 1: GitHub Pe Jao
+----------------------
+Visit: https://github.com/new
+
+STEP 2: Repository Details Fill Karo
+-------------------------------------
+Repository name: productlens
+Description: AI-Powered Product Search & Health Analysis
+Visibility: ✓ Public (FREE hosting ke liye)
+
+⚠️ IMPORTANT:
+❌ "Add a README file" - DON'T CHECK (already hai)
+❌ ".gitignore" - DON'T CHECK (already hai)
+❌ "Choose a license" - Leave as None
+
+STEP 3: Click "Create repository"
+----------------------------------
+
+STEP 4: Terminal Mein Yeh Command Run Karo
+-------------------------------------------
+cd "C:\Users\lenovo\OneDrive\Desktop\my_project"
+git push -u origin main
+
+✅ DONE! Aapka code GitHub pe push ho jayega!
+
+
+ALTERNATIVE: Agar Authentication Error Aaye
+--------------------------------------------
+Agar username/password nahi accept ho raha:
+
+1. GitHub Settings pe jao: https://github.com/settings/tokens
+2. "Generate new token (classic)" click karo
+3. Note: "ProductLens Push"
+4. Expiration: 90 days
+5. Scopes: ✓ repo (check this)
+6. Generate token
+7. Token copy karo (ek hi baar dikhta hai!)
+8. Push command mein password ki jagah token use karo
+
+
+YOUR GITHUB REPOSITORY URL
+---------------------------
+https://github.com/DivyanshRajSoni/productlens
+
+AFTER PUSH:
+-----------
+1. Verify files GitHub pe: https://github.com/DivyanshRajSoni/productlens
+2. Deploy to Vercel: https://vercel.com/new
+3. Select repository: productlens
+4. Click Deploy
+5. LIVE! 🎉
+
+
+Need Help?
+----------
+Check: DEPLOY.html (browser mein khol lo)
