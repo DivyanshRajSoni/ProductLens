@@ -50,7 +50,8 @@
       "Bash(start \"\" \"https://github.com/new\")",
       "Bash(git remote set-url:*)",
       "Bash(start \"\" \"https://github.com/DivyanshRajSoni/ProductLens\")",
-      "Bash(start \"\" \"https://vercel.com/new\")"
+      "Bash(start \"\" \"https://vercel.com/new\")",
+      "Bash(start \"\" \"https://vercel.com/dashboard\")"
     ],
     "deny": [],
     "ask": []
