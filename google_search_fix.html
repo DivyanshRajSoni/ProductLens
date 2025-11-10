@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Custom Search - Image Search Fix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding-left: 45px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .image-grid img:hover {
+            transform: scale(1.05);
+        }
+
+        .config-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .alert-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-tools"></i> Google Custom Search - Image Search Diagnostic</h1>
+        <p class="subtitle">Diagnose and fix Google Custom Search API image search issues</p>
+
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> Current Configuration</h2>
+            <div class="config-box">
+                <div class="config-item">
+                    <span><strong>API Key:</strong></span>
+                    <code id="api-key-display"></code>
+                </div>
+                <div class="config-item">
+                    <span><strong>Search Engine ID (CSE):</strong></span>
+                    <code id="cse-id-display"></code>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-vial"></i> Test Image Search</h2>
+            <p style="margin-bottom: 15px;">Test if the Google Custom Search API can retrieve product images:</p>
+            <button onclick="testImageSearch()">
+                <i class="fas fa-play"></i> Test Image Search for "Coca Cola"
+            </button>
+            <button onclick="testImageSearch('maaza')">
+                <i class="fas fa-play"></i> Test Image Search for "Maaza"
+            </button>
+            <div id="test-result"></div>
+            <div id="image-container" class="image-grid"></div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Common Issues & Solutions</h2>
+
+            <div class="alert-box">
+                <h3><i class="fas fa-lightbulb"></i> Most Common Problem:</h3>
+                <p><strong>Your Custom Search Engine (CSE) is not configured for "Image Search"</strong></p>
+                <p style="margin-top: 10px;">The CSE needs to be set to search the <strong>entire web</strong> and have <strong>Image Search enabled</strong>.</p>
+            </div>
+
+            <h3 style="margin-top: 25px; color: #667eea;">How to Fix:</h3>
+            <ol class="steps">
+                <li>
+                    Go to <a href="https://programmablesearchengine.google.com/controlpanel/all" target="_blank" class="link">Google Programmable Search Engine Console</a>
+                </li>
+                <li>
+                    Find your search engine with ID: <code id="cse-id-link"></code>
+                    <br><small style="color: #666; display: block; margin-top: 5px;">If this CSE doesn't exist, you'll need to create a new one.</small>
+                </li>
+                <li>
+                    Click on the search engine to open settings
+                </li>
+                <li>
+                    In <strong>"Sites to search"</strong> section:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Remove any specific websites</li>
+                        <li>Enable <strong>"Search the entire web"</strong></li>
+                    </ul>
+                </li>
+                <li>
+                    In <strong>"Image Search"</strong> section:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Turn <strong>ON</strong> the toggle for "Enable image search"</li>
+                    </ul>
+                </li>
+                <li>
+                    Click <strong>"Update"</strong> to save changes
+                </li>
+                <li>
+                    Wait 2-3 minutes for changes to propagate, then test again on this page
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-plus-circle"></i> Create New Custom Search Engine (If Needed)</h2>
+            <p style="margin-bottom: 15px;">If your CSE doesn't exist or you want to create a fresh one:</p>
+            <ol class="steps">
+                <li>
+                    Visit <a href="https://programmablesearchengine.google.com/controlpanel/create" target="_blank" class="link">Create Programmable Search Engine</a>
+                </li>
+                <li>
+                    Enter a name like "ProductLens Image Search"
+                </li>
+                <li>
+                    Under "What to search?":
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Select <strong>"Search the entire web"</strong></li>
+                    </ul>
+                </li>
+                <li>
+                    Under "Settings":
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Enable <strong>"Image search"</strong></li>
+                        <li>Enable <strong>"SafeSearch"</strong> (recommended)</li>
+                    </ul>
+                </li>
+                <li>
+                    Click <strong>"Create"</strong>
+                </li>
+                <li>
+                    Copy the new <strong>Search engine ID</strong>
+                </li>
+                <li>
+                    Update your <code>.env</code> file with the new ID:
+                    <pre style="background: #2d3748; color: #68d391; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto;">GOOGLE_SEARCH_ENGINE_ID=your_new_cse_id_here</pre>
+                </li>
+                <li>
+                    Also update <code>ai_studio_code (6).html</code> at line 341 with the new CSE ID
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-book"></i> API Limits</h2>
+            <div class="status info">
+                <i class="fas fa-info-circle"></i> Google Custom Search API provides <strong>100 free searches per day</strong>.
+                <br>After that, you'll need to upgrade to a paid plan or wait until the next day.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-link"></i> Quick Links</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                <a href="https://programmablesearchengine.google.com/controlpanel/all" target="_blank">
+                    <button><i class="fas fa-cog"></i> Manage CSE</button>
+                </a>
+                <a href="https://console.cloud.google.com/apis/library/customsearch.googleapis.com" target="_blank">
+                    <button><i class="fas fa-cloud"></i> Enable API</button>
+                </a>
+                <a href="https://console.cloud.google.com/apis/api/customsearch.googleapis.com/quotas" target="_blank">
+                    <button><i class="fas fa-chart-line"></i> Check Quota</button>
+                </a>
+                <a href="ai_studio_code (6).html" target="_blank">
+                    <button style="background: #48bb78;"><i class="fas fa-home"></i> Back to App</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s';
+        const CSE_ID = '073f78ed80cab4785';
+
+        // Display current configuration
+        document.getElementById('api-key-display').textContent = API_KEY;
+        document.getElementById('cse-id-display').textContent = CSE_ID;
+        document.getElementById('cse-id-link').textContent = CSE_ID;
+
+        async function testImageSearch(query = 'coca cola') {
+            const resultDiv = document.getElementById('test-result');
+            const imageContainer = document.getElementById('image-container');
+
+            resultDiv.innerHTML = `
+                <div class="status info" style="margin-top: 15px;">
+                    <i class="fas fa-spinner fa-spin"></i> Testing image search for "${query}"...
+                </div>
+            `;
+            imageContainer.innerHTML = '';
+
+            try {
+                const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CSE_ID}&q=${encodeURIComponent(query + ' product')}&searchType=image&num=6`;
+
+                console.log('API URL:', apiUrl);
+
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                console.log('API Response:', data);
+
+                if (response.ok && data.items && data.items.length > 0) {
+                    // Success - images found
+                    resultDiv.innerHTML = `
+                        <div class="status success" style="margin-top: 15px;">
+                            <i class="fas fa-check-circle"></i> <strong>SUCCESS!</strong> Found ${data.items.length} images for "${query}".
+                            <br><small style="display: block; margin-top: 8px;">Your Google Custom Search API is working correctly!</small>
+                        </div>
+                    `;
+
+                    // Display images
+                    imageContainer.innerHTML = data.items.map(item => `
+                        <img src="${item.link}"
+                             alt="${query}"
+                             onerror="this.style.display='none'"
+                             onclick="window.open('${item.image.contextLink}', '_blank')">
+                    `).join('');
+
+                } else if (data.error) {
+                    // API Error
+                    let errorMessage = data.error.message || 'Unknown error';
+                    let errorDetails = '';
+                    let errorClass = 'error';
+
+                    if (data.error.code === 403) {
+                        errorDetails = '<br><br><strong>Possible reasons:</strong><ul style="margin-top: 10px; margin-left: 20px; text-align: left;"><li>API key is invalid or disabled</li><li>Custom Search API is not enabled in Google Cloud Console</li><li>Daily quota exceeded (100 searches/day)</li></ul>';
+                    } else if (data.error.code === 400) {
+                        errorDetails = '<br><br><strong>Possible reasons:</strong><ul style="margin-top: 10px; margin-left: 20px; text-align: left;"><li>Search Engine ID (CSE) is invalid</li><li>Image search is not enabled for this CSE</li><li>CSE is not configured to search the entire web</li></ul>';
+                    }
+
+                    resultDiv.innerHTML = `
+                        <div class="status error" style="margin-top: 15px;">
+                            <i class="fas fa-times-circle"></i> <strong>API Error ${data.error.code}:</strong> ${errorMessage}
+                            ${errorDetails}
+                        </div>
+                    `;
+
+                } else {
+                    // No images found
+                    resultDiv.innerHTML = `
+                        <div class="status warning" style="margin-top: 15px;">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>No images found</strong> for "${query}".
+                            <br><br>This likely means:
+                            <ul style="margin-top: 10px; margin-left: 20px; text-align: left;">
+                                <li><strong>Image search is NOT enabled</strong> in your Custom Search Engine settings</li>
+                                <li>OR the CSE is configured to search specific sites only (needs to be "entire web")</li>
+                            </ul>
+                            <br>Follow the instructions above to fix this issue.
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                resultDiv.innerHTML = `
+                    <div class="status error" style="margin-top: 15px;">
+                        <i class="fas fa-times-circle"></i> <strong>Network Error:</strong> ${error.message}
+                        <br><br>Check your internet connection and try again.
+                    </div>
+                `;
+            }
+        }
+
+        // Add helpful console message
+        console.log('%c🔍 Google Custom Search Diagnostic Tool', 'font-size: 20px; font-weight: bold; color: #667eea;');
+        console.log('API Key:', API_KEY);
+        console.log('CSE ID:', CSE_ID);
+        console.log('\nTo test manually in console, run:');
+        console.log('testImageSearch("your search term")');
+    </script>
+</body>
+</html>

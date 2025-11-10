@@ -1,0 +1,16 @@
+{
+  "name": "productlens-proxy",
+  "version": "1.0.0",
+  "description": "Small proxy for SerpApi, Pexels and USDA to protect API keys and avoid CORS for ProductLens demo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
+  }
+}

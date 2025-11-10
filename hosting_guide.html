@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Hosting Guide - ProductLens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .section h3 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding-left: 50px;
+            position: relative;
+            line-height: 1.8;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .hosting-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .hosting-card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .hosting-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge-free {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-best {
+            background: #ffd700;
+            color: #856404;
+        }
+
+        .badge-easy {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .url-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .url-example strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-server"></i> Free Hosting Guide - Apna App Online Deploy Karo</h1>
+        <p class="subtitle">AdSense ke liye website URL chahiye - Yeh guide follow karo</p>
+
+        <div class="alert alert-info">
+            <h3><i class="fas fa-info-circle"></i> AdSense ke liye URL Kyun Chahiye?</h3>
+            <p>AdSense verify karta hai ki aapki website legitimate hai. Isliye aapko apna app online host karna padega aur uska URL dena padega.</p>
+            <p style="margin-top: 10px;"><strong>Good News:</strong> 100% FREE hosting available hai! 🎉</p>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="section">
+            <h2><i class="fas fa-th-list"></i> Free Hosting Options Comparison</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Cost</th>
+                        <th>Difficulty</th>
+                        <th>URL Format</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GitHub Pages</strong> ⭐</td>
+                        <td><span class="badge badge-free">FREE</span></td>
+                        <td>Easy</td>
+                        <td>username.github.io</td>
+                        <td>Static sites (Best for you!)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netlify</strong></td>
+                        <td><span class="badge badge-free">FREE</span></td>
+                        <td>Very Easy</td>
+                        <td>yourapp.netlify.app</td>
+                        <td>Quick deployment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vercel</strong></td>
+                        <td><span class="badge badge-free">FREE</span></td>
+                        <td>Easy</td>
+                        <td>yourapp.vercel.app</td>
+                        <td>Modern apps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Firebase Hosting</strong></td>
+                        <td><span class="badge badge-free">FREE</span></td>
+                        <td>Medium</td>
+                        <td>yourapp.web.app</td>
+                        <td>Google ecosystem</td>
+                    </tr>
+                    <tr>
+                        <td><strong>InfinityFree</strong></td>
+                        <td><span class="badge badge-free">FREE</span></td>
+                        <td>Easy</td>
+                        <td>yourname.rf.gd</td>
+                        <td>Traditional hosting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Option 1: GitHub Pages (RECOMMENDED) -->
+        <div class="section">
+            <h2><i class="fab fa-github"></i> Option 1: GitHub Pages (BEST & RECOMMENDED)</h2>
+
+            <div class="alert alert-success">
+                <span class="badge badge-best">BEST CHOICE</span>
+                <span class="badge badge-free">FREE</span>
+                <span class="badge badge-easy">EASY</span>
+                <p style="margin-top: 10px;"><strong>Kyun Best Hai:</strong> Free, fast, reliable, AdSense approved, unlimited bandwidth!</p>
+            </div>
+
+            <h3>Complete Step-by-Step Guide:</h3>
+            <ol class="steps">
+                <li>
+                    <strong>GitHub Account Banao (agar nahi hai)</strong>
+                    <br>Visit: <a href="https://github.com/signup" target="_blank">https://github.com/signup</a>
+                    <br>Free account bana lo (email, username, password)
+                </li>
+
+                <li>
+                    <strong>New Repository Create Karo</strong>
+                    <br>Click on: <strong>"New"</strong> button (top left mein green button)
+                    <br>Repository name: <code>productlens</code> (ya koi bhi naam)
+                    <br>✅ Public select karo (FREE hosting ke liye)
+                    <br>✅ Check "Add a README file"
+                    <br>Click: <strong>"Create repository"</strong>
+                </li>
+
+                <li>
+                    <strong>Apni Files Upload Karo</strong>
+                    <br>Repository mein click: <strong>"Add file"</strong> → <strong>"Upload files"</strong>
+                    <br>Drag & drop karein:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><code>ai_studio_code (6).html</code> → Rename to <code>index.html</code> ⚠️ (Important!)</li>
+                        <li><code>product_compare.html</code></li>
+                        <li><code>lens_search.html</code></li>
+                        <li><code>health_analysis.html</code></li>
+                        <li><code>.env</code> file UPLOAD MAT KARO (API keys public ho jayenge!)</li>
+                    </ul>
+                    <br>Click: <strong>"Commit changes"</strong>
+                </li>
+
+                <li>
+                    <strong>GitHub Pages Enable Karo</strong>
+                    <br>Repository mein click: <strong>"Settings"</strong> (top right)
+                    <br>Left sidebar mein: <strong>"Pages"</strong>
+                    <br>Under "Source": Select <strong>"main"</strong> branch
+                    <br>Click: <strong>"Save"</strong>
+                </li>
+
+                <li>
+                    <strong>URL Mil Jayega!</strong>
+                    <br>2-3 minutes wait karo
+                    <br>Refresh karo page ko
+                    <br>Aapko milega URL: <code>https://YOUR-USERNAME.github.io/productlens</code>
+                    <br><br>
+                    <div class="url-example">
+                        <strong>Example URL:</strong><br>
+                        <code>https://johnsmith.github.io/productlens</code>
+                        <br><br>
+                        <strong>Yahi URL AdSense mein daal dena!</strong> ✅
+                    </div>
+                </li>
+            </ol>
+
+            <div class="alert alert-warning">
+                <strong><i class="fas fa-exclamation-triangle"></i> IMPORTANT:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Main file ka naam <strong>index.html</strong> hona chahiye</li>
+                    <li><code>.env</code> file upload MAT karo (security risk)</li>
+                    <li>API keys directly HTML mein daalo (already hai)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Option 2: Netlify (Drag & Drop) -->
+        <div class="section">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Option 2: Netlify (Sabse Easy)</h2>
+
+            <div class="hosting-card">
+                <h3>⚡ Netlify - Drag & Drop Deployment</h3>
+                <span class="badge badge-free">FREE</span>
+                <span class="badge badge-easy">EASIEST</span>
+                <p style="margin-top: 10px;">Literally drag and drop karo, 2 minutes mein live!</p>
+            </div>
+
+            <ol class="steps">
+                <li>
+                    <strong>Netlify Account Banao</strong>
+                    <br>Visit: <a href="https://app.netlify.com/signup" target="_blank">https://app.netlify.com/signup</a>
+                    <br>GitHub se login kar lo
+                </li>
+
+                <li>
+                    <strong>Folder Banao</strong>
+                    <br>Apne project ki saari files ek folder mein rakho
+                    <br>Main file ka naam <code>index.html</code> karo (rename <code>ai_studio_code (6).html</code>)
+                </li>
+
+                <li>
+                    <strong>Drag & Drop!</strong>
+                    <br>Netlify dashboard mein "Sites" pe jao
+                    <br>Folder ko drag karke drop karo
+                    <br>Done! 🎉
+                </li>
+
+                <li>
+                    <strong>URL Mil Gaya!</strong>
+                    <br>URL milega: <code>random-name-12345.netlify.app</code>
+                    <br>Settings mein jake custom name bhi de sakte ho: <code>productlens.netlify.app</code>
+                </li>
+            </ol>
+
+            <div class="url-example">
+                <strong>Your Netlify URL:</strong><br>
+                <code>https://productlens.netlify.app</code>
+                <br><br>
+                <strong>Yeh URL AdSense mein use karo!</strong> ✅
+            </div>
+        </div>
+
+        <!-- Option 3: Vercel -->
+        <div class="section">
+            <h2><i class="fas fa-rocket"></i> Option 3: Vercel (Fast & Modern)</h2>
+
+            <ol class="steps">
+                <li>
+                    <strong>Vercel Account Banao</strong>
+                    <br>Visit: <a href="https://vercel.com/signup" target="_blank">https://vercel.com/signup</a>
+                    <br>GitHub se login karo
+                </li>
+
+                <li>
+                    <strong>Import Project</strong>
+                    <br>Click: <strong>"Add New Project"</strong>
+                    <br>Select your GitHub repository
+                    <br>Click: <strong>"Deploy"</strong>
+                </li>
+
+                <li>
+                    <strong>Live URL Mil Gaya!</strong>
+                    <br>URL: <code>productlens.vercel.app</code>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Custom Domain (Optional) -->
+        <div class="section">
+            <h2><i class="fas fa-globe"></i> Custom Domain (Optional - Professional Look)</h2>
+
+            <div class="alert alert-info">
+                <p><strong>Agar aap professional URL chahte ho:</strong></p>
+                <p style="margin-top: 10px;">Example: <code>www.productlens.com</code> instead of <code>username.github.io</code></p>
+            </div>
+
+            <h3>Kahan se Domain Khareedein (Saste):</h3>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><strong>Namecheap:</strong> ₹99/year (.xyz domain)</li>
+                <li><strong>GoDaddy:</strong> ₹199/year (.com domain)</li>
+                <li><strong>Hostinger:</strong> ₹149/year</li>
+                <li><strong>Google Domains:</strong> $12/year</li>
+            </ul>
+
+            <p style="margin-top: 15px;"><strong>Note:</strong> Domain optional hai. Free URLs (github.io, netlify.app) bhi AdSense approve karte hain!</p>
+        </div>
+
+        <!-- After Hosting -->
+        <div class="section">
+            <h2><i class="fas fa-check-circle"></i> Hosting Ke Baad Kya Karna Hai</h2>
+
+            <ol class="steps">
+                <li>
+                    <strong>URL Test Karo</strong>
+                    <br>Browser mein open karke dekho ki sab kuch kaam kar raha hai
+                </li>
+
+                <li>
+                    <strong>AdSense Mein URL Daal Do</strong>
+                    <br>Google AdSense application mein apna URL enter karo
+                    <br>Example: <code>https://yourname.github.io/productlens</code>
+                </li>
+
+                <li>
+                    <strong>Privacy Policy Add Karo</strong>
+                    <br>Create file: <code>privacy.html</code>
+                    <br>Footer mein link add karo
+                </li>
+
+                <li>
+                    <strong>About & Contact Pages Banao</strong>
+                    <br>AdSense ko yeh pages chahiye hote hain
+                </li>
+
+                <li>
+                    <strong>Submit for Approval</strong>
+                    <br>AdSense application complete karo
+                    <br>1-2 weeks mein approval milega
+                </li>
+            </ol>
+        </div>
+
+        <!-- Quick Start Commands -->
+        <div class="section">
+            <h2><i class="fas fa-terminal"></i> Quick Commands (For Advanced Users)</h2>
+
+            <h3>Git Commands (If using command line):</h3>
+            <div class="code-block" style="position: relative;">
+                <button class="copy-btn" onclick="copyCode('git-commands')"><i class="fas fa-copy"></i> Copy</button>
+                <pre id="git-commands"># Initialize git
+git init
+
+# Add all files
+git add .
+
+# Commit
+git commit -m "Initial commit"
+
+# Add remote
+git remote add origin https://github.com/YOUR-USERNAME/productlens.git
+
+# Push to GitHub
+git push -u origin main</pre>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="https://github.com/signup" target="_blank" class="btn btn-success">
+                <i class="fab fa-github"></i> Create GitHub Account
+            </a>
+            <a href="https://app.netlify.com/signup" target="_blank" class="btn" style="background: #00C7B7;">
+                <i class="fas fa-cloud"></i> Try Netlify
+            </a>
+            <a href="https://vercel.com/signup" target="_blank" class="btn" style="background: #000;">
+                <i class="fas fa-rocket"></i> Try Vercel
+            </a>
+        </div>
+
+        <div class="alert alert-success" style="margin-top: 40px;">
+            <h3><i class="fas fa-trophy"></i> Recommended Path (Easiest)</h3>
+            <ol style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                <li>✅ GitHub account banao (2 minutes)</li>
+                <li>✅ New repository banao (1 minute)</li>
+                <li>✅ Files upload karo (3 minutes)</li>
+                <li>✅ GitHub Pages enable karo (1 minute)</li>
+                <li>✅ URL mil jayega: <code>yourname.github.io/productlens</code></li>
+                <li>✅ Yeh URL AdSense mein daal do!</li>
+            </ol>
+            <p style="margin-top: 15px;"><strong>Total Time: 7-10 minutes! 🚀</strong></p>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="ads_integration_guide.html" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Ads Guide
+            </a>
+            <a href="ai_studio_code (6).html" class="btn btn-success">
+                <i class="fas fa-home"></i> Back to App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector(`button[onclick="copyCode('${elementId}')"]`);
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.background = '#28a745';
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '#48bb78';
+                    }, 2000);
+                }
+            }).catch(err => {
+                alert('Copy failed. Please copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>

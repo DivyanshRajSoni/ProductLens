@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Lens - Product Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3182ce;
+            --secondary: #2c5aa0;
+            --text: #2d3748;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text);
+        }
+
+        .header {
+            background: var(--white);
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary);
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .camera-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        #captured-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .camera-overlay::before,
+        .camera-overlay::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid white;
+        }
+
+        .camera-overlay::before {
+            top: -3px;
+            left: -3px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .camera-overlay::after {
+            bottom: -3px;
+            right: -3px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .upload-label {
+            background: #ed8936;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .result-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+
+        .product-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .product-info {
+            color: #4a5568;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .confidence-high {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .confidence-medium {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .confidence-low {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hint-text {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        .view-details-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .camera-container {
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn, .upload-label {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: rgba(49, 130, 206, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span><i class="fas fa-camera"></i></span>
+            AI Lens Scanner
+        </h1>
+        <div style="display: flex; gap: 15px;">
+            <a href="ai_studio_code (6).html" class="back-btn"><i class="fas fa-search"></i> Search</a>
+            <a href="product_compare.html" class="back-btn"><i class="fas fa-balance-scale"></i> Compare</a>
+            <a href="health_analysis.html" class="back-btn"><i class="fas fa-heartbeat"></i> Health</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="camera-container">
+            <h2 style="margin-bottom: 20px;">Point. Scan. Discover.</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <div class="feature-text">Camera Scan</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-image"></i></div>
+                    <div class="feature-text">Upload Image</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <div class="feature-text">AI Recognition</div>
+                </div>
+            </div>
+
+            <div id="video-container">
+                <video id="camera-feed" autoplay playsinline></video>
+                <div class="camera-overlay"></div>
+            </div>
+
+            <img id="captured-image" alt="Captured product">
+
+            <div class="controls">
+                <button id="start-camera-btn" class="btn">
+                    <span><i class="fas fa-camera"></i></span>
+                    Start Camera
+                </button>
+                <button id="capture-btn" class="btn btn-success" style="display: none;">
+                    <span><i class="fas fa-camera-retro"></i></span>
+                    Capture Photo
+                </button>
+                <button id="retake-btn" class="btn btn-secondary" style="display: none;">
+                    <span><i class="fas fa-sync-alt"></i></span>
+                    Retake
+                </button>
+                <label for="file-input" class="upload-label">
+                    <span><i class="fas fa-folder-open"></i></span>
+                    Upload Image
+                </label>
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+
+            <p class="hint-text">
+                <i class="fas fa-lightbulb"></i> Point your camera at any product or upload an image to get instant details!
+            </p>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p><i class="fas fa-robot"></i> AI is analyzing your product...</p>
+        </div>
+
+        <div class="result-container" id="result-container">
+            <h3 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-bullseye"></i> Product Identified!</h3>
+            <div id="product-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('camera-feed');
+        const videoContainer = document.getElementById('video-container');
+        const capturedImage = document.getElementById('captured-image');
+        const startCameraBtn = document.getElementById('start-camera-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const fileInput = document.getElementById('file-input');
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('result-container');
+        const productResult = document.getElementById('product-result');
+
+        let stream = null;
+
+        // Start camera
+        startCameraBtn.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                video.srcObject = stream;
+                videoContainer.style.display = 'block';
+                capturedImage.style.display = 'none';
+                startCameraBtn.style.display = 'none';
+                captureBtn.style.display = 'flex';
+                retakeBtn.style.display = 'none';
+            } catch (err) {
+                console.error('Camera error:', err);
+                alert('Unable to access camera. Please check permissions or use Upload Image option.');
+            }
+        });
+
+        // Capture photo
+        captureBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            capturedImage.src = imageDataUrl;
+            capturedImage.style.display = 'block';
+            videoContainer.style.display = 'none';
+            captureBtn.style.display = 'none';
+            retakeBtn.style.display = 'flex';
+
+            // Stop camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            // Analyze image
+            analyzeProduct(imageDataUrl);
+        });
+
+        // Retake photo
+        retakeBtn.addEventListener('click', () => {
+            startCameraBtn.click();
+            resultContainer.style.display = 'none';
+        });
+
+        // Upload image
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imageDataUrl = event.target.result;
+                    capturedImage.src = imageDataUrl;
+                    capturedImage.style.display = 'block';
+                    videoContainer.style.display = 'none';
+                    startCameraBtn.style.display = 'none';
+                    captureBtn.style.display = 'none';
+                    retakeBtn.style.display = 'flex';
+
+                    analyzeProduct(imageDataUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Gemini Vision API Configuration
+        const GEMINI_API_KEY = 'AIzaSyDrPxRbNfZaUjsw1WgnuX7TrHSAIGFcEfk';
+        const GEMINI_VISION_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+        // Analyze product using Gemini AI
+        async function analyzeProduct(imageDataUrl) {
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            try {
+                // Remove data URL prefix to get base64 string
+                const base64Image = imageDataUrl.split(',')[1];
+
+                // Call Gemini Vision API
+                const response = await fetch(`${GEMINI_VISION_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                {
+                                    text: `Analyze this product image and provide the following information in JSON format:
+{
+  "productName": "exact product name",
+  "brand": "brand name",
+  "category": "product category (e.g., Beverage, Snack, Food)",
+  "description": "brief 1-2 sentence description",
+  "confidence": "high/medium/low",
+  "searchQuery": "simplified name for searching (e.g., 'coca cola', 'maaza')"
+}
+
+Only return valid JSON, no additional text.`
+                                },
+                                {
+                                    inline_data: {
+                                        mime_type: "image/jpeg",
+                                        data: base64Image
+                                    }
+                                }
+                            ]
+                        }],
+                        generationConfig: {
+                            temperature: 0.4,
+                            topK: 32,
+                            topP: 1,
+                            maxOutputTokens: 512,
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'Recognition failed');
+                }
+
+                const data = await response.json();
+
+                // Extract the text response
+                const textResponse = data.candidates[0].content.parts[0].text;
+
+                // Parse JSON from response
+                let productInfo;
+                try {
+                    // Try to extract JSON from markdown code blocks if present
+                    const jsonMatch = textResponse.match(/```json\n?([\s\S]*?)\n?```/) || textResponse.match(/\{[\s\S]*\}/);
+                    const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : textResponse;
+                    productInfo = JSON.parse(jsonString);
+                } catch (parseError) {
+                    // Fallback if JSON parsing fails
+                    console.error('JSON Parse Error:', parseError);
+                    productInfo = {
+                        productName: 'Product Detected',
+                        brand: 'Unknown Brand',
+                        category: 'General Product',
+                        description: textResponse.substring(0, 200),
+                        confidence: 'medium',
+                        searchQuery: 'product'
+                    };
+                }
+
+                displayResult(productInfo);
+            } catch (error) {
+                console.error('Error:', error);
+                loading.style.display = 'none';
+                alert(`Failed to recognize product: ${error.message}\n\nPlease try:\n1. Taking a clearer photo\n2. Ensuring good lighting\n3. Focusing on the product label\n4. Checking your internet connection`);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Display recognition result
+        function displayResult(productInfo) {
+            const confidenceClass =
+                productInfo.confidence === 'high' ? 'confidence-high' :
+                productInfo.confidence === 'medium' ? 'confidence-medium' : 'confidence-low';
+
+            productResult.innerHTML = `
+                <div class="product-card">
+                    <div class="product-name">${productInfo.productName || 'Unknown Product'}</div>
+                    <div class="product-info">
+                        <strong><i class="fas fa-tag"></i> Brand:</strong> ${productInfo.brand || 'N/A'}
+                    </div>
+                    <div class="product-info">
+                        <strong><i class="fas fa-box"></i> Category:</strong> ${productInfo.category || 'N/A'}
+                    </div>
+                    <div class="product-info">
+                        <strong><i class="fas fa-file-alt"></i> Description:</strong> ${productInfo.description || 'N/A'}
+                    </div>
+                    <div class="product-info">
+                        <strong><i class="fas fa-bullseye"></i> Confidence:</strong>
+                        <span class="confidence-badge ${confidenceClass}">
+                            ${(productInfo.confidence || 'medium').toUpperCase()}
+                        </span>
+                    </div>
+                    <button class="view-details-btn" onclick="viewFullDetails('${encodeURIComponent(productInfo.searchQuery || productInfo.productName)}')">
+                        <i class="fas fa-search"></i> View Full Details & Nutrition Info
+                    </button>
+                </div>
+            `;
+
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Redirect to full app with search query
+        function viewFullDetails(searchQuery) {
+            window.location.href = `ai_studio_code (6).html?search=${searchQuery}`;
+        }
+    </script>
+</body>
+</html>

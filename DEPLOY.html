@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Deploy ProductLens - Complete Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+        }
+
+        .alert {
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 6px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 35px;
+            margin: 30px 0;
+            border-left: 6px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h3 {
+            color: #555;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin: 25px 0;
+            padding-left: 60px;
+            position: relative;
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .steps li ul {
+            margin-top: 15px;
+            margin-left: 25px;
+        }
+
+        .steps li ul li {
+            margin: 12px 0;
+            padding-left: 0;
+        }
+
+        .steps li ul li::before {
+            content: "▸";
+            position: static;
+            background: none;
+            color: #667eea;
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            font-weight: bold;
+            margin-right: 12px;
+            box-shadow: none;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.7;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin: 8px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+        }
+
+        .checklist {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #f8f9fa;
+        }
+
+        .checklist-item i {
+            font-size: 1.3rem;
+            margin-right: 15px;
+            color: #48bb78;
+        }
+
+        .screenshot-placeholder {
+            background: #f0f4ff;
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 25px 0;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .badge-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-time {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #667eea;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 25px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .comparison-card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .comparison-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .highlight-box h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-rocket"></i> Deploy ProductLens to Vercel</h1>
+        <p class="subtitle">Complete step-by-step guide - Bilkul ready hai, bas push karo aur deploy karo!</p>
+
+        <div class="alert alert-success">
+            <h3><i class="fas fa-check-circle"></i> ✅ App Deployment Ke Liye Ready Hai!</h3>
+            <p><strong>Maine sab kuch setup kar diya hai:</strong></p>
+            <ul style="margin-left: 25px; margin-top: 15px; line-height: 2;">
+                <li><span class="badge badge-ready">✓</span> <code>index.html</code> created (main file)</li>
+                <li><span class="badge badge-ready">✓</span> <code>.gitignore</code> configured (security)</li>
+                <li><span class="badge badge-ready">✓</span> <code>vercel.json</code> added (deployment config)</li>
+                <li><span class="badge badge-ready">✓</span> <code>README.md</code> updated (documentation)</li>
+                <li><span class="badge badge-ready">✓</span> All API keys configured</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Ab bas GitHub pe push karo aur Vercel pe deploy karo! 🚀</strong></p>
+        </div>
+
+        <!-- Quick Timeline -->
+        <div class="section">
+            <h2><i class="fas fa-clock"></i> Total Time: 5-7 Minutes!</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <strong>1-2 minutes:</strong> GitHub account & repository setup
+                </div>
+                <div class="timeline-item">
+                    <strong>2-3 minutes:</strong> Files push to GitHub
+                </div>
+                <div class="timeline-item">
+                    <strong>1-2 minutes:</strong> Vercel deployment
+                </div>
+                <div class="timeline-item">
+                    <strong>DONE!</strong> Your app is live at <code>productlens.vercel.app</code> 🎉
+                </div>
+            </div>
+        </div>
+
+        <!-- Method Comparison -->
+        <div class="section">
+            <h2><i class="fas fa-th-large"></i> Choose Your Method</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>🌐 Method 1: GitHub Website</h4>
+                    <span class="badge badge-time">5 minutes</span>
+                    <p style="margin-top: 15px;"><strong>Best for:</strong> Beginners, no coding needed</p>
+                    <p style="margin-top: 10px;"><strong>Steps:</strong> Upload files via browser</p>
+                    <p style="margin-top: 10px; color: #48bb78;"><strong>✓ Recommended if you're new to Git</strong></p>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>💻 Method 2: Git Commands</h4>
+                    <span class="badge badge-time">3 minutes</span>
+                    <p style="margin-top: 15px;"><strong>Best for:</strong> Developers familiar with Git</p>
+                    <p style="margin-top: 10px;"><strong>Steps:</strong> Use command line</p>
+                    <p style="margin-top: 10px; color: #667eea;"><strong>✓ Fastest method</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Method 1: GitHub Website -->
+        <div class="section">
+            <h2><i class="fas fa-browser"></i> Method 1: GitHub Website (No Coding - Easy)</h2>
+            <span class="badge badge-ready">RECOMMENDED</span>
+            <span class="badge badge-time">5 minutes</span>
+
+            <h3>Step-by-Step Instructions:</h3>
+            <ol class="steps">
+                <li>
+                    <strong>GitHub Account Banao (Agar Nahi Hai)</strong>
+                    <br>Visit: <a href="https://github.com/signup" target="_blank" style="color: #667eea; font-weight: 600;">https://github.com/signup</a>
+                    <ul>
+                        <li>Enter email address</li>
+                        <li>Create password</li>
+                        <li>Choose username (lowercase, no spaces)</li>
+                        <li>Verify email</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>New Repository Create Karo</strong>
+                    <br>Go to: <a href="https://github.com/new" target="_blank" style="color: #667eea; font-weight: 600;">https://github.com/new</a>
+                    <ul>
+                        <li>Repository name: <code>productlens</code></li>
+                        <li>Description: "AI-Powered Product Search & Health Analysis"</li>
+                        <li>✓ Select <strong>Public</strong> (free hosting ke liye)</li>
+                        <li>✓ Check "Add a README file"</li>
+                        <li>Click: <strong>"Create repository"</strong></li>
+                    </ul>
+                    <div class="screenshot-placeholder">
+                        📸 Screenshot: Repository creation page dikha
+                    </div>
+                </li>
+
+                <li>
+                    <strong>Files Upload Karo</strong>
+                    <br>Repository page pe:
+                    <ul>
+                        <li>Click: <strong>"Add file"</strong> (top right)</li>
+                        <li>Click: <strong>"Upload files"</strong></li>
+                        <li>Drag & drop <strong>saari files</strong> from <code>my_project</code> folder</li>
+                        <li><strong>⚠️ Important:</strong> .env file upload MAT karna!</li>
+                        <li>Files to upload:
+                            <div class="checklist">
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> index.html</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> lens_search.html</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> product_compare.html</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> health_analysis.html</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> chatbot.html</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> .gitignore</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> vercel.json</div>
+                                <div class="checklist-item"><i class="fas fa-check-circle"></i> README.md</div>
+                            </div>
+                        </li>
+                        <li>Commit message: "Initial commit - ProductLens app"</li>
+                        <li>Click: <strong>"Commit changes"</strong></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Verify Upload</strong>
+                    <br>Check ki saari files upload ho gayi:
+                    <ul>
+                        <li>Repository main page pe dekho</li>
+                        <li>8-10 files dikhaani chahiye</li>
+                        <li>index.html top pe honi chahiye</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Method 2: Git Commands -->
+        <div class="section">
+            <h2><i class="fas fa-terminal"></i> Method 2: Git Commands (For Developers)</h2>
+            <span class="badge badge-time">3 minutes</span>
+
+            <h3>Prerequisites:</h3>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Git installed on your computer</li>
+                <li>GitHub account created</li>
+            </ul>
+
+            <h3>Quick Commands:</h3>
+            <div class="code-block" style="position: relative;">
+                <button class="copy-btn" onclick="copyCode('git-init')"><i class="fas fa-copy"></i> Copy</button>
+                <pre id="git-init"># Navigate to project folder
+cd "C:\Users\lenovo\OneDrive\Desktop\my_project"
+
+# Initialize git (if not already done)
+git init
+
+# Add all files
+git add .
+
+# Check what will be committed (optional)
+git status
+
+# Commit
+git commit -m "Initial commit - ProductLens ready for deployment"
+
+# Create repository on GitHub first, then:
+# Replace YOUR-USERNAME with your GitHub username
+git remote add origin https://github.com/YOUR-USERNAME/productlens.git
+
+# Push to GitHub
+git push -u origin main</pre>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong><i class="fas fa-exclamation-triangle"></i> Note:</strong> Agar <code>git push</code> fail ho jaye:
+                <ul style="margin-left: 25px; margin-top: 10px;">
+                    <li>GitHub pe repository pehle bana lo</li>
+                    <li>Username/password ki jagah Personal Access Token use karo</li>
+                    <li>Token banane ke liye: GitHub Settings → Developer settings → Personal access tokens</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Deploy to Vercel -->
+        <div class="section">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Deploy to Vercel</h2>
+
+            <div class="highlight-box">
+                <h3>Ab Vercel Pe Deploy Karo!</h3>
+                <p style="font-size: 1.1rem; margin-top: 10px;">GitHub pe files hai? Perfect! Ab deployment ki baari!</p>
+            </div>
+
+            <ol class="steps">
+                <li>
+                    <strong>Vercel Account Banao</strong>
+                    <br>Visit: <a href="https://vercel.com/signup" target="_blank" style="color: #667eea; font-weight: 600;">https://vercel.com/signup</a>
+                    <ul>
+                        <li>Click: <strong>"Continue with GitHub"</strong></li>
+                        <li>Authorize Vercel (give permissions)</li>
+                        <li>Ek hi click mein account ban jayega!</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>New Project Create Karo</strong>
+                    <br>Vercel dashboard pe:
+                    <ul>
+                        <li>Click: <strong>"Add New..."</strong> → <strong>"Project"</strong></li>
+                        <li>Ya direct visit: <a href="https://vercel.com/new" target="_blank" style="color: #667eea;">https://vercel.com/new</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Import GitHub Repository</strong>
+                    <ul>
+                        <li>Aapko apni GitHub repositories dikhegi</li>
+                        <li>Find: <code>productlens</code> repository</li>
+                        <li>Click: <strong>"Import"</strong></li>
+                    </ul>
+                    <div class="alert alert-info">
+                        <strong>💡 Tip:</strong> Agar repository nahi dikh rahi, "Adjust GitHub App Permissions" click karo aur access grant karo.
+                    </div>
+                </li>
+
+                <li>
+                    <strong>Configure Project</strong>
+                    <ul>
+                        <li>Project Name: <code>productlens</code> (ya koi aur naam)</li>
+                        <li>Framework Preset: <strong>Other</strong> (ya blank chhodo)</li>
+                        <li>Root Directory: <code>./</code> (default)</li>
+                        <li>Build Settings: <strong>Leave as default</strong></li>
+                        <li>Environment Variables: <strong>Skip</strong> (already in HTML)</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Deploy!</strong>
+                    <br>Click: <strong>"Deploy"</strong> button
+                    <ul>
+                        <li>Vercel build karega aur deploy karega</li>
+                        <li>1-2 minutes wait karo</li>
+                        <li>Green checkmark dikha? <strong>Success!</strong> 🎉</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Live URL Mil Gaya!</strong>
+                    <br>Deployment complete hone ke baad:
+                    <ul>
+                        <li>URL milega: <code>https://productlens-xyz123.vercel.app</code></li>
+                        <li>Click karke test karo!</li>
+                        <li>Custom domain bhi add kar sakte ho (optional)</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <h3>🎊 Congratulations!</h3>
+                        <p style="font-size: 1.2rem; margin-top: 10px;">Aapka app live hai! 🚀</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- After Deployment -->
+        <div class="section">
+            <h2><i class="fas fa-check-double"></i> Deployment Ke Baad</h2>
+
+            <h3>1. Test Karo:</h3>
+            <div class="checklist">
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> Homepage properly load ho raha hai?</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> Product search kaam kar raha hai?</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> Images load ho rahe hain?</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> AI Lens Scanner work kar raha hai?</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> Chatbot respond kar raha hai?</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> Mobile pe sab theek dikh raha hai?</div>
+            </div>
+
+            <h3>2. Custom Domain Add Karo (Optional):</h3>
+            <p>Vercel dashboard → Project Settings → Domains</p>
+            <p>Example: <code>www.productlens.com</code> instead of <code>productlens.vercel.app</code></p>
+
+            <h3>3. AdSense Ke Liye Apply Karo:</h3>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Go to: <a href="https://www.google.com/adsense" target="_blank">Google AdSense</a></li>
+                <li>Submit apna Vercel URL</li>
+                <li>Add verification code</li>
+                <li>Wait for approval (1-2 weeks)</li>
+                <li>Start earning! 💰</li>
+            </ul>
+
+            <h3>4. Share Karo:</h3>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Facebook, WhatsApp, Instagram pe share karo</li>
+                <li>Friends and family ko dikhao</li>
+                <li>LinkedIn pe post karo</li>
+                <li>Traffic badhao!</li>
+            </ul>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section">
+            <h2><i class="fas fa-tools"></i> Common Issues & Solutions</h2>
+
+            <h3>❌ Problem: "Build Failed" on Vercel</h3>
+            <p><strong>Solution:</strong></p>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Check ki <code>index.html</code> file hai</li>
+                <li>Verify <code>vercel.json</code> properly uploaded hai</li>
+                <li>Try "Redeploy" button</li>
+            </ul>
+
+            <h3>❌ Problem: Images Not Loading</h3>
+            <p><strong>Solution:</strong></p>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Check Google Custom Search Engine settings</li>
+                <li>Enable "Image Search" in CSE</li>
+                <li>See <code>google_search_fix.html</code> guide</li>
+            </ul>
+
+            <h3>❌ Problem: API Quota Exceeded</h3>
+            <p><strong>Solution:</strong></p>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Wait 24 hours for quota reset</li>
+                <li>Or create new Google Cloud project</li>
+                <li>See <code>new_google_api_setup.html</code></li>
+            </ul>
+
+            <h3>❌ Problem: Git Push Failed</h3>
+            <p><strong>Solution:</strong></p>
+            <ul style="margin-left: 25px; line-height: 2;">
+                <li>Use GitHub Personal Access Token instead of password</li>
+                <li>Or use GitHub Desktop app (GUI)</li>
+                <li>Or use Method 1 (website upload)</li>
+            </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="text-align: center; margin: 50px 0;">
+            <h2 style="color: #667eea; margin-bottom: 30px;">Ready to Deploy? Let's Go! 🚀</h2>
+
+            <a href="https://github.com/new" target="_blank" class="btn btn-large btn-success">
+                <i class="fab fa-github"></i> Create GitHub Repository
+            </a>
+            <br>
+            <a href="https://vercel.com/new" target="_blank" class="btn btn-large">
+                <i class="fas fa-cloud"></i> Deploy to Vercel
+            </a>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="section">
+            <h2><i class="fas fa-bookmark"></i> Quick Reference</h2>
+
+            <h3>Important Links:</h3>
+            <div class="code-block" style="background: white; color: #333; border: 2px solid #e2e8f0;">
+GitHub Signup: https://github.com/signup
+GitHub New Repo: https://github.com/new
+Vercel Signup: https://vercel.com/signup
+Vercel Deploy: https://vercel.com/new
+Google AdSense: https://www.google.com/adsense
+            </div>
+
+            <h3>Files Ready for Deployment:</h3>
+            <div class="checklist">
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> index.html - Main app</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> lens_search.html - AI Scanner</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> product_compare.html - Comparison</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> health_analysis.html - Health Info</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> chatbot.html - AI Chatbot</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> .gitignore - Security</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> vercel.json - Config</div>
+                <div class="checklist-item"><i class="fas fa-check-circle"></i> README.md - Documentation</div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3>🎉 All Set! Ready to Go Live!</h3>
+            <p style="font-size: 1.1rem; margin-top: 15px;">
+                Bas 5 minutes mein aapka app live hoga!<br>
+                Follow the steps above and deploy now! 🚀
+            </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="index.html" class="btn">
+                <i class="fas fa-home"></i> Back to App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector(`button[onclick="copyCode('${elementId}')"]`);
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.background = '#28a745';
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '#48bb78';
+                    }, 2000);
+                }
+            }).catch(err => {
+                alert('Copy failed. Please copy manually.');
+                console.error('Copy error:', err);
+            });
+        }
+    </script>
+</body>
+</html>

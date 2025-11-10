@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Assistant - AI Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3182ce;
+            --secondary: #2c5aa0;
+            --success: #48bb78;
+            --text: #2d3748;
+            --light: #f5f7fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .message.bot .message-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: var(--text);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .typing-indicator.show {
+            display: block;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .quick-suggestions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            background: #e2e8f0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        #chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        #send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        #send-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        #send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .product-card-inline {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .product-card-inline strong {
+            color: var(--primary);
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+        }
+
+        .welcome-message i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h2 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>
+                <i class="fas fa-robot"></i>
+                Product Assistant
+            </h1>
+            <div class="header-buttons">
+                <a href="ai_studio_code (6).html" class="header-btn">
+                    <i class="fas fa-search"></i> Search Products
+                </a>
+                <button class="header-btn" onclick="clearChat()">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="welcome-message">
+                <i class="fas fa-comment-dots"></i>
+                <h2>Hi! I'm your Product Assistant</h2>
+                <p>Ask me anything about products, nutrition, health recommendations, or shopping!</p>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="quick-suggestions">
+                <button class="suggestion-chip" onclick="sendSuggestion('Tell me about Coca Cola nutrition')">
+                    <i class="fas fa-glass-whiskey"></i> Coca Cola Nutrition
+                </button>
+                <button class="suggestion-chip" onclick="sendSuggestion('What are healthy snack options?')">
+                    <i class="fas fa-apple-alt"></i> Healthy Snacks
+                </button>
+                <button class="suggestion-chip" onclick="sendSuggestion('Compare Pepsi vs Coca Cola')">
+                    <i class="fas fa-balance-scale"></i> Compare Products
+                </button>
+                <button class="suggestion-chip" onclick="sendSuggestion('Best products for diabetics')">
+                    <i class="fas fa-heartbeat"></i> Diabetic-Friendly
+                </button>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="chat-input" placeholder="Ask me anything about products..."
+                       onkeypress="if(event.key==='Enter') sendMessage()">
+                <button id="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gemini API Configuration
+        const GEMINI_API_KEY = 'AIzaSyDrPxRbNfZaUjsw1WgnuX7TrHSAIGFcEfk';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+        // Chat history
+        let chatHistory = [];
+
+        // Initialize
+        function init() {
+            loadChatHistory();
+
+            // Check if there's a product query from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productQuery = urlParams.get('product');
+            if (productQuery) {
+                setTimeout(() => {
+                    sendSuggestion(`Tell me about ${decodeURIComponent(productQuery)}`);
+                }, 500);
+            }
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Clear input
+            input.value = '';
+
+            // Add user message
+            addMessage('user', message);
+
+            // Show typing indicator
+            showTyping();
+
+            try {
+                // Call Gemini API
+                const response = await callGeminiAPI(message);
+
+                // Hide typing indicator
+                hideTyping();
+
+                // Add bot response
+                addMessage('bot', response);
+
+                // Save chat history
+                saveChatHistory();
+            } catch (error) {
+                hideTyping();
+                addMessage('bot', `Sorry, I encountered an error: ${error.message}. Please try again!`);
+            }
+        }
+
+        // Call Gemini API
+        async function callGeminiAPI(userMessage) {
+            const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
+
+            // Enhanced system context for product-focused responses
+            const systemContext = `You are a helpful product assistant specializing in food and beverage products.
+You help users with:
+- Product nutritional information
+- Health recommendations
+- Product comparisons
+- Shopping advice
+- Dietary restrictions (diabetes, hypertension, obesity, etc.)
+
+Always provide accurate, concise, and helpful information. If you mention specific products, try to include key details like calories, sugar, sodium, etc. Use a friendly, conversational tone.`;
+
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: `${systemContext}\n\nUser: ${userMessage}\n\nAssistant:`
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    topK: 40,
+                    topP: 0.95,
+                    maxOutputTokens: 1024,
+                }
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+
+            if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                return data.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error('Invalid response from Gemini API');
+            }
+        }
+
+        // Add message to chat
+        function addMessage(sender, text) {
+            const messagesContainer = document.getElementById('chat-messages');
+
+            // Remove welcome message if exists
+            const welcomeMsg = messagesContainer.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = formatMessage(text);
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Store in history
+            chatHistory.push({ sender, text, timestamp: Date.now() });
+        }
+
+        // Format message with markdown-like features
+        function formatMessage(text) {
+            // Bold text
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Line breaks
+            text = text.replace(/\n/g, '<br>');
+
+            // Bullet points
+            text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
+            if (text.includes('<li>')) {
+                text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            }
+
+            return text;
+        }
+
+        // Show typing indicator
+        function showTyping() {
+            const messagesContainer = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator show';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(typing);
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTyping() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) {
+                typing.remove();
+            }
+        }
+
+        // Send suggestion
+        function sendSuggestion(text) {
+            document.getElementById('chat-input').value = text;
+            sendMessage();
+        }
+
+        // Clear chat
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                chatHistory = [];
+                localStorage.removeItem('chatHistory');
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.innerHTML = `
+                    <div class="welcome-message">
+                        <i class="fas fa-comment-dots"></i>
+                        <h2>Hi! I'm your Product Assistant</h2>
+                        <p>Ask me anything about products, nutrition, health recommendations, or shopping!</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Save chat history to localStorage
+        function saveChatHistory() {
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        }
+
+        // Load chat history from localStorage
+        function loadChatHistory() {
+            const saved = localStorage.getItem('chatHistory');
+            if (saved) {
+                chatHistory = JSON.parse(saved);
+                chatHistory.forEach(msg => {
+                    addMessage(msg.sender, msg.text);
+                });
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+
+        // Enter key support
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

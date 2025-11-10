@@ -1,0 +1,49 @@
+# Environment Variables - DO NOT COMMIT
+.env
+.env.local
+.env.production
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build Files
+dist/
+build/
+.cache/
+
+# Temporary Files
+*.tmp
+*.temp
+.temp/
+
+# Backup Files
+*.bak
+*backup*
+old/
+
+# Test Files (optional - keep if needed)
+test_api.html
+api_diagnostic.html
+
+# Development Files
+ai_studio_code (6).html
+working_demo.html

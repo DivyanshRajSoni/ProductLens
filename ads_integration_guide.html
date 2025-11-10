@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads Integration Guide - ProductLens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .section h3 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding-left: 50px;
+            position: relative;
+            line-height: 1.8;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .ad-preview {
+            border: 2px dashed #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f0f4ff;
+        }
+
+        .ad-preview-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .earnings-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .earnings-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .earnings-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-dollar-sign"></i> Ads Integration Guide for ProductLens</h1>
+        <p class="subtitle">Apne app se paise kamaiye - Complete Guide (Hindi + English)</p>
+
+        <div class="alert alert-success">
+            <h3><i class="fas fa-check-circle"></i> Haan! Aap Ads Run Kar Sakte Ho</h3>
+            <p><strong>Aap apne ProductLens app mein ads laga kar monthly income kar sakte ho!</strong></p>
+            <p style="margin-top: 10px;">Best options: Google AdSense, Media.net, Carbon Ads</p>
+        </div>
+
+        <div class="earnings-box">
+            <h3><i class="fas fa-chart-line"></i> Potential Earnings</h3>
+            <p><strong>Monthly Users:</strong> 1,000 - 10,000 users</p>
+            <p><strong>Estimated Earnings:</strong> ₹5,000 - ₹50,000+ per month</p>
+            <p style="margin-top: 15px; font-size: 0.95rem;">
+                <i class="fas fa-info-circle"></i> Earnings depend on: traffic, user engagement, ad placement, niche
+            </p>
+        </div>
+
+        <!-- Option 1: Google AdSense -->
+        <div class="section">
+            <h2><i class="fab fa-google"></i> Option 1: Google AdSense (Best & Most Popular)</h2>
+
+            <div class="alert alert-info">
+                <strong>Kyun Best Hai:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>✅ Free to use</li>
+                    <li>✅ High paying - $1-$5 per 1000 views (CPM)</li>
+                    <li>✅ Auto-optimized ads</li>
+                    <li>✅ Trusted & secure</li>
+                    <li>✅ Easy integration</li>
+                </ul>
+            </div>
+
+            <h3>Step-by-Step Setup:</h3>
+            <ol class="steps">
+                <li>
+                    <strong>AdSense Account Banaye</strong>
+                    <br>Visit: <a href="https://www.google.com/adsense" target="_blank">https://www.google.com/adsense</a>
+                    <br>Sign up with your Google account
+                </li>
+
+                <li>
+                    <strong>Website Details Daalein</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Website URL: Apna domain ya GitHub Pages URL</li>
+                        <li>Category: E-commerce / Technology</li>
+                        <li>Language: English/Hindi</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Verification Code Copy Karein</strong>
+                    <br>Google aapko ek code dega, yeh code apne HTML mein <code>&lt;head&gt;</code> section mein add karein
+                </li>
+
+                <li>
+                    <strong>Ad Units Create Karein</strong>
+                    <br>AdSense dashboard mein "Ads" → "By ad unit" → "Display ads"
+                    <br>Select size:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>728x90 (Banner - Top)</li>
+                        <li>300x250 (Medium Rectangle - Sidebar)</li>
+                        <li>336x280 (Large Rectangle - Content)</li>
+                        <li>320x100 (Mobile Banner)</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Ad Code Copy Karein</strong>
+                    <br>Generated code ko apne HTML file mein paste karein (niche example dekho)
+                </li>
+
+                <li>
+                    <strong>Approval Wait Karein</strong>
+                    <br>Google 1-2 weeks mein review karega. Requirements:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Original content</li>
+                        <li>Privacy Policy page</li>
+                        <li>Good user experience</li>
+                        <li>No prohibited content</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>Example Ad Code Integration:</h3>
+            <div class="code-block" style="position: relative;">
+                <button class="copy-btn" onclick="copyCode('adsense-code')"><i class="fas fa-copy"></i> Copy</button>
+                <pre id="adsense-code"><!-- Google AdSense Head Code -->
+&lt;head&gt;
+    &lt;script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+         crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;!-- Top Banner Ad (728x90) --&gt;
+    &lt;div style="text-align: center; margin: 20px 0;"&gt;
+        &lt;ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="1234567890"&gt;&lt;/ins&gt;
+        &lt;script&gt;
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        &lt;/script&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Your App Content Here --&gt;
+
+    &lt;!-- Sidebar Ad (300x250) --&gt;
+    &lt;div style="margin: 20px;"&gt;
+        &lt;ins class="adsbygoogle"
+             style="display:inline-block;width:300px;height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="9876543210"&gt;&lt;/ins&gt;
+        &lt;script&gt;
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        &lt;/script&gt;
+    &lt;/div&gt;
+&lt;/body&gt;</pre>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong><i class="fas fa-exclamation-triangle"></i> Important:</strong> Replace <code>ca-pub-XXXXXXXXXXXXXXXX</code> with your actual AdSense publisher ID!
+            </div>
+        </div>
+
+        <!-- Best Ad Placements -->
+        <div class="section">
+            <h2><i class="fas fa-map-marker-alt"></i> Best Ad Placements in Your App</h2>
+
+            <h3>1. Top Banner (High Visibility)</h3>
+            <div class="ad-preview">
+                <div class="ad-preview-label">👆 Banner Ad (728x90) - Header ke neeche</div>
+                <div style="background: #ddd; padding: 20px; border-radius: 5px;">Advertisement Space</div>
+            </div>
+
+            <h3>2. Sidebar (Desktop View)</h3>
+            <div class="ad-preview">
+                <div class="ad-preview-label">👉 Rectangle Ad (300x250) - Right side</div>
+                <div style="background: #ddd; padding: 40px; border-radius: 5px; display: inline-block;">Advertisement</div>
+            </div>
+
+            <h3>3. Between Search Results</h3>
+            <div class="ad-preview">
+                <div class="ad-preview-label">📱 In-Feed Ad - Product results ke beech mein</div>
+                <div style="background: #ddd; padding: 30px; border-radius: 5px;">Native Ad Space</div>
+            </div>
+
+            <h3>4. Bottom of Page (Footer)</h3>
+            <div class="ad-preview">
+                <div class="ad-preview-label">👇 Sticky Banner (320x50) - Mobile footer</div>
+                <div style="background: #ddd; padding: 15px; border-radius: 5px;">Mobile Ad</div>
+            </div>
+        </div>
+
+        <!-- Other Ad Networks -->
+        <div class="section">
+            <h2><i class="fas fa-network-wired"></i> Alternative Ad Networks</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Ad Network</th>
+                        <th>Best For</th>
+                        <th>Minimum Traffic</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Google AdSense</strong></td>
+                        <td>Everyone - Best overall</td>
+                        <td>No minimum</td>
+                        <td>$100 threshold</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Media.net</strong></td>
+                        <td>Contextual ads</td>
+                        <td>Medium traffic</td>
+                        <td>$100 threshold</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PropellerAds</strong></td>
+                        <td>Low entry barrier</td>
+                        <td>No minimum</td>
+                        <td>$5 threshold</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amazon Associates</strong></td>
+                        <td>Product affiliate</td>
+                        <td>No minimum</td>
+                        <td>Variable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carbon Ads</strong></td>
+                        <td>Tech/developer audience</td>
+                        <td>High traffic</td>
+                        <td>$50 threshold</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Requirements -->
+        <div class="section">
+            <h2><i class="fas fa-clipboard-check"></i> Requirements for Approval</h2>
+
+            <h3>1. Privacy Policy (MUST HAVE)</h3>
+            <p>Create a privacy policy page. Example content:</p>
+            <div class="code-block" style="position: relative;">
+                <button class="copy-btn" onclick="copyCode('privacy-code')"><i class="fas fa-copy"></i> Copy</button>
+                <pre id="privacy-code">Privacy Policy for ProductLens
+
+We use Google AdSense to serve ads on this website.
+Google uses cookies to serve ads based on your interests.
+
+You can opt out of personalized advertising by visiting:
+https://www.google.com/settings/ads
+
+Contact: your-email@example.com</pre>
+            </div>
+
+            <h3>2. Terms & Conditions</h3>
+            <h3>3. About Us Page</h3>
+            <h3>4. Contact Page</h3>
+            <h3>5. Good Content Quality</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>✅ Original content</li>
+                <li>✅ User-friendly design</li>
+                <li>✅ Fast loading</li>
+                <li>✅ Mobile responsive</li>
+                <li>❌ No copied content</li>
+                <li>❌ No illegal content</li>
+            </ul>
+        </div>
+
+        <!-- Quick Implementation -->
+        <div class="section">
+            <h2><i class="fas fa-bolt"></i> Quick Implementation Guide</h2>
+
+            <h3>Apne ai_studio_code (6).html mein ads add karein:</h3>
+
+            <p><strong>Location 1: Header ke baad (Line ~370 ke aas paas)</strong></p>
+            <div class="code-block"><!-- Top Banner Ad -->
+&lt;div style="text-align: center; padding: 15px; background: #f8f9fa;"&gt;
+    &lt;!-- AdSense code yahaan paste karein --&gt;
+&lt;/div&gt;</div>
+
+            <p><strong>Location 2: Search results ke beech (Line ~650 ke aas paas)</strong></p>
+            <div class="code-block"><!-- In-Feed Ad -->
+&lt;div id="in-feed-ad" style="margin: 20px 0; text-align: center;"&gt;
+    &lt;!-- AdSense code yahaan paste karein --&gt;
+&lt;/div&gt;</div>
+
+            <p><strong>Location 3: Footer mein (End of body tag se pehle)</strong></p>
+            <div class="code-block"><!-- Bottom Ad -->
+&lt;div style="text-align: center; padding: 20px; background: #f8f9fa;"&gt;
+    &lt;!-- AdSense code yahaan paste karein --&gt;
+&lt;/div&gt;</div>
+        </div>
+
+        <!-- Tips for Maximum Earnings -->
+        <div class="section">
+            <h2><i class="fas fa-lightbulb"></i> Maximum Earnings ke liye Tips</h2>
+
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li><strong>Ad Placement:</strong> Above the fold (scroll kiye bina dikhne wale ads) pay more</li>
+                <li><strong>Ad Density:</strong> 3-4 ads per page is optimal (zyada ads = poor user experience)</li>
+                <li><strong>Responsive Ads:</strong> Use responsive ad units for mobile</li>
+                <li><strong>High Traffic:</strong> More visitors = more earnings (SEO important hai)</li>
+                <li><strong>Quality Content:</strong> Better content = higher CPC (cost per click)</li>
+                <li><strong>Niche:</strong> Finance, Insurance, Technology niches pay more</li>
+                <li><strong>User Engagement:</strong> Longer session time = more ad views</li>
+                <li><strong>Test & Optimize:</strong> A/B test different ad placements</li>
+            </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="https://www.google.com/adsense" target="_blank" class="btn">
+                <i class="fab fa-google"></i> Sign Up for AdSense
+            </a>
+            <a href="https://www.media.net" target="_blank" class="btn" style="background: #f39c12;">
+                <i class="fas fa-ad"></i> Try Media.net
+            </a>
+            <a href="ai_studio_code (6).html" class="btn" style="background: #48bb78;">
+                <i class="fas fa-home"></i> Back to App
+            </a>
+        </div>
+
+        <div class="alert alert-success" style="margin-top: 40px;">
+            <h3><i class="fas fa-rocket"></i> Ready to Monetize?</h3>
+            <p><strong>Next Steps:</strong></p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Sign up for Google AdSense</li>
+                <li>Add verification code to your HTML</li>
+                <li>Create ad units</li>
+                <li>Paste ad codes in the locations shown above</li>
+                <li>Wait for approval (1-2 weeks)</li>
+                <li>Start earning! 💰</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const buttons = document.querySelectorAll('.copy-btn');
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('onclick').includes(elementId)) {
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        btn.style.background = '#28a745';
+
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = '#48bb78';
+                        }, 2000);
+                    }
+                });
+            }).catch(err => {
+                alert('Copy failed. Please copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get New Google Custom Search API Key</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .alert h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .steps-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .steps-container h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin: 25px 0;
+            padding-left: 60px;
+            position: relative;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .steps li ul {
+            margin-top: 15px;
+            margin-left: 20px;
+        }
+
+        .steps li ul li {
+            margin: 10px 0;
+            padding-left: 0;
+        }
+
+        .steps li ul li::before {
+            content: "→";
+            position: static;
+            background: none;
+            color: #667eea;
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            display: inline-block;
+            margin: 3px 0;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-warning {
+            background: #ed8936;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #667eea, transparent);
+            margin: 40px 0;
+        }
+
+        .important {
+            background: #fee;
+            border-left: 5px solid #f00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .important strong {
+            color: #c00;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 15px 0;
+        }
+
+        .quick-copy {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .quick-copy button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .quick-copy button:hover {
+            background: #38a169;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-key"></i> Get New Google Custom Search API Key</h1>
+        <p class="subtitle">Get another 100 FREE searches per day by creating a new API key</p>
+
+        <div class="alert">
+            <h3><i class="fas fa-info-circle"></i> Current Situation</h3>
+            <p><strong>Your current API key has reached its daily quota of 100 searches.</strong></p>
+            <p style="margin-top: 10px;">Solution: Create a new Google Cloud Project and get a fresh API key with another 100 free searches/day!</p>
+        </div>
+
+        <div class="steps-container">
+            <h2><i class="fas fa-list-ol"></i> Step-by-Step Guide</h2>
+
+            <ol class="steps">
+                <li>
+                    <strong>Go to Google Cloud Console</strong>
+                    <br>Visit: <a href="https://console.cloud.google.com/" target="_blank" style="color: #667eea; font-weight: 600;">https://console.cloud.google.com/</a>
+                    <br><small style="color: #666;">Sign in with your Google account</small>
+                </li>
+
+                <li>
+                    <strong>Create a NEW Project</strong>
+                    <ul>
+                        <li>Click on the project dropdown at the top</li>
+                        <li>Click <strong>"NEW PROJECT"</strong></li>
+                        <li>Name it something like: <code>ProductLens-2</code> or <code>ImageSearch-New</code></li>
+                        <li>Click <strong>"CREATE"</strong></li>
+                        <li>Wait for the project to be created and make sure it's selected</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Enable Custom Search API</strong>
+                    <ul>
+                        <li>Visit: <a href="https://console.cloud.google.com/apis/library/customsearch.googleapis.com" target="_blank" style="color: #667eea;">Custom Search API Library</a></li>
+                        <li>Make sure your NEW project is selected at the top</li>
+                        <li>Click <strong>"ENABLE"</strong></li>
+                        <li>Wait for it to be enabled</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Create API Key</strong>
+                    <ul>
+                        <li>Go to: <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #667eea;">API Credentials</a></li>
+                        <li>Click <strong>"+ CREATE CREDENTIALS"</strong> at the top</li>
+                        <li>Select <strong>"API key"</strong></li>
+                        <li>Your new API key will be created!</li>
+                        <li><strong>COPY THE API KEY</strong> - You'll need this!</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Restrict API Key (Optional but Recommended)</strong>
+                    <ul>
+                        <li>Click on the API key you just created</li>
+                        <li>Under "API restrictions", choose <strong>"Restrict key"</strong></li>
+                        <li>Select <strong>"Custom Search API"</strong></li>
+                        <li>Click <strong>"SAVE"</strong></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Create/Use Custom Search Engine (CSE)</strong>
+                    <ul>
+                        <li>You can use your existing CSE ID: <code>2143768bfb9494f35</code></li>
+                        <li>OR create a new one at: <a href="https://programmablesearchengine.google.com/controlpanel/create" target="_blank" style="color: #667eea;">Create CSE</a></li>
+                        <li>If creating new:
+                            <ul>
+                                <li>Select <strong>"Search the entire web"</strong></li>
+                                <li>Enable <strong>"Image search"</strong></li>
+                                <li>Click Create and copy the new CSE ID</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="success-box">
+            <h4><i class="fas fa-check-circle"></i> After Getting Your New API Key</h4>
+            <p>Update your code in these 3 places:</p>
+        </div>
+
+        <div class="highlight-box">
+            <h4>1. Update <code>.env</code> file:</h4>
+            <div class="quick-copy">
+                <button onclick="copyToClipboard('env-code')"><i class="fas fa-copy"></i> Copy</button>
+                <div class="code-block" id="env-code">GOOGLE_SEARCH_API_KEY=YOUR_NEW_API_KEY_HERE
+GOOGLE_SEARCH_ENGINE_ID=2143768bfb9494f35</div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h4>2. Update <code>ai_studio_code (6).html</code> (around line 340):</h4>
+            <div class="quick-copy">
+                <button onclick="copyToClipboard('html-code')"><i class="fas fa-copy"></i> Copy</button>
+                <div class="code-block" id="html-code">var googleApiKey = 'YOUR_NEW_API_KEY_HERE';
+var googleSearchEngineId = '2143768bfb9494f35';</div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h4>3. Update <code>api_diagnostic.html</code> (around line 89-91):</h4>
+            <div class="quick-copy">
+                <button onclick="copyToClipboard('diagnostic-code')"><i class="fas fa-copy"></i> Copy</button>
+                <div class="code-block" id="diagnostic-code">const API_KEY = 'YOUR_NEW_API_KEY_HERE';
+const CSE_ID = '2143768bfb9494f35';</div>
+            </div>
+        </div>
+
+        <div class="important">
+            <strong><i class="fas fa-exclamation-triangle"></i> IMPORTANT:</strong> Replace <code>YOUR_NEW_API_KEY_HERE</code> with the actual API key you copied from Google Cloud Console!
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="btn-group">
+            <a href="https://console.cloud.google.com/" target="_blank" class="btn">
+                <i class="fas fa-cloud"></i> Open Google Cloud Console
+            </a>
+            <a href="https://console.cloud.google.com/apis/library/customsearch.googleapis.com" target="_blank" class="btn btn-success">
+                <i class="fas fa-toggle-on"></i> Enable Custom Search API
+            </a>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="btn btn-warning">
+                <i class="fas fa-key"></i> Create API Key
+            </a>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 40px;">
+            <h4><i class="fas fa-lightbulb"></i> Pro Tips</h4>
+            <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                <li>Each Google account gets 100 FREE searches per day per project</li>
+                <li>You can create multiple projects for more quota</li>
+                <li>The quota resets at midnight Pacific Time (PT)</li>
+                <li>Keep your API keys secure and don't share them publicly</li>
+                <li>You can check your usage at: <a href="https://console.cloud.google.com/apis/api/customsearch.googleapis.com/quotas" target="_blank" style="color: #667eea;">Check Quota</a></li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="google_search_fix.html" class="btn btn-success">
+                <i class="fas fa-vial"></i> Test New API Key
+            </a>
+            <a href="ai_studio_code (6).html" class="btn">
+                <i class="fas fa-home"></i> Back to App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const button = element.previousElementSibling;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.style.background = '#28a745';
+
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#48bb78';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy. Please copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>

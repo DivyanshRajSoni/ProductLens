@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Product Recognition | Snap & Learn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --rich-black: #2d3748;
+            --egg-shell: #f5f7fa;
+            --blue-violet: #3182ce;
+            --magenta-rose: #e53e3e;
+            --container-bg: #ffffff;
+            --text-color: var(--rich-black);
+            --muted-text: #718096;
+            --border-color: #e2e8f0;
+            --success-color: #48bb78;
+            --danger-color: #f56565;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--egg-shell);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .site-header {
+            background-color: var(--container-bg);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .site-header .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--blue-violet);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 0 0 8px 8px;
+            box-shadow: var(--shadow);
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: #f7f7f7; }
+        
+        .main-nav { display: flex; flex-shrink: 0; }
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .main-nav a:hover { color: var(--magenta-rose); }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 850px;
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        .intro-content h1 {
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .intro-content p.subtitle {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        #drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #drop-zone.dragover {
+            background-color: #fce4ec;
+            border-color: var(--magenta-rose);
+        }
+        #drop-zone p { margin: 0; font-size: 1.1rem; color: var(--muted-text); }
+        #drop-zone span { font-weight: 600; color: var(--blue-violet); }
+
+        .separator {
+            display: flex; align-items: center; text-align: center;
+            color: var(--muted-text); margin: 20px 0;
+        }
+        .separator::before, .separator::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .separator:not(:empty)::before { margin-right: .25em; }
+        .separator:not(:empty)::after { margin-left: .25em; }
+
+        .btn {
+            background-color: var(--blue-violet); color: #fff; border: none;
+            padding: 15px 30px; border-radius: 8px; font-size: 1.1rem;
+            font-weight: 600; cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            width: 100%; text-decoration: none; display: block;
+        }
+        .btn:hover {
+            background-color: var(--magenta-rose);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
+        }
+        
+        .example-products { margin-top: 40px; }
+        .example-products h2 { font-weight: 600; margin-bottom: 20px; }
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px;
+        }
+        .product-card {
+            border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 15px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+        .product-card img {
+            max-width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;
+        }
+        .product-card h4 { margin: 5px 0; font-size: 1rem; color: var(--text-color); }
+        .product-card p { margin: 0; font-size: 0.9rem; color: var(--muted-text); }
+
+        .loader {
+            border: 5px solid rgba(0, 20, 39, 0.1); border-top: 5px solid var(--blue-violet);
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin: 40px auto; display: none;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        #product-info-container {
+            text-align: left; opacity: 0; transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease; display: none;
+        }
+        #product-info-container.visible { display: block; opacity: 1; transform: translateY(0); }
+        .info-card {
+            background-color: #fcfdff; padding: 20px; border-radius: 12px;
+            border: 1px solid var(--border-color); margin-bottom: 20px;
+        }
+        .info-card h3 { color: var(--blue-violet); margin-top: 0; }
+        .health-status.healthy { color: var(--success-color); }
+        .health-status.harmful { color: var(--danger-color); }
+        
+        .product-image-gallery {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .product-image-gallery img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .image-placeholder {
+             font-size: 0.9rem; color: var(--muted-text);
+        }
+
+        .site-footer {
+            background-color: var(--rich-black); color: var(--egg-shell);
+            padding: 40px 20px; margin-top: 60px; text-align: center;
+        }
+        .site-footer p { margin: 0; color: var(--border-color); }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .site-header { flex-wrap: wrap; justify-content: center; padding: 15px 20px; }
+            .search-container { order: 3; width: 100%; max-width: 100%; margin-top: 10px; }
+            .main-nav { order: 2; }
+            .logo { order: 1; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 20px; margin: 20px; }
+            .intro-content h1 { font-size: 2rem; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="#" class="logo">ProductLens</a>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for products like 'Maaza'...">
+            <button id="search-btn" title="Search" style="position:absolute; right:6px; top:6px; padding:6px 10px; border-radius:6px; border:none; background:var(--blue-violet); color:#fff; cursor:pointer;">Search</button>
+            <div id="autocomplete-suggestions" class="autocomplete-suggestions"></div>
+        </div>
+        <nav class="main-nav">
+            <a href="lens_search.html"><i class="fas fa-camera"></i> Scanner</a>
+            <a href="product_compare.html"><i class="fas fa-balance-scale"></i> Compare</a>
+            <a href="health_analysis.html"><i class="fas fa-heartbeat"></i> Health</a>
+            <a href="chatbot.html"><i class="fas fa-comments"></i> AI Chat</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div id="input-interface">
+            <div class="intro-content">
+                <h1>Snap, Scan, and Understand</h1>
+                <p class="subtitle">Get instant, detailed information about any product. Just drop an image or use your camera to begin the discovery.</p>
+            </div>
+
+            <div class="alert alert-info" id="api-notice">
+                <strong><i class="fas fa-bullseye"></i> Product Recognition System - Powered by AI! <i class="fas fa-check-circle"></i></strong>
+                <br><strong><i class="fas fa-robot"></i> Gemini AI:</strong> Upload product images for instant recognition!
+                <br><strong><i class="fas fa-search"></i> Google Custom Search API:</strong> Fetches real product images & live prices from internet
+                <br><strong><i class="fas fa-dollar-sign"></i> Live Pricing:</strong> Real-time price ranges from Google Shopping results
+                <br><strong><i class="fas fa-chart-bar"></i> Nutrition Data:</strong> <strong>USDA API</strong> → <strong>API Ninjas</strong> → <strong>Open Food Facts</strong>
+                <br><strong><i class="fas fa-shopping-cart"></i> Shopping:</strong> <strong>Amazon, Flipkart, Meesho, BigBasket, Blinkit, JioMart</strong>
+            </div>
+
+            <div id="drop-zone" title="Click to upload a file">
+                <p>Drag & Drop an image here, or <span>browse files</span>.</p>
+                <input type="file" id="file-input" accept="image/*" hidden>
+            </div>
+            <div class="separator">OR</div>
+           <div id="example-products-grid">
+  <div class="product-card" data-product="maaza">
+    <div>Loading...</div>
+    <p>Maaza</p>
+  </div>
+  <div class="product-card" data-product="dairymilk">
+    <div>Loading...</div>
+    <p>Dairy Milk</p>
+  </div>
+  <div class="product-card" data-product="redbull">
+    <div>Loading...</div>
+    <p>Red Bull</p>
+  </div>
+  <div class="product-card" data-product="kurkure">
+    <div>Loading...</div>
+    <p>Kurkure</p>
+  </div>
+</div>
+
+        </div>
+        
+        <div class="loader" id="loader"></div>
+        <div id="product-info-container"></div>
+    </main>
+    
+    <footer class="site-footer">
+        <p>&copy; 2025-2026 ProductLens. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+    // API Configuration
+    var usdaApiKey = 'HKPEjy4nzeBg0WnLZ4eaYW5sHRWxHmqD6QRAFPcK';
+    var apiNinjasKey = 'pBLJrSH68gLoDroJlREBug==zmRQo3r9RSl7esr9';
+    var freepikApiKey = 'FPSX1c8feb7a24f70ef9e4d7b845ec1d8460';
+
+    // Google Custom Search API - 100 free searches/day
+    var googleApiKey = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s'; // Google API Key
+    var googleSearchEngineId = '073f78ed80cab4785'; // Your CSE ID
+
+    // Optional API keys (set to placeholder if not using)
+    var edamamAppId = 'YOUR_EDAMAM_APP_ID';
+    var edamamAppKey = 'YOUR_EDAMAM_APP_KEY';
+    var dataForSeoLogin = 'YOUR_EMAIL';
+    var dataForSeoPassword = 'YOUR_PASSWORD';
+    var scraperApiKey = 'YOUR_SCRAPERAPI_KEY';
+    var serpApiKey = 'YOUR_SERPAPI_KEY';
+
+    var proxyAvailable = false;
+    fetch('/api/health').then(r => { if(r.ok) proxyAvailable = true; }).catch(() => proxyAvailable = false);
+
+    // Buying Apps List (declare first)
+    const buyingAppsList = {
+        common: [
+            {
+                name: 'Amazon',
+                url: 'https://www.amazon.in/s?k=',
+                icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg'
+            },
+            {
+                name: 'Flipkart',
+                url: 'https://www.flipkart.com/search?q=',
+                icon: 'https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/flipkart-plus_8d85f4.png'
+            },
+            {
+                name: 'Meesho',
+                url: 'https://www.meesho.com/search?q=',
+                icon: 'https://www.meesho.com/assets/svgs/meesho-logo.svg'
+            },
+            {
+                name: 'BigBasket',
+                url: 'https://www.bigbasket.com/ps/?q=',
+                icon: 'https://www.bigbasket.com/media/uploads/banner_images/hp_blinkit_m_health_250923_400.jpg'
+            },
+            {
+                name: 'Blinkit',
+                url: 'https://www.blinkit.com/s/?q=',
+                icon: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=270/assets/eta-icons/15-mins-filled.png'
+            },
+            {
+                name: 'JioMart',
+                url: 'https://www.jiomart.com/search/',
+                icon: 'https://www.jiomart.com/assets/ds2images/jiomart_logo_beta.svg'
+            }
+        ]
+    };
+
+    // Mock Product Database
+    const mockProductDatabase = {
+        'maaza': {
+            name: 'Maaza Mango Drink',
+            price: '₹20 - ₹60',
+            searchQuery: 'maaza mango drink',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar Content',
+                summary: 'Contains high amounts of sugar and artificial flavors. Limited nutritional value.'
+            },
+            patientSuitability: {
+                canHave: ['General population (in moderation)'],
+                cannotHave: ['Diabetic patients', 'Weight watchers', 'People with metabolic syndrome']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'dairymilk': {
+            name: 'Cadbury Dairy Milk Chocolate',
+            price: '₹30 - ₹200',
+            searchQuery: 'cadbury dairy milk chocolate',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High in Sugar and Fat',
+                summary: 'High calorie chocolate bar with significant sugar and saturated fat content.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional treat for healthy individuals'],
+                cannotHave: ['Diabetic patients', 'People with heart conditions', 'Weight management programs']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'redbull': {
+            name: 'Red Bull Energy Drink',
+            price: '₹100 - ₹150',
+            searchQuery: 'red bull energy drink',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Caffeine & Sugar',
+                summary: 'Contains very high caffeine and sugar. Can cause heart palpitations and energy crashes.'
+            },
+            patientSuitability: {
+                canHave: ['Adults needing occasional energy boost'],
+                cannotHave: ['Children', 'Pregnant women', 'Heart patients', 'People with anxiety', 'Diabetics']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'kurkure': {
+            name: 'Kurkure Masala Munch',
+            price: '₹10 - ₹50',
+            searchQuery: 'kurkure masala munch',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sodium & Trans Fats',
+                summary: 'Processed snack with high sodium, unhealthy fats, and artificial additives.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional snack only'],
+                cannotHave: ['Hypertension patients', 'Heart disease patients', 'Children (frequent consumption)']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'cocacola': {
+            name: 'Coca Cola',
+            price: '₹20 - ₹80',
+            searchQuery: 'coca cola',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar Content',
+                summary: 'Carbonated soft drink with high sugar content. No nutritional value.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional consumption only'],
+                cannotHave: ['Diabetic patients', 'Weight watchers', 'Dental health concerns']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'pepsi': {
+            name: 'Pepsi',
+            price: '₹20 - ₹80',
+            searchQuery: 'pepsi cola',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar Content',
+                summary: 'Carbonated soft drink similar to Coca Cola with high sugar.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional consumption only'],
+                cannotHave: ['Diabetic patients', 'Weight watchers']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'parleg': {
+            name: 'Parle-G Biscuits',
+            price: '₹5 - ₹40',
+            searchQuery: 'parle g biscuits',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar & Refined Flour',
+                summary: 'Popular biscuit with refined flour and sugar. Moderate consumption recommended.'
+            },
+            patientSuitability: {
+                canHave: ['General population in moderation'],
+                cannotHave: ['Diabetic patients (frequent consumption)', 'Gluten-sensitive individuals']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'lays': {
+            name: 'Lays Potato Chips',
+            price: '₹10 - ₹50',
+            searchQuery: 'lays chips',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sodium & Fat',
+                summary: 'Fried potato chips with high salt and unhealthy fats.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional snack only'],
+                cannotHave: ['Hypertension patients', 'Heart disease', 'Weight management']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'sprite': {
+            name: 'Sprite',
+            price: '₹20 - ₹80',
+            searchQuery: 'sprite lemon',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar',
+                summary: 'Lemon-lime flavored carbonated drink with high sugar content.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional consumption'],
+                cannotHave: ['Diabetic patients', 'Weight watchers']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'britannia': {
+            name: 'Britannia Good Day Biscuits',
+            price: '₹10 - ₹50',
+            searchQuery: 'britannia good day',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar & Butter',
+                summary: 'Butter cookies with high sugar and saturated fat content.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional treat'],
+                cannotHave: ['Diabetic patients', 'Heart disease patients']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'maggi': {
+            name: 'Maggi Noodles',
+            price: '₹12 - ₹100',
+            searchQuery: 'maggi instant noodles',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sodium & MSG',
+                summary: 'Instant noodles with high sodium and preservatives.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional meal'],
+                cannotHave: ['Hypertension patients', 'MSG sensitive individuals']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'frooti': {
+            name: 'Frooti Mango Drink',
+            price: '₹10 - ₹60',
+            searchQuery: 'frooti mango',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar',
+                summary: 'Mango flavored drink with high sugar content and minimal real fruit.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional consumption'],
+                cannotHave: ['Diabetic patients', 'Weight watchers']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'oreo': {
+            name: 'Oreo Biscuits',
+            price: '₹20 - ₹150',
+            searchQuery: 'oreo cookies',
+            healthInfo: {
+                isHealthy: false,
+                status: 'High Sugar & Trans Fats',
+                summary: 'Chocolate sandwich cookies with high sugar and unhealthy fats.'
+            },
+            patientSuitability: {
+                canHave: ['Occasional treat'],
+                cannotHave: ['Diabetic patients', 'Heart disease patients']
+            },
+            buyingApps: buyingAppsList.common
+        },
+        'generic': {
+            name: 'Product Information',
+            price: 'Price varies',
+            searchQuery: '',
+            healthInfo: {
+                isHealthy: true,
+                status: 'Information Not Available',
+                summary: 'Please upload a clear product image or search for a specific product.'
+            },
+            patientSuitability: {
+                canHave: ['N/A'],
+                cannotHave: ['N/A']
+            },
+            buyingApps: buyingAppsList.common
+        }
+    };
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const inputInterface = document.getElementById('input-interface');
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const loader = document.getElementById('loader');
+            const productInfoContainer = document.getElementById('product-info-container');
+            const exampleProductCards = document.querySelectorAll('.product-card');
+            const searchInput = document.getElementById('search-input');
+            const suggestionsContainer = document.getElementById('autocomplete-suggestions');
+
+            // Event Listeners
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+            dropZone.addEventListener('dragover', (e) => { 
+                e.preventDefault(); 
+                dropZone.classList.add('dragover'); 
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', (e) => { 
+                e.preventDefault(); 
+                dropZone.classList.remove('dragover'); 
+                handleFile(e.dataTransfer.files[0]); 
+            });
+
+            exampleProductCards.forEach(card => {
+                card.addEventListener('click', () => handleProductSelection(card.dataset.product));
+            });
+
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                suggestionsContainer.innerHTML = '';
+                
+                if (!query) { 
+                    closeAutocomplete(); 
+                    return; 
+                }
+
+                const filtered = Object.keys(mockProductDatabase)
+                    .filter(k => k !== 'generic' && mockProductDatabase[k].name.toLowerCase().includes(query));
+                
+                if (filtered.length > 0) {
+                    filtered.forEach(key => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.textContent = mockProductDatabase[key].name;
+                        item.addEventListener('click', () => {
+                            searchInput.value = mockProductDatabase[key].name;
+                            closeAutocomplete();
+                            handleProductSelection(key);
+                        });
+                        suggestionsContainer.appendChild(item);
+                    });
+                    suggestionsContainer.style.display = 'block';
+                } else { 
+                    closeAutocomplete(); 
+                }
+            });
+
+            document.addEventListener('click', (e) => { 
+                if (e.target !== searchInput) closeAutocomplete(); 
+            });
+
+            // Search behavior: try mock DB first, otherwise perform USDA + image lookup
+            const searchBtn = document.getElementById('search-btn');
+
+            function performSearch(rawQuery) {
+                const query = (rawQuery || '').trim();
+                if (!query) return;
+
+                // Try to find a mock product by name (case-insensitive substring match)
+                const foundKey = Object.keys(mockProductDatabase).find(k => {
+                    if (k === 'generic') return false;
+                    return mockProductDatabase[k].name.toLowerCase().includes(query.toLowerCase()) || k.toLowerCase() === query.toLowerCase();
+                });
+
+                if (foundKey) {
+                    handleProductSelection(foundKey);
+                    return;
+                }
+
+                // If not found in mock DB, build a temporary product object and display it
+                startLoading();
+
+                const tempProduct = {
+                    name: query,
+                    price: 'Loading shopping links...',
+                    searchQuery: query,
+                    healthInfo: { isHealthy: true, status: 'Analysis in Progress', summary: 'Fetching nutritional information...' },
+                    patientSuitability: { canHave: [], cannotHave: [] },
+                    buyingApps: buyingAppsList.common
+                };
+
+                // Minimal delay - INSTANT response!
+                setTimeout(() => {
+                    displayProductInfo(tempProduct);
+                    stopLoading();
+                }, 100);
+            }
+
+            // Enter key triggers search
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch(searchInput.value);
+                }
+            });
+
+            // Click on search button triggers search
+            if (searchBtn) {
+                searchBtn.addEventListener('click', () => performSearch(searchInput.value));
+            }
+
+            // Handler Functions
+            function handleProductSelection(productKey) {
+                if (productKey && mockProductDatabase[productKey]) {
+                    startLoading();
+                    setTimeout(() => {
+                        displayProductInfo(mockProductDatabase[productKey]);
+                        stopLoading();
+                    }, 200);
+                }
+            }
+
+            async function handleFile(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    return;
+                }
+                startLoading();
+
+                try {
+                    // Convert image to base64
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const base64Image = e.target.result;
+
+                        try {
+                            // Call Gemini API for product recognition
+                            const response = await fetch('/api/gemini/recognize', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ image: base64Image })
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Product recognition failed');
+                            }
+
+                            const productInfo = await response.json();
+                            console.log('Gemini recognized product:', productInfo);
+
+                            // Create a product object compatible with displayProductInfo
+                            const product = {
+                                name: productInfo.productName || 'Unidentified Product',
+                                price: 'Price not available',
+                                searchQuery: productInfo.searchQuery || productInfo.productName,
+                                healthInfo: {
+                                    isHealthy: true,
+                                    status: `AI Identified (${productInfo.confidence || 'medium'} confidence)`,
+                                    summary: productInfo.description || 'Product identified using AI. Fetching nutritional information...'
+                                },
+                                patientSuitability: {
+                                    canHave: ['Please check nutritional data below'],
+                                    cannotHave: ['Consult healthcare provider for specific dietary restrictions']
+                                },
+                                buyingApps: buyingAppsList.common
+                            };
+
+                            displayProductInfo(product);
+                            stopLoading();
+
+                        } catch (error) {
+                            console.error('Gemini API error:', error);
+                            alert('Product recognition failed. Using generic data.');
+                            displayProductInfo(mockProductDatabase['generic']);
+                            stopLoading();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+
+                } catch (error) {
+                    console.error('File reading error:', error);
+                    alert('Failed to read image file.');
+                    stopLoading();
+                }
+            }
+
+            // Google Custom Search API - Real browser search images!
+            async function fetchAndDisplayImages(searchQuery, container) {
+                console.log('🎨 Loading images from Google Search...');
+
+                // Emoji icons for instant display
+                const iconMap = {
+                    'maaza': '🥭', 'mango': '🥭',
+                    'dairy milk': '🍫', 'chocolate': '🍫',
+                    'red bull': '⚡', 'energy': '⚡',
+                    'kurkure': '🌶️', 'chips': '🥔',
+                    'juice': '🧃', 'drink': '🥤',
+                    'biscuit': '🍪', 'default': '🛒'
+                };
+
+                const icon = Object.keys(iconMap).find(key => searchQuery.toLowerCase().includes(key)) || 'default';
+
+                // Show emoji placeholders INSTANTLY (0ms)
+                container.innerHTML = `
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">${iconMap[icon]}</div>
+                        <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">Searching Google...</div>
+                    </div>
+                `;
+
+                try {
+                    // Google Custom Search API - Image Search
+                    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${googleSearchEngineId}&q=${encodeURIComponent(searchQuery + ' product')}&searchType=image&num=4`;
+
+                    const response = await fetch(apiUrl);
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        if (data.items && data.items.length > 0) {
+                            const images = data.items.slice(0, 4);
+                            const imagesHTML = images.map(img => `
+                                <img src="${img.link}" alt="${searchQuery}"
+                                     style="cursor: pointer; width: 200px; height: 200px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s;"
+                                     onmouseover="this.style.transform='scale(1.05)'"
+                                     onmouseout="this.style.transform='scale(1)'"
+                                     onclick="window.open('${img.image.contextLink}', '_blank')"
+                                     onerror="this.style.display='none'">
+                            `).join('');
+
+                            container.innerHTML = `
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                    ${imagesHTML}
+                                </div>
+                                <p style="text-align: center; font-size: 0.85rem; color: var(--muted-text); margin-top: 10px;">
+                                    <i class="fas fa-search"></i> Images from Google Search
+                                </p>
+                            `;
+                            console.log('✅ Google Custom Search images loaded!');
+                            return;
+                        }
+                    } else {
+                        const errorData = await response.json();
+                        console.error('Google API Error:', errorData);
+                    }
+                } catch (error) {
+                    console.error('Google Custom Search error:', error);
+                }
+
+                // Fallback to emoji if Google API fails
+                container.innerHTML = `
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">${iconMap[icon]}</div>
+                        <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 0.9rem; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            <div style="font-size: 3rem; margin-bottom: 10px;"><i class="fas fa-camera"></i></div>
+                            <div>Product: ${searchQuery}</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 0.85rem; color: var(--muted-text); margin-top: 10px;">
+                        <i class="fas fa-info-circle"></i> Google API limit reached or not configured. Showing placeholder.
+                    </p>
+                `;
+
+                console.log('⚠️ Using fallback display');
+            }
+
+            // NEW: Open Food Facts API (FREE - Indian Products!)
+            async function fetchOpenFoodFactsData(productName) {
+                try {
+                    // Search by product name
+                    const searchUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(productName)}&search_simple=1&action=process&json=1&page_size=5&fields=product_name,brands,image_url,nutriments,ingredients_text,stores,nutriscore_grade`;
+
+                    const response = await fetch(searchUrl);
+                    if (!response.ok) return null;
+
+                    const data = await response.json();
+                    if (!data.products || data.products.length === 0) return null;
+
+                    const product = data.products[0];
+                    const nutrients = product.nutriments || {};
+
+                    return {
+                        productName: product.product_name || productName,
+                        brandOwner: product.brands || 'N/A',
+                        ingredients: product.ingredients_text || 'Not available',
+                        imageUrl: product.image_url || '',
+                        stores: product.stores || '',
+                        nutriScore: product.nutriscore_grade || '',
+                        nutrients: {
+                            calories: nutrients['energy-kcal_100g'] || nutrients.energy_100g / 4.184 || 0,
+                            protein: nutrients.proteins_100g || 0,
+                            carbs: nutrients.carbohydrates_100g || 0,
+                            sugar: nutrients.sugars_100g || 0,
+                            fat: nutrients.fat_100g || 0,
+                            sodium: nutrients.sodium_100g ? nutrients.sodium_100g * 1000 : 0,
+                            fiber: nutrients.fiber_100g || 0
+                        },
+                        servingSize: '100',
+                        servingUnit: 'g'
+                    };
+                } catch (error) {
+                    console.error("Open Food Facts API failed:", error);
+                    return null;
+                }
+            }
+
+            // API Ninjas Nutrition API implementation
+            async function fetchAPINinjasData(productName) {
+                try {
+                    const url = `https://api.api-ninjas.com/v1/nutrition?query=${encodeURIComponent(productName)}`;
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Api-Key': apiNinjasKey
+                        }
+                    });
+
+                    if (!response.ok) return null;
+                    const data = await response.json();
+
+                    if (!data || data.length === 0) return null;
+
+                    // API Ninjas returns array, use first item
+                    const item = data[0];
+
+                    return {
+                        productName: item.name || productName,
+                        brandOwner: 'API Ninjas Database',
+                        ingredients: 'Ingredient details not available. Check product packaging.',
+                        nutrients: {
+                            calories: item.calories || 0,
+                            protein: item.protein_g || 0,
+                            carbs: item.carbohydrates_total_g || 0,
+                            sugar: item.sugar_g || 0,
+                            fat: item.fat_total_g || 0,
+                            sodium: item.sodium_mg || 0,
+                            fiber: item.fiber_g || 0
+                        },
+                        servingSize: item.serving_size_g || '100',
+                        servingUnit: 'g',
+                        apiSource: 'API Ninjas'
+                    };
+                } catch (error) {
+                    console.error('API Ninjas failed:', error);
+                    return null;
+                }
+            }
+
+            // Edamam Nutrition API implementation
+            async function fetchEdamamData(productName) {
+                if (edamamAppId === 'YOUR_EDAMAM_APP_ID') return null;
+
+                try {
+                    const url = `https://api.edamam.com/api/nutrition-data?app_id=${edamamAppId}&app_key=${edamamAppKey}&nutrition-type=logging&ingr=${encodeURIComponent(productName)}`;
+                    const response = await fetch(url);
+
+                    if (!response.ok) return null;
+                    const data = await response.json();
+
+                    if (data.calories === 0) return null; // No data found
+
+                    return {
+                        productName: productName,
+                        brandOwner: 'Edamam Database',
+                        ingredients: data.ingredients?.[0]?.parsed?.[0]?.food || 'Not available',
+                        nutrients: {
+                            calories: data.calories || 0,
+                            protein: data.totalNutrients?.PROCNT?.quantity || 0,
+                            carbs: data.totalNutrients?.CHOCDF?.quantity || 0,
+                            sugar: data.totalNutrients?.SUGAR?.quantity || 0,
+                            fat: data.totalNutrients?.FAT?.quantity || 0,
+                            sodium: data.totalNutrients?.NA?.quantity || 0,
+                            fiber: data.totalNutrients?.FIBTG?.quantity || 0
+                        },
+                        servingSize: '100',
+                        servingUnit: 'g',
+                        apiSource: 'Edamam'
+                    };
+                } catch (error) {
+                    console.error('Edamam API failed:', error);
+                    return null;
+                }
+            }
+
+            async function fetchNutritionalData(productName) {
+                console.log('🔍 Searching nutritional data...');
+
+                // PRIORITY 1: USDA API (As requested by user!)
+                console.log('Trying USDA API (Primary source)...');
+                const usdaData = await fetchUSDADataDirect(productName);
+                if (usdaData) {
+                    console.log('✅ Found in USDA API!');
+                    return usdaData;
+                }
+
+                // PRIORITY 2: API Ninjas (Backup - works without CORS issues)
+                console.log('USDA failed, trying API Ninjas Nutrition API...');
+                const apiNinjasData = await fetchAPINinjasData(productName);
+                if (apiNinjasData) {
+                    console.log('✅ Found in API Ninjas!');
+                    return apiNinjasData;
+                }
+
+                // PRIORITY 3: Open Food Facts (for Indian packaged products)
+                console.log('Trying Open Food Facts (Indian products backup)...');
+                const openFoodData = await fetchOpenFoodFactsData(productName);
+                if (openFoodData) {
+                    console.log('✅ Found in Open Food Facts!');
+                    return openFoodData;
+                }
+
+                // PRIORITY 4: Edamam API (if configured)
+                if (edamamAppId !== 'YOUR_EDAMAM_APP_ID') {
+                    console.log('Trying Edamam Nutrition API...');
+                    const edamamData = await fetchEdamamData(productName);
+                    if (edamamData) {
+                        console.log('✅ Found in Edamam!');
+                        return edamamData;
+                    }
+                }
+
+                // Return generic data if all APIs fail
+                console.log('❌ No nutritional data found in any database');
+                return createGenericNutritionalData(productName);
+            }
+
+            // USDA API Direct implementation
+            async function fetchUSDADataDirect(productName) {
+                try {
+                    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(productName)}&pageSize=1&api_key=${usdaApiKey}`;
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        console.error(`USDA API failed: ${response.status}`);
+                        return null;
+                    }
+
+                    const data = await response.json();
+
+                    if (data.foods && data.foods.length > 0) {
+                        const food = data.foods[0];
+                        const nutrients = {};
+
+                        food.foodNutrients.forEach(nutrient => {
+                            const name = nutrient.nutrientName.toLowerCase();
+                            if (name.includes('energy')) nutrients.calories = nutrient.value;
+                            if (name.includes('protein')) nutrients.protein = nutrient.value;
+                            if (name.includes('carbohydrate') && !name.includes('by')) nutrients.carbs = nutrient.value;
+                            if (name.includes('sugars, total')) nutrients.sugar = nutrient.value;
+                            if (name.includes('total lipid')) nutrients.fat = nutrient.value;
+                            if (name.includes('sodium')) nutrients.sodium = nutrient.value;
+                            if (name.includes('fiber')) nutrients.fiber = nutrient.value;
+                        });
+
+                        return {
+                            productName: food.description,
+                            brandOwner: food.brandOwner || 'USDA Database',
+                            ingredients: food.ingredients || 'Not available',
+                            nutrients: {
+                                calories: nutrients.calories || 0,
+                                protein: nutrients.protein || 0,
+                                carbs: nutrients.carbs || 0,
+                                sugar: nutrients.sugar || 0,
+                                fat: nutrients.fat || 0,
+                                sodium: nutrients.sodium || 0,
+                                fiber: nutrients.fiber || 0
+                            },
+                            servingSize: food.servingSize || '100',
+                            servingUnit: food.servingSizeUnit || 'g',
+                            apiSource: 'USDA'
+                        };
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('USDA API Error:', error);
+                    return null;
+                }
+            }
+
+            // Generic fallback when no API data available
+            function createGenericNutritionalData(productName) {
+                return {
+                    productName: productName,
+                    brandOwner: 'Product Information',
+                    ingredients: 'Nutritional data not available for this product. Please check the product label or search for a similar product.',
+                    nutrients: {
+                        calories: 0,
+                        protein: 0,
+                        carbs: 0,
+                        sugar: 0,
+                        fat: 0,
+                        sodium: 0,
+                        fiber: 0
+                    },
+                    servingSize: '100',
+                    servingUnit: 'g',
+                    isGeneric: true
+                };
+            }
+
+            // 2025 UPDATED: Price comparison with multiple FREE API options
+            async function fetchPriceComparisons(productName) {
+                console.log('🔍 Fetching price comparisons for:', productName);
+
+                // Try Method 1: DataForSEO API (50,000 FREE credits!)
+                if (dataForSeoLogin !== 'YOUR_EMAIL' && dataForSeoPassword !== 'YOUR_PASSWORD') {
+                    console.log('Trying DataForSEO API (50k free credits)...');
+                    try {
+                        const results = await fetchDataForSEOPrices(productName);
+                        if (results && results.length > 0) {
+                            console.log('✅ DataForSEO success!');
+                            return results;
+                        }
+                    } catch (err) {
+                        console.log('DataForSEO failed:', err.message);
+                    }
+                }
+
+                // Try Method 2: ScraperAPI (5,000 FREE credits)
+                if (scraperApiKey !== 'YOUR_SCRAPERAPI_KEY') {
+                    console.log('Trying ScraperAPI (5k free credits)...');
+                    try {
+                        const results = await fetchScraperAPIPrices(productName);
+                        if (results && results.length > 0) {
+                            console.log('✅ ScraperAPI success!');
+                            return results;
+                        }
+                    } catch (err) {
+                        console.log('ScraperAPI failed:', err.message);
+                    }
+                }
+
+                // Try Method 3: SerpAPI (100 free/month - existing)
+                console.log('Trying SerpAPI (100 free/month)...');
+                try {
+                    const results = await fetchSerpAPIPrices(productName);
+                    if (results && results.length > 0) {
+                        console.log('✅ SerpAPI success!');
+                        return results;
+                    }
+                } catch (err) {
+                    console.log('SerpAPI failed:', err.message);
+                }
+
+                // Fallback: Show manual search links
+                console.log('All APIs failed, showing manual search links');
+                return generateManualSearchLinks(productName);
+            }
+
+            // DataForSEO API implementation
+            async function fetchDataForSEOPrices(productName) {
+                const auth = btoa(`${dataForSeoLogin}:${dataForSeoPassword}`);
+                const postData = [{
+                    keyword: productName + ' india',
+                    location_code: 2356, // India
+                    language_code: 'en',
+                    device: 'desktop'
+                }];
+
+                const response = await fetch('https://api.dataforseo.com/v3/serp/google/shopping/live/advanced', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${auth}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                if (!response.ok) throw new Error('DataForSEO API failed');
+
+                const data = await response.json();
+                const items = data?.tasks?.[0]?.result?.[0]?.items || [];
+
+                return items.slice(0, 6).map(item => ({
+                    title: item.title || '',
+                    price: item.price?.current?.formatted_price || item.price || 'N/A',
+                    source: item.seller_name || item.domain || '',
+                    link: item.url || item.product_link || '#',
+                    thumbnail: item.image_url || ''
+                }));
+            }
+
+            // ScraperAPI implementation
+            async function fetchScraperAPIPrices(productName) {
+                const query = encodeURIComponent(productName + ' india buy online');
+                const url = `https://api.scraperapi.com/structured/google/search?api_key=${scraperApiKey}&query=${query}&country=in&tbs=vw:l`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('ScraperAPI failed');
+
+                const data = await response.json();
+                const results = data?.shopping_results || [];
+
+                return results.slice(0, 6).map(item => ({
+                    title: item.title || '',
+                    price: item.price || item.extracted_price || 'N/A',
+                    source: item.source || item.merchant || '',
+                    link: item.link || '#',
+                    thumbnail: item.thumbnail || ''
+                }));
+            }
+
+            // SerpAPI implementation (existing)
+            async function fetchSerpAPIPrices(productName) {
+                const params = new URLSearchParams({
+                    engine: 'google_shopping',
+                    q: productName + ' india',
+                    api_key: serpApiKey,
+                    hl: 'en',
+                    gl: 'in'
+                });
+                const url = `https://serpapi.com/search.json?${params.toString()}`;
+
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('SerpAPI failed');
+
+                const data = await res.json();
+                const results = data.shopping_results || [];
+
+                return results.slice(0, 6).map(item => ({
+                    title: item.title || '',
+                    price: item.price || item.extracted_price || 'N/A',
+                    source: item.source || item.merchant || '',
+                    link: item.link || '#',
+                    thumbnail: item.thumbnail || ''
+                }));
+            }
+
+            // Manual fallback links
+            function generateManualSearchLinks(productName) {
+                const searchTerm = encodeURIComponent(productName);
+                return [
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'Amazon India',
+                        link: `https://www.amazon.in/s?k=${searchTerm}`,
+                        thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg'
+                    },
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'Flipkart',
+                        link: `https://www.flipkart.com/search?q=${searchTerm}`,
+                        thumbnail: 'https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/flipkart-plus_8d85f4.png'
+                    },
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'Meesho',
+                        link: `https://www.meesho.com/search?q=${searchTerm}`,
+                        thumbnail: ''
+                    },
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'BigBasket',
+                        link: `https://www.bigbasket.com/ps/?q=${searchTerm}`,
+                        thumbnail: ''
+                    },
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'Blinkit (10-min delivery)',
+                        link: `https://www.blinkit.com/s/?q=${searchTerm}`,
+                        thumbnail: ''
+                    },
+                    {
+                        title: `${productName}`,
+                        price: '<i class="fas fa-search"></i> Click to compare prices',
+                        source: 'JioMart',
+                        link: `https://www.jiomart.com/search/${searchTerm}`,
+                        thumbnail: ''
+                    }
+                ];
+            }            async function compareProducts(product1Name, product2Name) {
+                const [product1Data, product2Data] = await Promise.all([
+                    fetchNutritionalData(product1Name),
+                    fetchNutritionalData(product2Name)
+                ]);
+
+                if (!product1Data || !product2Data) {
+                    return '<p>Unable to compare products. Nutritional data not available for one or both products.</p>';
+                }
+
+                const p1Name = product1Data.productName.split(' ').slice(0, 3).join(' ') + '...';
+                const p2Name = product2Data.productName.split(' ').slice(0, 3).join(' ') + '...';
+
+                const comparisonHTML = `
+                    <div style="overflow-x: auto;">
+                        <p style="font-size: 0.9rem; color: var(--muted-text);">Values below are per 100${product1Data.servingUnit} (USDA data standard).</p>
+                        <table style="width: 100%; min-width: 500px; border-collapse: collapse; margin-top: 15px;">
+                            <thead>
+                                <tr style="background-color: var(--egg-shell);">
+                                    <th style="padding: 12px; text-align: left; border: 1px solid var(--border-color);">Nutrient</th>
+                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">${p1Name}</th>
+                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">${p2Name}</th>
+                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">Better Choice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${createComparisonRow('Calories', product1Data.nutrients.calories, product2Data.nutrients.calories, 'lower', 'kcal')}
+                                ${createComparisonRow('Protein', product1Data.nutrients.protein, product2Data.nutrients.protein, 'higher', 'g')}
+                                ${createComparisonRow('Carbs', product1Data.nutrients.carbs, product2Data.nutrients.carbs, 'lower', 'g')}
+                                ${createComparisonRow('Sugar', product1Data.nutrients.sugar, product2Data.nutrients.sugar, 'lower', 'g')}
+                                ${createComparisonRow('Fat', product1Data.nutrients.fat, product2Data.nutrients.fat, 'lower', 'g')}
+                                ${createComparisonRow('Sodium', product1Data.nutrients.sodium, product2Data.nutrients.sodium, 'lower', 'mg')}
+                                ${createComparisonRow('Fiber', product1Data.nutrients.fiber, product2Data.nutrients.fiber, 'higher', 'g')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                return comparisonHTML;
+            }
+
+            function createComparisonRow(nutrient, value1, value2, betterWhen, unit) {
+                const v1 = parseFloat(value1) || 0;
+                const v2 = parseFloat(value2) || 0;
+
+                let winner = '—';
+                let style1 = '';
+                let style2 = '';
+                
+                const formatValue = (v) => v ? v.toFixed(v < 10 ? 1 : 0) : 'N/A';
+
+                if (v1 && v2) {
+                    if (v1 === v2) {
+                        winner = 'Tie';
+                    } else if (betterWhen === 'lower') {
+                        if (v1 < v2) {
+                            winner = 'Product 1 (Lower)';
+                            style1 = 'background-color: #d4edda; font-weight: 600;';
+                        } else {
+                            winner = 'Product 2 (Lower)';
+                            style2 = 'background-color: #d4edda; font-weight: 600;';
+                        }
+                    } else {
+                        if (v1 > v2) {
+                            winner = 'Product 1 (Higher)';
+                            style1 = 'background-color: #d4edda; font-weight: 600;';
+                        } else {
+                            winner = 'Product 2 (Higher)';
+                            style2 = 'background-color: #d4edda; font-weight: 600;';
+                        }
+                    }
+                }
+
+                return `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px; border: 1px solid var(--border-color);"><strong>${nutrient}</strong></td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; ${style1}">${formatValue(v1)} ${unit}</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; ${style2}">${formatValue(v2)} ${unit}</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; font-size: 0.9rem;">${winner}</td>
+                    </tr>
+                `;
+            }
+
+            // Function to display Gemini AI price insights
+            function displayPriceInsights(insights) {
+                const container = document.getElementById('ai-insights-container');
+                if (!container) return;
+
+                const insightsHTML = `
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-top: 15px;">
+                        <h4 style="color: white; margin-top: 0; margin-bottom: 15px;">🤖 AI Shopping Assistant - Price Analysis</h4>
+
+                        ${insights.bestDeal ? `
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: white; margin: 0 0 10px 0;">💰 Best Deal Detected</h5>
+                            <p style="margin: 5px 0;"><strong>Store:</strong> ${insights.bestDeal.store}</p>
+                            <p style="margin: 5px 0;"><strong>Price:</strong> ${insights.bestDeal.price}</p>
+                            <p style="margin: 5px 0; font-size: 0.9rem;">${insights.bestDeal.reason}</p>
+                        </div>
+                        ` : ''}
+
+                        ${insights.priceInsights ? `
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: white; margin: 0 0 10px 0;"><i class="fas fa-chart-bar"></i> Price Analysis</h5>
+                            <p style="margin: 0; font-size: 0.95rem; line-height: 1.6;">${insights.priceInsights}</p>
+                        </div>
+                        ` : ''}
+
+                        ${insights.recommendations && insights.recommendations.length > 0 ? `
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: white; margin: 0 0 10px 0;"><i class="fas fa-lightbulb"></i> Shopping Tips</h5>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; line-height: 1.8;">
+                                ${insights.recommendations.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${insights.savingTips ? `
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h5 style="color: white; margin: 0 0 10px 0;">💵 How to Save Money</h5>
+                            <p style="margin: 0; font-size: 0.9rem; line-height: 1.6;">${insights.savingTips}</p>
+                        </div>
+                        ` : ''}
+
+                        ${insights.alternativeProducts && insights.alternativeProducts.length > 0 ? `
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                            <h5 style="color: white; margin: 0 0 10px 0;">🔄 Similar Products to Consider</h5>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; line-height: 1.8;">
+                                ${insights.alternativeProducts.map(alt => `<li>${alt}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                container.innerHTML = insightsHTML;
+            }
+
+            // Analyze nutritional data and generate health insights
+            function analyzeHealthData(nutritionData) {
+                if (!nutritionData || nutritionData.isGeneric) {
+                    return {
+                        isHealthy: true,
+                        status: 'Analysis in Progress',
+                        summary: 'Fetching nutritional information...',
+                        canHave: ['N/A'],
+                        cannotHave: ['N/A']
+                    };
+                }
+
+                const nutrients = nutritionData.nutrients;
+                let isHealthy = true;
+                let healthIssues = [];
+                let cannotHave = [];
+                let canHave = [];
+
+                // Analyze Sugar
+                if (nutrients.sugar > 15) {
+                    isHealthy = false;
+                    healthIssues.push('High Sugar Content');
+                    cannotHave.push('Diabetic patients');
+                    cannotHave.push('Weight watchers');
+                }
+
+                // Analyze Sodium
+                if (nutrients.sodium > 400) {
+                    isHealthy = false;
+                    healthIssues.push('High Sodium');
+                    cannotHave.push('Hypertension patients');
+                    cannotHave.push('Heart disease patients');
+                }
+
+                // Analyze Fat
+                if (nutrients.fat > 20) {
+                    isHealthy = false;
+                    healthIssues.push('High Fat Content');
+                    cannotHave.push('People with heart conditions');
+                    cannotHave.push('Weight management programs');
+                }
+
+                // Analyze Calories
+                if (nutrients.calories > 300) {
+                    healthIssues.push('High Calorie');
+                    cannotHave.push('Weight loss diets');
+                }
+
+                // Positive aspects
+                if (nutrients.protein > 5) {
+                    canHave.push('Athletes and active individuals');
+                }
+                if (nutrients.fiber > 3) {
+                    canHave.push('People needing digestive health');
+                }
+                if (nutrients.calories < 100 && nutrients.sugar < 5) {
+                    canHave.push('Weight watchers');
+                    isHealthy = true;
+                }
+
+                // Default recommendations
+                if (canHave.length === 0) {
+                    canHave.push('General population (in moderation)');
+                }
+                if (cannotHave.length === 0) {
+                    cannotHave.push('No specific restrictions identified');
+                    isHealthy = true;
+                }
+
+                // Generate summary
+                let summary = '';
+                if (isHealthy) {
+                    summary = `This product has moderate nutritional values. ${nutrients.protein > 5 ? 'Good source of protein. ' : ''}${nutrients.fiber > 3 ? 'Contains dietary fiber. ' : ''}Consume as part of a balanced diet.`;
+                } else {
+                    summary = `<i class="fas fa-exclamation-triangle"></i> Contains ${healthIssues.join(', ')}. ${nutrients.sugar > 15 ? `High sugar (${nutrients.sugar.toFixed(1)}g per 100g). ` : ''}${nutrients.sodium > 400 ? `High sodium (${nutrients.sodium.toFixed(0)}mg per 100g). ` : ''}Limited nutritional value - consume occasionally.`;
+                }
+
+                return {
+                    isHealthy: isHealthy,
+                    status: isHealthy ? '<i class="fas fa-check-circle"></i> Moderately Healthy' : '<i class="fas fa-exclamation-triangle"></i> ' + healthIssues.join(', '),
+                    summary: summary,
+                    canHave: [...new Set(canHave)], // Remove duplicates
+                    cannotHave: [...new Set(cannotHave)] // Remove duplicates
+                };
+            }
+
+            // Generate loading skeleton cards
+            function generateLoadingCards(count) {
+                const stores = ['Amazon', 'Flipkart', 'Meesho', 'BigBasket', 'Blinkit', 'JioMart'];
+                return stores.slice(0, count).map(store => `
+                    <div style="border: 2px solid var(--border-color); border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); animation: pulse 1.5s infinite;">
+                        <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">🛒 ${store}</div>
+                        <div style="color: var(--muted-text); font-size: 0.9rem;">Loading price...</div>
+                    </div>
+                `).join('');
+            }
+
+            // Enhanced price comparison with Google Shopping API
+            async function fetchEnhancedPriceComparison(productName) {
+                const cardsContainer = document.getElementById('price-cards-container');
+                if (!cardsContainer) return;
+
+                const stores = [
+                    { name: 'Amazon', url: 'https://www.amazon.in/s?k=', logo: '🟠', color: '#FF9900' },
+                    { name: 'Flipkart', url: 'https://www.flipkart.com/search?q=', logo: '🔵', color: '#2874F0' },
+                    { name: 'Meesho', url: 'https://www.meesho.com/search?q=', logo: '🟣', color: '#9F2089' },
+                    { name: 'BigBasket', url: 'https://www.bigbasket.com/ps/?q=', logo: '🟢', color: '#84C225' },
+                    { name: 'Blinkit', url: 'https://www.blinkit.com/s/?q=', logo: '🟡', color: '#F8BC00' },
+                    { name: 'JioMart', url: 'https://www.jiomart.com/search/', logo: '🔴', color: '#0A74DA' }
+                ];
+
+                const priceData = [];
+
+                try {
+                    // Make multiple targeted searches for better price results
+                    const searchQueries = [
+                        `${productName} buy online india`,
+                        `${productName} price`,
+                        `${productName} amazon flipkart`
+                    ];
+
+                    for (const query of searchQueries) {
+                        const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${googleSearchEngineId}&q=${encodeURIComponent(query)}&num=10`;
+
+                        const response = await fetch(apiUrl);
+
+                        if (response.ok) {
+                            const data = await response.json();
+
+                            if (data.items && data.items.length > 0) {
+                                data.items.forEach(item => {
+                                    const titleOriginal = item.title || '';
+                                    const snippetOriginal = item.snippet || '';
+                                    const text = (titleOriginal + ' ' + snippetOriginal).toLowerCase();
+                                    const link = item.link.toLowerCase();
+
+                                    // Identify store from URL
+                                    let storeName = null;
+                                    if (link.includes('amazon')) storeName = 'Amazon';
+                                    else if (link.includes('flipkart')) storeName = 'Flipkart';
+                                    else if (link.includes('meesho')) storeName = 'Meesho';
+                                    else if (link.includes('bigbasket')) storeName = 'BigBasket';
+                                    else if (link.includes('blinkit') || link.includes('grofers')) storeName = 'Blinkit';
+                                    else if (link.includes('jiomart')) storeName = 'JioMart';
+
+                                    if (storeName) {
+                                        // Enhanced price extraction patterns
+                                        const patterns = [
+                                            /₹\s*(\d+(?:,\d+)*(?:\.\d+)?)/g,                    // ₹123 or ₹1,234
+                                            /rs\.?\s*(\d+(?:,\d+)*(?:\.\d+)?)/gi,               // Rs.123 or Rs 123
+                                            /inr\s*(\d+(?:,\d+)*(?:\.\d+)?)/gi,                 // INR 123
+                                            /price[:\s]+₹?\s*(\d+(?:,\d+)*(?:\.\d+)?)/gi,      // Price: 123
+                                            /(\d+(?:,\d+)*(?:\.\d+)?)\s*(?:₹|rupees?)/gi       // 123₹ or 123 rupees
+                                        ];
+
+                                        let foundPrice = false;
+                                        for (const pattern of patterns) {
+                                            const matches = text.matchAll(pattern);
+                                            for (const match of matches) {
+                                                const priceStr = match[1].replace(/,/g, '');
+                                                const price = parseFloat(priceStr);
+
+                                                // Reasonable price range for products
+                                                if (price >= 5 && price <= 50000) {
+                                                    priceData.push({
+                                                        store: storeName,
+                                                        price: Math.round(price),
+                                                        link: item.link,
+                                                        title: titleOriginal
+                                                    });
+                                                    foundPrice = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (foundPrice) break;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                        // Small delay between requests
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+
+                    // Find best price
+                    const minPrice = priceData.length > 0 ? Math.min(...priceData.map(p => p.price)) : null;
+
+                    // Generate price cards
+                    const priceCards = stores.map(store => {
+                        const storePrices = priceData.filter(p => p.store === store.name);
+                        const storePrice = storePrices.length > 0 ? Math.min(...storePrices.map(p => p.price)) : null;
+                        const storeLink = storePrices.length > 0 ? storePrices[0].link : store.url + encodeURIComponent(productName);
+                        const isBestPrice = storePrice && storePrice === minPrice;
+
+                        return `
+                            <div style="border: 3px solid ${isBestPrice ? '#28a745' : 'var(--border-color)'}; border-radius: 12px; padding: 20px; background: ${isBestPrice ? 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)' : '#fff'}; position: relative; transition: all 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'" onclick="window.open('${storeLink}', '_blank')">
+                                ${isBestPrice ? '<div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);">🏆 BEST PRICE</div>' : ''}
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                    <div style="font-size: 2rem;">${store.logo}</div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 1.2rem; color: ${store.color};">${store.name}</div>
+                                        <div style="font-size: 0.8rem; color: var(--muted-text);">Click to check availability</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 1.8rem; font-weight: 700; color: ${isBestPrice ? '#155724' : 'var(--magenta-rose)'}; margin-bottom: 10px;">
+                                    ${storePrice ? `₹${storePrice}` : '<span style="font-size: 1rem; color: var(--muted-text);">Check store</span>'}
+                                </div>
+                                ${storePrice ? `<div style="font-size: 0.85rem; color: var(--muted-text);">Price from Google Search</div>` : ''}
+                                <div style="margin-top: 15px; padding: 10px; background: ${store.color}; color: white; text-align: center; border-radius: 8px; font-weight: 600; font-size: 0.95rem;">
+                                    Visit ${store.name} →
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    cardsContainer.innerHTML = priceCards;
+
+                    // Update main price display
+                    const priceDisplay = document.getElementById('product-price-display');
+                    if (priceDisplay && minPrice) {
+                        const maxPrice = Math.max(...priceData.map(p => p.price));
+                        if (minPrice === maxPrice) {
+                            priceDisplay.innerHTML = `₹${minPrice} <span style="font-size: 0.8rem; color: var(--muted-text);">(best price found)</span>`;
+                        } else {
+                            priceDisplay.innerHTML = `₹${minPrice} - ₹${maxPrice} <span style="font-size: 0.8rem; color: var(--muted-text);">(price range)</span>`;
+                        }
+                    }
+
+                    console.log('✅ Enhanced price comparison loaded!');
+
+                } catch (error) {
+                    console.error('Price comparison error:', error);
+                    // Fallback to simple cards
+                    cardsContainer.innerHTML = stores.map(store => `
+                        <div style="border: 2px solid var(--border-color); border-radius: 12px; padding: 20px; background: #fff; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'" onclick="window.open('${store.url}${encodeURIComponent(productName)}', '_blank')">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <div style="font-size: 2rem;">${store.logo}</div>
+                                <div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: ${store.color};">${store.name}</div>
+                                    <div style="font-size: 0.8rem; color: var(--muted-text);">Click to check price</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; padding: 10px; background: ${store.color}; color: white; text-align: center; border-radius: 8px; font-weight: 600;">
+                                Check Price →
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            // Fetch real product prices for header display
+            async function fetchRealProductPrice(productName) {
+                const priceDisplay = document.getElementById('product-price-display');
+                if (!priceDisplay) return;
+
+                try {
+                    // Google Custom Search API - Shopping search
+                    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${googleSearchEngineId}&q=${encodeURIComponent(productName + ' buy online price india')}&num=5`;
+
+                    const response = await fetch(apiUrl);
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        if (data.items && data.items.length > 0) {
+                            // Extract prices from search results
+                            const prices = [];
+
+                            data.items.forEach(item => {
+                                // Look for price patterns in title and snippet
+                                const text = (item.title + ' ' + item.snippet).toLowerCase();
+
+                                // Match Indian price patterns: ₹123, Rs 123, Rs.123, 123 rupees
+                                const priceMatches = text.match(/(?:₹|rs\.?|inr)\s*(\d+[,\d]*)/gi);
+
+                                if (priceMatches) {
+                                    priceMatches.forEach(match => {
+                                        const numMatch = match.match(/(\d+[,\d]*)/);
+                                        if (numMatch) {
+                                            const price = parseInt(numMatch[1].replace(/,/g, ''));
+                                            if (price > 0 && price < 10000) { // Reasonable product price range
+                                                prices.push(price);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+                            if (prices.length > 0) {
+                                const minPrice = Math.min(...prices);
+                                const maxPrice = Math.max(...prices);
+
+                                if (minPrice === maxPrice) {
+                                    priceDisplay.innerHTML = `₹${minPrice} <span style="font-size: 0.8rem; color: var(--muted-text);">(approx)</span>`;
+                                } else {
+                                    priceDisplay.innerHTML = `₹${minPrice} - ₹${maxPrice} <span style="font-size: 0.8rem; color: var(--muted-text);">(price range)</span>`;
+                                }
+                                console.log('✅ Real prices fetched from Google!');
+                                return;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Google Shopping price fetch error:', error);
+                }
+
+                // Fallback if no price found
+                priceDisplay.innerHTML = `<span style="font-size: 1rem; color: var(--muted-text);">Check stores below for prices</span>`;
+            }
+
+            function displayProductInfo(data) {
+                const { name, price, healthInfo, patientSuitability, buyingApps, searchQuery } = data;
+                const healthStatusClass = healthInfo.isHealthy ? 'healthy' : 'harmful';
+
+                // Dynamic URLs with product search
+                const productSearchTerm = encodeURIComponent(name);
+                const buyingAppsHTML = buyingApps.map(app => `
+                    <a href="${app.url}${productSearchTerm}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 5px; text-decoration: none; color: #333; font-weight: 500; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 6px; background: #f9f9f9; transition: transform 0.2s;">
+                       <img src="${app.icon}" alt="${app.name}" onerror="this.style.display='none'" style="width:20px; height:20px; vertical-align:middle; margin-right: 8px; border-radius: 4px;">${app.name}
+                    </a>`).join('');
+
+                productInfoContainer.innerHTML = `
+                    <div class="info-card">
+                        <h2 style="text-align:center; color: var(--rich-black);">${name}</h2>
+                        <p id="product-price-display" style="text-align:center; font-size: 1.5rem; font-weight: 600; color: var(--magenta-rose);">
+                            <span class="price-loader" style="font-size: 1rem;"><i class="fas fa-search"></i> Fetching live prices from Google...</span>
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Product Images</h3>
+                        <div class="product-image-gallery" id="product-images-container">
+                             <p class="image-placeholder">Loading images...</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Detailed Nutritional Information</h3>
+                        <div id="nutritional-data-container">
+                            <p class="image-placeholder">Loading nutritional data from USDA API...</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Health Summary</h3>
+                        <p><strong>Status: <span class="health-status ${healthStatusClass}">${healthInfo.status}</span></strong></p>
+                        <p>${healthInfo.summary}</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Patient Suitability (Dietary Advisory)</h3>
+                        <p style="font-size: 0.95rem; margin-bottom: 10px;"><strong>✓ Recommended for:</strong> <span style="color: var(--success-color);">${patientSuitability.canHave.join(', ') || 'N/A'}</span></p>
+                        <p style="font-size: 0.95rem;"><strong>✗ Should be avoided by:</strong> <span style="color: var(--danger-color);">${patientSuitability.cannotHave.join(', ')}</span></p>
+                        <p style="font-size: 0.85rem; color: var(--muted-text); margin-top: 10px;"><em>Note: This is general dietary guidance. Always consult your healthcare provider for personalized advice.</em></p>
+                    </div>
+                     <div class="info-card">
+                        <h3>Where to Buy</h3>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center;">${buyingAppsHTML}</div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Price Comparison</h3>
+                        <div id="price-comparison-container">
+                            <p class="image-placeholder">Loading price comparisons...</p>
+                        </div>
+                    </div>
+                    <button class="btn" id="compare-btn" style="margin-top: 20px; background-color: var(--magenta-rose);">Compare with Another Product</button>
+                    <button class="btn" id="reset-btn" style="margin-top: 10px;">Scan Another Product</button>
+                `;
+                
+                // Fetch and display images
+                const imageContainer = document.getElementById('product-images-container');
+                fetchAndDisplayImages(searchQuery || name, imageContainer);
+
+                // Fetch and display real prices from Google Shopping
+                fetchRealProductPrice(name);
+
+                // Fetch and display nutritional data
+                const nutritionalContainer = document.getElementById('nutritional-data-container');
+                fetchNutritionalData(name).then(nutritionData => {
+                    if (nutritionData) {
+                        // Analyze health data and update Health Summary section
+                        const healthAnalysis = analyzeHealthData(nutritionData);
+
+                        // Update Health Summary
+                        const healthSummarySection = document.querySelector('#product-info-container .info-card:nth-child(4)');
+                        if (healthSummarySection && !nutritionData.isGeneric) {
+                            const healthStatusClass = healthAnalysis.isHealthy ? 'healthy' : 'harmful';
+                            healthSummarySection.innerHTML = `
+                                <h3>Health Summary</h3>
+                                <p><strong>Status: <span class="health-status ${healthStatusClass}">${healthAnalysis.status}</span></strong></p>
+                                <p>${healthAnalysis.summary}</p>
+                            `;
+                        }
+
+                        // Update Patient Suitability
+                        const suitabilitySection = document.querySelector('#product-info-container .info-card:nth-child(5)');
+                        if (suitabilitySection && !nutritionData.isGeneric) {
+                            suitabilitySection.innerHTML = `
+                                <h3>Patient Suitability (Dietary Advisory)</h3>
+                                <p style="font-size: 0.95rem; margin-bottom: 10px;"><strong>✓ Recommended for:</strong> <span style="color: var(--success-color);">${healthAnalysis.canHave.join(', ')}</span></p>
+                                <p style="font-size: 0.95rem;"><strong>✗ Should be avoided by:</strong> <span style="color: var(--danger-color);">${healthAnalysis.cannotHave.join(', ')}</span></p>
+                                <p style="font-size: 0.85rem; color: var(--muted-text); margin-top: 10px;"><em>Note: This is general dietary guidance based on nutritional analysis. Always consult your healthcare provider for personalized advice.</em></p>
+                            `;
+                        }
+
+                        // Check if it's generic fallback data
+                        if (nutritionData.isGeneric) {
+                            nutritionalContainer.innerHTML = `
+                                <div class="alert alert-warning">
+                                    <strong><i class="fas fa-exclamation-triangle"></i> Nutritional Data Not Available</strong><br>
+                                    ${nutritionData.ingredients}<br><br>
+                                    <strong><i class="fas fa-lightbulb"></i> Suggestions:</strong>
+                                    <ul style="margin: 10px 0; padding-left: 20px;">
+                                        <li>Try searching with brand name (e.g., "Britannia Good Day")</li>
+                                        <li>Search for packaged food products for better results</li>
+                                        <li>Check product packaging for nutritional information</li>
+                                        <li>Optional: Add <a href="https://developer.edamam.com/" target="_blank">Edamam API</a> key for more products (10k free/month)</li>
+                                    </ul>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        const nutrientsHTML = `
+                            <p><strong>Brand:</strong> ${nutritionData.brandOwner}</p>
+                            <p><strong>Serving Size:</strong> ${nutritionData.servingSize} ${nutritionData.servingUnit}</p>
+                            <p style="font-size: 0.9rem; color: var(--muted-text); margin-top: 5px;"><em>Note: Nutritional values are standardized per 100g/100ml</em></p>
+                            ${nutritionData.apiSource ? `<p style="font-size: 0.85rem; color: var(--blue-violet); margin-top: 5px;"><i class="fas fa-chart-bar"></i> Data Source: <strong>${nutritionData.apiSource} Database</strong></p>` : ''}
+                            <h4 style="margin-top: 15px;">Nutrition Facts (per 100${nutritionData.servingUnit}):</h4>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Calories</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.calories ? nutritionData.nutrients.calories.toFixed(0) : 'N/A'} kcal</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Protein</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.protein ? nutritionData.nutrients.protein.toFixed(1) : 'N/A'} g</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Carbohydrates</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.carbs ? nutritionData.nutrients.carbs.toFixed(1) : 'N/A'} g</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Sugar</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.sugar ? nutritionData.nutrients.sugar.toFixed(1) : 'N/A'} g</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Fat</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.fat ? nutritionData.nutrients.fat.toFixed(1) : 'N/A'} g</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 8px;"><strong>Sodium</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.sodium ? nutritionData.nutrients.sodium.toFixed(0) : 'N/A'} mg</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><strong>Fiber</strong></td>
+                                    <td style="padding: 8px; text-align: right;">${nutritionData.nutrients.fiber ? nutritionData.nutrients.fiber.toFixed(1) : 'N/A'} g</td>
+                                </tr>
+                            </table>
+                            <details style="margin-top: 15px;">
+                                <summary style="cursor: pointer; font-weight: 600; padding: 8px; background-color: #f8f9fa; border-radius: 6px;">View Ingredients</summary>
+                                <p style="margin-top: 10px; font-size: 0.9rem; padding: 10px; background-color: #f8f9fa; border-radius: 6px;">${nutritionData.ingredients}</p>
+                            </details>
+                        `;
+                        nutritionalContainer.innerHTML = nutrientsHTML;
+                    } else {
+                        nutritionalContainer.innerHTML = `
+                            <div class="alert alert-warning">
+                                <strong>Nutritional Data Unavailable:</strong> Could not find detailed nutritional information for this product in the USDA database. Try searching for a similar product or check the product packaging.
+                            </div>
+                        `;
+                    }
+                });
+
+                // Enhanced price comparison with real-time fetching
+                const priceContainer = document.getElementById('price-comparison-container');
+                if (priceContainer) {
+                    priceContainer.innerHTML = `
+                        <div class="alert alert-info" style="margin-bottom: 20px;">
+                            <strong>💰 Live Price Comparison</strong> - Fetching real prices from multiple stores...
+                        </div>
+                        <div id="price-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                            ${generateLoadingCards(6)}
+                        </div>
+                    `;
+
+                    // Fetch real prices from Google Shopping
+                    fetchEnhancedPriceComparison(name);
+                }
+
+                // Add event listeners
+                document.getElementById('reset-btn').addEventListener('click', resetUI);
+
+                document.getElementById('compare-btn').addEventListener('click', async () => {
+                    const product2Name = prompt('Enter the name of another product to compare with:\n\nExamples:\n• "Coca Cola"\n• "Pepsi"\n• "Orange Juice"\n• "Apple"\n• "Banana"');
+                    
+                    if (product2Name && product2Name.trim()) {
+                        const compareContainer = document.createElement('div');
+                        compareContainer.className = 'info-card';
+                        compareContainer.innerHTML = '<h3>Product Comparison</h3><p class="image-placeholder">Loading comparison data from USDA database...</p>';
+                        productInfoContainer.appendChild(compareContainer);
+                        compareContainer.scrollIntoView({ behavior: 'smooth' });
+
+                        const comparisonHTML = await compareProducts(name, product2Name.trim());
+                        compareContainer.innerHTML = '<h3>Product Comparison</h3>' + comparisonHTML;
+                    }
+                });
+
+                // Show the results
+                inputInterface.style.display = 'none';
+                productInfoContainer.classList.add('visible');
+                productInfoContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function resetUI() {
+                productInfoContainer.classList.remove('visible');
+                setTimeout(() => {
+                    inputInterface.style.display = 'block';
+                    productInfoContainer.innerHTML = '';
+                }, 500); 
+                searchInput.value = '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            function startLoading() {
+                inputInterface.style.display = 'none';
+                loader.style.display = 'block';
+                productInfoContainer.classList.remove('visible');
+            }
+
+            function stopLoading() { 
+                loader.style.display = 'none'; 
+            }
+            
+            function closeAutocomplete() { 
+                suggestionsContainer.innerHTML = ''; 
+                suggestionsContainer.style.display = 'none'; 
+            }
+        });
+
+        // Single consolidated image loader for front-page product cards
+        // Uses static placeholder images when proxy is unavailable (file:// mode)
+        const productPlaceholders = {
+            'maaza': 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23ff9800" width="80" height="80"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="14"%3EMaaza%3C/text%3E%3C/svg%3E',
+            'dairymilk': 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%237b1fa2" width="80" height="80"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="12"%3ECadbury%3C/text%3E%3C/svg%3E',
+            'redbull': 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23003366" width="80" height="80"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23ffd700" font-family="Arial" font-size="12"%3ERed Bull%3C/text%3E%3C/svg%3E',
+            'kurkure': 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23d32f2f" width="80" height="80"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="12"%3EKurkure%3C/text%3E%3C/svg%3E'
+        };
+
+        // Google Custom Search API for front page product cards
+        async function loadFrontPageProductImages() {
+            const cards = document.querySelectorAll('.product-card');
+
+            // Product-specific search queries
+            const productQueries = {
+                'maaza': 'maaza mango drink bottle',
+                'dairymilk': 'cadbury dairy milk chocolate',
+                'redbull': 'red bull energy drink',
+                'kurkure': 'kurkure chips snacks'
+            };
+
+            const productIcons = {
+                'maaza': '🥭',
+                'dairymilk': '🍫',
+                'redbull': '⚡',
+                'kurkure': '🌶️'
+            };
+
+            // Show emoji icons INSTANTLY (0ms - no loading!)
+            cards.forEach(card => {
+                const productKey = card.dataset.product;
+                const product = mockProductDatabase[productKey];
+                if (!product) return;
+
+                const name = product.name || productKey;
+                const icon = productIcons[productKey] || '🛒';
+
+                card.innerHTML = `
+                    <div style="width:80px; height:80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                        ${icon}
+                    </div>
+                    <p style="margin:0; font-size:0.9rem; font-weight: 500;">${name}</p>
+                `;
+            });
+
+            // Load real images from Google Custom Search API (background)
+            setTimeout(async () => {
+                for (const card of cards) {
+                    const productKey = card.dataset.product;
+                    const product = mockProductDatabase[productKey];
+                    if (!product) continue;
+
+                    const name = product.name || productKey;
+                    const query = productQueries[productKey] || productKey;
+                    const icon = productIcons[productKey] || '🛒';
+
+                    try {
+                        // Google Custom Search API call
+                        const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey}&cx=${googleSearchEngineId}&q=${encodeURIComponent(query)}&searchType=image&num=1`;
+
+                        const response = await fetch(apiUrl);
+
+                        if (response.ok) {
+                            const data = await response.json();
+
+                            if (data.items && data.items.length > 0) {
+                                const imageUrl = data.items[0].link;
+
+                                card.innerHTML = `
+                                    <img src="${imageUrl}" alt="${name}"
+                                         style="max-width:80px; height:80px; object-fit:cover; margin-bottom:10px; border-radius:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"
+                                         onerror="this.parentElement.innerHTML='<div style=\\'width:80px;height:80px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.15);\\'>${icon}</div><p style=\\'margin:0;font-size:0.9rem;font-weight:500;\\'>${name}</p>'">
+                                    <p style="margin:0; font-size:0.9rem; font-weight: 500;">${name}</p>
+                                `;
+                                console.log(`✅ Google image loaded for ${productKey}`);
+                            }
+                        }
+                    } catch (error) {
+                        console.log(`⚠️ Google API failed for ${productKey}, keeping emoji`);
+                    }
+                }
+                console.log('✅ Product card images processed!');
+            }, 500);
+        }
+
+        // Load images when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadFrontPageProductImages);
+        } else {
+            loadFrontPageProductImages();
+        }
+
+        // Auto-search from URL parameter (coming from Lens Scanner)
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+
+            if (searchQuery) {
+                // Decode and search
+                const decodedQuery = decodeURIComponent(searchQuery);
+                document.getElementById('product-search').value = decodedQuery;
+
+                // Trigger search after a brief delay to let UI load
+                setTimeout(() => {
+                    performSearch(decodedQuery);
+                }, 500);
+            }
+        });
+
+    </script>
+</body>
+</html>

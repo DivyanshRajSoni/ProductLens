@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Key Setup Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #3182ce;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            color: #3182ce;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #3182ce;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+            transition: transform 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button i {
+            margin-right: 8px;
+        }
+
+        code {
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e53e3e;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .highlight {
+            background: #ffd700;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .warning {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #3182ce;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #test-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        #test-result.show {
+            display: block;
+        }
+
+        .screenshot {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            text-align: center;
+            color: #718096;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-key"></i> Gemini API Key Setup Guide</h1>
+        <p style="color: #718096; margin-bottom: 20px;">Follow these simple steps to get your FREE Gemini API key and activate the chatbot</p>
+
+        <div class="info">
+            <strong><i class="fas fa-info-circle"></i> Good News!</strong><br>
+            Google's Gemini API is completely FREE to use with generous limits:
+            <ul style="margin-top: 10px;">
+                <li>60 requests per minute</li>
+                <li>1,500 requests per day</li>
+                <li>No credit card required!</li>
+            </ul>
+        </div>
+
+        <h2><i class="fas fa-rocket"></i> Quick Setup (3 Minutes)</h2>
+
+        <div class="step">
+            <strong><span class="step-number">1</span>Visit Google AI Studio</strong>
+            <p style="margin: 10px 0 10px 40px;">Go to the Google AI Studio website:</p>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="button">
+                <i class="fas fa-external-link-alt"></i> Open Google AI Studio
+            </a>
+            <div class="screenshot">
+                <i class="fas fa-image" style="font-size: 3rem; color: #cbd5e0;"></i>
+                <p style="margin-top: 10px;">Google AI Studio - API Key page will open</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong><span class="step-number">2</span>Sign In with Google Account</strong>
+            <p style="margin: 10px 0 10px 40px;">
+                • Click "Sign in" if you're not already logged in<br>
+                • Use your Gmail account (any Gmail will work)<br>
+                • No payment or credit card needed!
+            </p>
+        </div>
+
+        <div class="step">
+            <strong><span class="step-number">3</span>Create API Key</strong>
+            <p style="margin: 10px 0 10px 40px;">
+                Once logged in, you'll see a blue button that says:<br>
+                <strong>"Create API Key"</strong> or <strong>"Get API Key"</strong>
+            </p>
+            <ol style="margin-left: 60px; margin-top: 10px;">
+                <li>Click the <strong>"Create API Key"</strong> button</li>
+                <li>Select <strong>"Create API key in new project"</strong> (recommended)</li>
+                <li>Your API key will be generated instantly!</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <strong><span class="step-number">4</span>Copy Your API Key</strong>
+            <p style="margin: 10px 0 10px 40px;">
+                • You'll see your API key like: <code>AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</code><br>
+                • Click the <strong>"Copy"</strong> button (clipboard icon)<br>
+                • Save it somewhere safe!
+            </p>
+            <div class="warning">
+                <strong><i class="fas fa-exclamation-triangle"></i> Important:</strong>
+                Keep your API key private! Don't share it publicly.
+            </div>
+        </div>
+
+        <div class="step">
+            <strong><span class="step-number">5</span>Test Your API Key</strong>
+            <p style="margin: 10px 0 10px 40px;">Paste your API key below to verify it works:</p>
+
+            <div class="test-section">
+                <label for="api-key-input"><strong>Your Gemini API Key:</strong></label>
+                <input type="text" id="api-key-input" placeholder="Paste your API key here (e.g., AIzaSy...)" />
+                <button onclick="testAPIKey()">
+                    <i class="fas fa-vial"></i> Test API Key
+                </button>
+                <div id="test-result"></div>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong><span class="step-number">6</span>Update Chatbot File</strong>
+            <p style="margin: 10px 0 10px 40px;">Once your API key works, update it in the chatbot:</p>
+
+            <ol style="margin-left: 60px; margin-top: 10px;">
+                <li>Open <code>chatbot.html</code> in a text editor (Notepad, VS Code, etc.)</li>
+                <li>Find <strong>line 50</strong> - it looks like this:</li>
+            </ol>
+
+            <div class="code-block">
+const GEMINI_API_KEY = 'AIzaSyBXKT0qXg1m2PEH09LQfm5VhdYu-Y13bSQ';</div>
+
+            <ol start="3" style="margin-left: 60px; margin-top: 10px;">
+                <li>Replace the old key with <span class="highlight">YOUR NEW API KEY</span>:</li>
+            </ol>
+
+            <div class="code-block">
+const GEMINI_API_KEY = '<span style="color: #ffd700;">YOUR_NEW_API_KEY_HERE</span>';</div>
+
+            <ol start="4" style="margin-left: 60px; margin-top: 10px;">
+                <li>Save the file (Ctrl+S)</li>
+                <li>Refresh your browser</li>
+                <li>Try the chatbot again! 🎉</li>
+            </ol>
+        </div>
+
+        <div class="success">
+            <strong><i class="fas fa-check-circle"></i> Done!</strong><br>
+            Your chatbot is now ready to use! Try asking questions like:
+            <ul style="margin-top: 10px;">
+                <li>"Tell me about Coca Cola nutrition"</li>
+                <li>"What are healthy snack options?"</li>
+                <li>"Compare Pepsi vs Sprite"</li>
+            </ul>
+        </div>
+
+        <h2><i class="fas fa-question-circle"></i> Troubleshooting</h2>
+
+        <div class="step">
+            <strong>Problem: "API key not valid" error</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Make sure you copied the entire API key</li>
+                <li>Check for extra spaces before/after the key</li>
+                <li>Verify the key is between single quotes: <code>'YOUR_KEY'</code></li>
+                <li>Make sure you saved the file after pasting</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <strong>Problem: "Quota exceeded" error</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>You've reached the free tier limit (1,500 requests/day)</li>
+                <li>Wait 24 hours for quota to reset</li>
+                <li>Or create a new API key with a different Google account</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <strong>Problem: Can't access Google AI Studio</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Make sure you're logged into your Google account</li>
+                <li>Try using Chrome browser</li>
+                <li>Clear browser cache and cookies</li>
+                <li>Try incognito/private mode</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #667eea; margin-bottom: 10px;">Quick Links</h3>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="button">
+                <i class="fas fa-key"></i> Get API Key
+            </a>
+            <a href="chatbot.html" class="button">
+                <i class="fas fa-comments"></i> Open Chatbot
+            </a>
+            <a href="ai_studio_code (6).html" class="button">
+                <i class="fas fa-search"></i> Main App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function testAPIKey() {
+            const apiKey = document.getElementById('api-key-input').value.trim();
+            const resultDiv = document.getElementById('test-result');
+
+            if (!apiKey) {
+                resultDiv.className = 'show';
+                resultDiv.style.background = '#fed7d7';
+                resultDiv.style.color = '#742a2a';
+                resultDiv.innerHTML = '<i class="fas fa-times-circle"></i> Please enter an API key!';
+                return;
+            }
+
+            resultDiv.className = 'show';
+            resultDiv.style.background = '#bee3f8';
+            resultDiv.style.color = '#2c5282';
+            resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing API key...';
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: 'Hello, say hi!' }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.candidates) {
+                    resultDiv.style.background = '#c6f6d5';
+                    resultDiv.style.color = '#22543d';
+                    resultDiv.innerHTML = `
+                        <strong><i class="fas fa-check-circle"></i> SUCCESS! Your API key works!</strong><br><br>
+                        <strong>Next Steps:</strong><br>
+                        1. Copy this API key<br>
+                        2. Open <code>chatbot.html</code> in a text editor<br>
+                        3. Find line 50 and replace the old key with this one<br>
+                        4. Save and refresh your browser<br><br>
+                        <strong>Test Response:</strong><br>
+                        <em style="color: #2f855a;">"${data.candidates[0].content.parts[0].text}"</em>
+                    `;
+                } else {
+                    throw new Error(data.error?.message || 'Invalid API key');
+                }
+            } catch (error) {
+                resultDiv.style.background = '#fed7d7';
+                resultDiv.style.color = '#742a2a';
+                resultDiv.innerHTML = `
+                    <strong><i class="fas fa-times-circle"></i> API Key Test Failed</strong><br><br>
+                    <strong>Error:</strong> ${error.message}<br><br>
+                    <strong>Common Issues:</strong><br>
+                    • API key is invalid or expired<br>
+                    • API key not enabled for Gemini API<br>
+                    • Copy/paste error (extra spaces or missing characters)<br><br>
+                    <strong>Solution:</strong> Generate a new API key from Google AI Studio
+                `;
+            }
+        }
+
+        // Auto-focus on API key input
+        window.addEventListener('load', () => {
+            document.getElementById('api-key-input').focus();
+        });
+    </script>
+</body>
+</html>

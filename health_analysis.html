@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Analysis - ProductLens AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3182ce;
+            --secondary: #2c5aa0;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --text: #2d3748;
+            --light: #f5f7fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            font-size: 1.1rem;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .condition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .condition-btn {
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .condition-btn:hover {
+            border-color: var(--primary);
+            background: #f7fafc;
+        }
+
+        .condition-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .analyze-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .recommendation-card {
+            background: #f7fafc;
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .recommendation-card.warning {
+            border-left-color: var(--danger);
+            background: #fff5f5;
+        }
+
+        .recommendation-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .product-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-list li {
+            padding: 12px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-safe {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-caution {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .badge-avoid {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><i class="fas fa-apple-alt"></i> ProductLens AI</div>
+        <div class="nav-links">
+            <a href="product_compare.html"><i class="fas fa-balance-scale"></i> Compare</a>
+            <a href="lens_search.html"><i class="fas fa-camera"></i> Scanner</a>
+            <a href="ai_studio_code (6).html"><i class="fas fa-search"></i> Search</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-title">
+            <h1><i class="fas fa-heartbeat"></i> Personalized Health Analysis</h1>
+            <p>Get customized product recommendations based on your health conditions</p>
+        </div>
+
+        <div class="card">
+            <div class="section-title">
+                <i class="fas fa-hospital"></i> Select Your Health Conditions
+            </div>
+
+            <div class="condition-grid">
+                <div class="condition-btn" data-condition="diabetes">
+                    <i class="fas fa-tint"></i> Diabetes
+                </div>
+                <div class="condition-btn" data-condition="hypertension">
+                    <i class="fas fa-heart"></i> Hypertension
+                </div>
+                <div class="condition-btn" data-condition="obesity">
+                    <i class="fas fa-weight"></i> Obesity
+                </div>
+                <div class="condition-btn" data-condition="heart-disease">
+                    <i class="fas fa-heartbeat"></i> Heart Disease
+                </div>
+                <div class="condition-btn" data-condition="kidney">
+                    <i class="fas fa-notes-medical"></i> Kidney Issues
+                </div>
+                <div class="condition-btn" data-condition="fitness">
+                    <i class="fas fa-dumbbell"></i> Fitness Goals
+                </div>
+            </div>
+
+            <button class="analyze-btn" id="analyze-btn">
+                <i class="fas fa-microscope"></i> Get Personalized Recommendations
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: white; font-size: 1.1rem;"><i class="fas fa-robot"></i> AI is generating personalized recommendations...</p>
+        </div>
+
+        <div class="results" id="results">
+            <!-- Results will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        const conditionBtns = document.querySelectorAll('.condition-btn');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+
+        let selectedConditions = [];
+
+        // Handle condition selection
+        conditionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const condition = btn.dataset.condition;
+
+                if (btn.classList.contains('selected')) {
+                    btn.classList.remove('selected');
+                    selectedConditions = selectedConditions.filter(c => c !== condition);
+                } else {
+                    btn.classList.add('selected');
+                    selectedConditions.push(condition);
+                }
+            });
+        });
+
+        // Analyze and get recommendations
+        analyzeBtn.addEventListener('click', async () => {
+            if (selectedConditions.length === 0) {
+                alert('Please select at least one health condition!');
+                return;
+            }
+
+            loading.style.display = 'block';
+            results.style.display = 'none';
+
+            // Simulate AI analysis delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            generateRecommendations();
+
+            loading.style.display = 'none';
+            results.style.display = 'block';
+            results.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Generate personalized recommendations
+        function generateRecommendations() {
+            const recommendations = getRecommendationsForConditions(selectedConditions);
+
+            results.innerHTML = `
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-check-circle"></i> Your Personalized Recommendations
+                    </div>
+
+                    ${recommendations.map(rec => `
+                        <div class="recommendation-card ${rec.type}">
+                            <h4>${rec.title}</h4>
+                            <p>${rec.description}</p>
+                            ${rec.products ? `
+                                <ul class="product-list">
+                                    ${rec.products.map(p => `
+                                        <li>
+                                            <span>${p.name}</span>
+                                            <span class="badge badge-${p.status}">${p.label}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+
+                    <div class="recommendation-card">
+                        <h4><i class="fas fa-lightbulb"></i> General Health Tips</h4>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            <li>Always check nutrition labels before buying</li>
+                            <li>Choose products with less than 5g sugar per serving</li>
+                            <li>Avoid products with high sodium (>400mg per serving)</li>
+                            <li>Look for high fiber content (>3g per serving)</li>
+                            <li>Consult your doctor for specific dietary needs</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get recommendations based on conditions
+        function getRecommendationsForConditions(conditions) {
+            const allRecommendations = [];
+
+            if (conditions.includes('diabetes')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-tint"></i> Diabetes Management',
+                    description: 'Focus on low-sugar, high-fiber foods. Avoid sugary drinks and processed snacks.',
+                    type: '',
+                    products: [
+                        { name: 'Diet Coke (Zero Sugar)', status: 'safe', label: 'Safe' },
+                        { name: 'Plain Water', status: 'safe', label: 'Best Choice' },
+                        { name: 'Unsweetened Green Tea', status: 'safe', label: 'Safe' },
+                        { name: 'Coca Cola', status: 'avoid', label: 'Avoid' },
+                        { name: 'Maaza (High Sugar)', status: 'avoid', label: 'Avoid' }
+                    ]
+                });
+            }
+
+            if (conditions.includes('hypertension')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-heart"></i> Hypertension Control',
+                    description: 'Reduce sodium intake. Avoid salty snacks and processed foods.',
+                    type: '',
+                    products: [
+                        { name: 'Fresh Fruits', status: 'safe', label: 'Best Choice' },
+                        { name: 'Unsalted Nuts', status: 'safe', label: 'Safe' },
+                        { name: 'Low-Sodium Soup', status: 'caution', label: 'Moderate' },
+                        { name: 'Kurkure (High Sodium)', status: 'avoid', label: 'Avoid' },
+                        { name: 'Salted Chips', status: 'avoid', label: 'Avoid' }
+                    ]
+                });
+            }
+
+            if (conditions.includes('obesity')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-weight"></i> Weight Management',
+                    description: 'Choose low-calorie, nutrient-dense foods. Avoid high-fat and high-sugar products.',
+                    type: '',
+                    products: [
+                        { name: 'Vegetables & Salads', status: 'safe', label: 'Best Choice' },
+                        { name: 'Lean Protein', status: 'safe', label: 'Safe' },
+                        { name: 'Whole Grain Products', status: 'caution', label: 'Moderate' },
+                        { name: 'Chocolate (High Calories)', status: 'avoid', label: 'Avoid' },
+                        { name: 'Fried Snacks', status: 'avoid', label: 'Avoid' }
+                    ]
+                });
+            }
+
+            if (conditions.includes('heart-disease')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-heartbeat"></i> Heart Health',
+                    description: 'Low sodium, low saturated fat, high omega-3. Avoid trans fats and cholesterol.',
+                    type: '',
+                    products: [
+                        { name: 'Oats & Whole Grains', status: 'safe', label: 'Best Choice' },
+                        { name: 'Nuts & Seeds', status: 'safe', label: 'Safe' },
+                        { name: 'Fish (Omega-3)', status: 'safe', label: 'Excellent' },
+                        { name: 'Butter & Ghee', status: 'avoid', label: 'Avoid' },
+                        { name: 'Fast Food', status: 'avoid', label: 'Avoid' }
+                    ]
+                });
+            }
+
+            if (conditions.includes('kidney')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-notes-medical"></i> Kidney Health',
+                    description: 'Low sodium, low potassium, moderate protein. Limit phosphorus intake.',
+                    type: '',
+                    products: [
+                        { name: 'Rice & White Bread', status: 'safe', label: 'Safe' },
+                        { name: 'Apples & Grapes', status: 'safe', label: 'Safe' },
+                        { name: 'Cucumber', status: 'safe', label: 'Best Choice' },
+                        { name: 'Bananas (High K)', status: 'caution', label: 'Limit' },
+                        { name: 'Dairy Products', status: 'caution', label: 'Limit' }
+                    ]
+                });
+            }
+
+            if (conditions.includes('fitness')) {
+                allRecommendations.push({
+                    title: '<i class="fas fa-dumbbell"></i> Fitness & Muscle Building',
+                    description: 'High protein, complex carbs, healthy fats. Stay hydrated.',
+                    type: '',
+                    products: [
+                        { name: 'Chicken Breast', status: 'safe', label: 'Excellent' },
+                        { name: 'Eggs', status: 'safe', label: 'Best Choice' },
+                        { name: 'Greek Yogurt', status: 'safe', label: 'Great' },
+                        { name: 'Sweet Potato', status: 'safe', label: 'Good Carbs' },
+                        { name: 'Protein Shakes', status: 'caution', label: 'Moderate' }
+                    ]
+                });
+            }
+
+            // Warning if multiple serious conditions
+            if (conditions.includes('diabetes') && conditions.includes('hypertension')) {
+                allRecommendations.unshift({
+                    title: '<i class="fas fa-exclamation-triangle"></i> Multiple Conditions Detected',
+                    description: 'You have selected multiple serious health conditions. It is highly recommended to consult with a healthcare professional or registered dietitian for a comprehensive diet plan tailored to your specific needs.',
+                    type: 'warning'
+                });
+            }
+
+            return allRecommendations;
+        }
+    </script>
+</body>
+</html>
