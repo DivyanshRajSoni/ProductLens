@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/ai_studio_code (6).html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     }
