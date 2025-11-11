@@ -232,15 +232,194 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Tablet */
+        @media (max-width: 968px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo img {
+                height: 32px !important;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo img {
+                height: 30px !important;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 15px 10px;
+            }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            select {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .analyze-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+
+            .results {
+                padding: 20px;
+            }
+
+            .recommendation-card {
+                padding: 15px;
+            }
+
+            .recommendation-card h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .logo img {
+                height: 25px !important;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+                padding: 5px 8px;
+            }
+
+            .container {
+                padding: 10px;
+                margin: 10px 5px;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 0.9rem;
+            }
+
+            .form-card {
+                padding: 15px;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            select {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .analyze-btn {
+                padding: 12px 18px;
+                font-size: 0.95rem;
+            }
+
+            .results {
+                padding: 15px;
+            }
+
+            .recommendation-card {
+                padding: 12px;
+            }
+
+            .recommendation-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .recommendation-card p,
+            .recommendation-card ul li {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo"><i class="fas fa-apple-alt"></i> ProductLens AI</div>
+        <div class="logo">
+            <img src="productLens.png" alt="ProductLens" style="height: 40px; vertical-align: middle; margin-right: 8px;">
+            ProductLens
+        </div>
         <div class="nav-links">
             <a href="product_compare.html"><i class="fas fa-balance-scale"></i> Compare</a>
             <a href="lens_search.html"><i class="fas fa-camera"></i> Scanner</a>
-            <a href="ai_studio_code (6).html"><i class="fas fa-search"></i> Search</a>
+            <a href="index.html"><i class="fas fa-search"></i> Search</a>
         </div>
     </div>
 
@@ -299,7 +478,7 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="color: white; font-size: 1.1rem;"><i class="fas fa-robot"></i> AI is generating personalized recommendations...</p>
+            <p style="color: rgb(24, 11, 11); font-size: 1.1rem;"><i class="fas fa-robot"></i> AI is generating personalized recommendations...</p>
         </div>
 
         <div class="results" id="results">
@@ -317,6 +496,9 @@
 
         let selectedConditions = [];
 
+        // Gemini API key for AI-powered suggestions
+        const geminiApiKey = 'AIzaSyC3i5qg9sTBoJUGjsAEGRuT8Es1Ft34J9E';
+        
         // All available health conditions with keywords
         const allConditions = [
             { id: 'diabetes', name: 'Diabetes', icon: 'fa-tint', keywords: ['sugar', 'glucose', 'insulin', 'blood sugar', 'diabetic'] },
@@ -327,14 +509,24 @@
             { id: 'fitness', name: 'Fitness Goals', icon: 'fa-dumbbell', keywords: ['fitness', 'workout', 'exercise', 'muscle', 'gym', 'athlete'] },
             { id: 'celiac', name: 'Celiac Disease', icon: 'fa-bread-slice', keywords: ['gluten', 'celiac', 'wheat allergy', 'gluten free'] },
             { id: 'lactose', name: 'Lactose Intolerance', icon: 'fa-ice-cream', keywords: ['lactose', 'dairy', 'milk allergy', 'dairy free'] },
-            { id: 'anemia', name: 'Anemia', icon: 'fa-prescription-bottle', keywords: ['anemia', 'iron', 'hemoglobin', 'blood deficiency'] },
+            { id: 'anemia', name: 'Anemia', icon: 'fa-prescription-bottle', keywords: ['anemia', 'iron', 'hemoglobin', 'blood deficiency', 'weakness', 'fatigue'] },
             { id: 'thyroid', name: 'Thyroid Issues', icon: 'fa-capsules', keywords: ['thyroid', 'hypothyroid', 'hyperthyroid', 'iodine'] },
             { id: 'pcos', name: 'PCOS', icon: 'fa-venus', keywords: ['pcos', 'pcod', 'hormonal', 'ovary'] },
-            { id: 'gout', name: 'Gout', icon: 'fa-bone', keywords: ['gout', 'uric acid', 'joint pain', 'arthritis'] }
+            { id: 'gout', name: 'Gout', icon: 'fa-bone', keywords: ['gout', 'uric acid', 'joint pain', 'arthritis'] },
+            { id: 'ibs', name: 'IBS', icon: 'fa-stomach', keywords: ['ibs', 'irritable bowel', 'digestive', 'stomach'] },
+            { id: 'cholesterol', name: 'High Cholesterol', icon: 'fa-chart-line', keywords: ['cholesterol', 'ldl', 'hdl', 'lipid'] },
+            { id: 'osteoporosis', name: 'Osteoporosis', icon: 'fa-bone', keywords: ['osteoporosis', 'bone density', 'calcium', 'bone health'] },
+            { id: 'asthma', name: 'Asthma', icon: 'fa-lungs', keywords: ['asthma', 'breathing', 'respiratory', 'inhaler'] },
+            { id: 'immunity', name: 'Weak Immunity', icon: 'fa-shield-virus', keywords: ['immunity', 'immune', 'infection', 'fever', 'cold', 'flu', 'sick'] },
+            { id: 'migraine', name: 'Migraine', icon: 'fa-head-side-virus', keywords: ['migraine', 'headache', 'head pain'] },
+            { id: 'arthritis', name: 'Arthritis', icon: 'fa-bone', keywords: ['arthritis', 'joint', 'inflammation', 'rheumatoid'] },
+            { id: 'liver', name: 'Liver Issues', icon: 'fa-hospital', keywords: ['liver', 'hepatic', 'fatty liver', 'cirrhosis'] }
         ];
 
-        // Search functionality
-        conditionSearch.addEventListener('input', (e) => {
+        let searchTimeout;
+        
+        // AI-powered search functionality
+        conditionSearch.addEventListener('input', async (e) => {
             const query = e.target.value.toLowerCase().trim();
             
             if (query.length === 0) {
@@ -342,46 +534,83 @@
                 return;
             }
 
-            // Filter conditions based on search query
-            const matches = allConditions.filter(condition => {
-                return condition.name.toLowerCase().includes(query) || 
-                       condition.keywords.some(keyword => keyword.includes(query));
-            });
+            // Show loading state
+            searchSuggestions.innerHTML = '<div style="padding: 10px; color: #667eea;"><i class="fas fa-spinner fa-spin"></i> AI is finding related conditions...</div>';
+            searchSuggestions.style.display = 'block';
 
-            if (matches.length > 0) {
-                searchSuggestions.innerHTML = matches.map(condition => `
-                    <div class="suggestion-item" data-condition="${condition.id}" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e2e8f0; transition: all 0.2s; display: flex; align-items: center; gap: 10px;">
-                        <i class="fas ${condition.icon}" style="color: var(--primary); font-size: 1.1rem;"></i>
-                        <span style="flex: 1;">${condition.name}</span>
-                        ${selectedConditions.includes(condition.id) ? '<i class="fas fa-check-circle" style="color: var(--success);"></i>' : ''}
-                    </div>
-                `).join('');
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+
+            // Debounce AI call (wait 500ms after user stops typing)
+            searchTimeout = setTimeout(async () => {
+                // First, show local matches
+                const localMatches = allConditions.filter(condition => {
+                    return condition.name.toLowerCase().includes(query) || 
+                           condition.keywords.some(keyword => keyword.includes(query));
+                });
+
+                // Get AI suggestions
+                let aiSuggestions = [];
+                try {
+                    aiSuggestions = await getAIDiseasesSuggestions(query);
+                    console.log('AI suggestions for', query, ':', aiSuggestions);
+                } catch (error) {
+                    console.error('AI error:', error);
+                }
+                
+                // ALWAYS include the user's search query as the first option
+                const userQuery = query.charAt(0).toUpperCase() + query.slice(1);
+                const allSuggestions = [userQuery, ...new Set([...localMatches.map(c => c.name), ...aiSuggestions])];
+                
+                // Remove duplicates (case-insensitive)
+                const uniqueSuggestions = [];
+                const seen = new Set();
+                for (const suggestion of allSuggestions) {
+                    const lower = suggestion.toLowerCase();
+                    if (!seen.has(lower)) {
+                        seen.add(lower);
+                        uniqueSuggestions.push(suggestion);
+                    }
+                }
+
+                // Display all suggestions
+                searchSuggestions.innerHTML = uniqueSuggestions.map((suggestionName, index) => {
+                    // Find matching condition from allConditions
+                    const condition = allConditions.find(c => c.name.toLowerCase() === suggestionName.toLowerCase()) || 
+                                    { id: suggestionName.toLowerCase().replace(/\s+/g, '-'), name: suggestionName, icon: 'fa-heartbeat' };
+                    
+                    const isUserSearch = index === 0 && suggestionName.toLowerCase() === query.toLowerCase();
+                    
+                    return `
+                        <div class="suggestion-item" data-condition="${condition.id}" data-name="${condition.name}" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e2e8f0; transition: all 0.2s; display: flex; align-items: center; gap: 10px; ${isUserSearch ? 'background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); border-left: 3px solid var(--primary);' : ''}">
+                            <i class="fas ${condition.icon}" style="color: var(--primary); font-size: 1.1rem;"></i>
+                            <span style="flex: 1;">${condition.name}</span>
+                            ${isUserSearch ? '<span style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">✓ YOUR SEARCH</span>' : ''}
+                            ${selectedConditions.includes(condition.id) ? '<i class="fas fa-check-circle" style="color: var(--success);"></i>' : ''}
+                        </div>
+                    `;
+                }).join('');
                 searchSuggestions.style.display = 'block';
 
                 // Add hover effect
                 document.querySelectorAll('.suggestion-item').forEach(item => {
                     item.addEventListener('mouseenter', () => {
-                        item.style.background = '#f7fafc';
+                        const isUserSearch = item.querySelector('span:last-child')?.textContent.includes('YOUR SEARCH');
+                        item.style.background = isUserSearch ? 'linear-gradient(135deg, #667eea33 0%, #764ba233 100%)' : '#f7fafc';
                     });
                     item.addEventListener('mouseleave', () => {
-                        item.style.background = 'white';
+                        const isUserSearch = item.querySelector('span:last-child')?.textContent.includes('YOUR SEARCH');
+                        item.style.background = isUserSearch ? 'linear-gradient(135deg, #667eea22 0%, #764ba222 100%)' : 'white';
                     });
                     item.addEventListener('click', () => {
-                        selectConditionFromSearch(item.dataset.condition);
+                        selectConditionFromSearch(item.dataset.condition, item.dataset.name);
                     });
                 });
-            } else {
-                searchSuggestions.innerHTML = `
-                    <div style="padding: 15px; text-align: center; color: #a0aec0;">
-                        <i class="fas fa-search"></i> No conditions found for "${query}"
-                    </div>
-                `;
-                searchSuggestions.style.display = 'block';
-            }
+            }, 500);
         });
 
         // Select condition from search
-        function selectConditionFromSearch(conditionId) {
+        function selectConditionFromSearch(conditionId, conditionName = null) {
             const btn = document.querySelector(`.condition-btn[data-condition="${conditionId}"]`);
             
             if (btn) {
@@ -392,19 +621,39 @@
                 // If condition not in visible buttons, add it manually
                 if (!selectedConditions.includes(conditionId)) {
                     selectedConditions.push(conditionId);
-                    const condition = allConditions.find(c => c.id === conditionId);
                     
-                    // Create a temporary selected indicator
+                    // Find or create condition object
+                    let condition = allConditions.find(c => c.id === conditionId);
+                    if (!condition && conditionName) {
+                        // Create dynamic condition from user input
+                        condition = {
+                            id: conditionId,
+                            name: conditionName,
+                            icon: 'fa-heartbeat'
+                        };
+                    }
+                    
+                    // Create a selected indicator badge
                     const indicator = document.createElement('div');
-                    indicator.style.cssText = 'display: inline-block; padding: 8px 15px; margin: 5px; background: var(--success); color: white; border-radius: 20px; font-size: 0.9rem;';
-                    indicator.innerHTML = `<i class="fas ${condition.icon}"></i> ${condition.name} <i class="fas fa-times" style="margin-left: 8px; cursor: pointer;"></i>`;
+                    indicator.id = `selected-${conditionId}`;
+                    indicator.style.cssText = 'display: inline-block; padding: 10px 16px; margin: 5px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 25px; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); animation: slideIn 0.3s ease;';
+                    indicator.innerHTML = `<i class="fas ${condition.icon}"></i> ${condition.name} <i class="fas fa-times-circle" style="margin-left: 8px; cursor: pointer; opacity: 0.8;"></i>`;
                     
-                    indicator.querySelector('.fa-times').addEventListener('click', () => {
+                    indicator.querySelector('.fa-times-circle').addEventListener('click', () => {
                         selectedConditions = selectedConditions.filter(c => c !== conditionId);
                         indicator.remove();
                     });
                     
-                    document.querySelector('.condition-grid').insertAdjacentElement('afterend', indicator);
+                    // Add after condition grid
+                    const grid = document.querySelector('.condition-grid');
+                    if (!document.getElementById('selected-conditions-container')) {
+                        const container = document.createElement('div');
+                        container.id = 'selected-conditions-container';
+                        container.style.cssText = 'margin: 20px 0; padding: 15px; background: #f7fafc; border-radius: 12px; min-height: 50px;';
+                        container.innerHTML = '<p style="color: #667eea; font-weight: 600; margin-bottom: 10px;"><i class="fas fa-check-circle"></i> Selected Conditions:</p>';
+                        grid.insertAdjacentElement('afterend', container);
+                    }
+                    document.getElementById('selected-conditions-container').appendChild(indicator);
                 }
             }
             
@@ -418,6 +667,47 @@
                 searchSuggestions.style.display = 'none';
             }
         });
+
+        // AI-powered disease suggestion function
+        async function getAIDiseasesSuggestions(symptomQuery) {
+            try {
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+                
+                const response = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Based on the symptom or condition keyword "${symptomQuery}", list 5-8 related health conditions or diseases that people commonly search for. Return ONLY the condition names as a comma-separated list, no explanations. For example, if input is "sugar", output should be: "Diabetes, Prediabetes, Hypoglycemia, Metabolic Syndrome". Be concise and medically accurate.`
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 100
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Gemini API error:', response.status);
+                    return [];
+                }
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                
+                if (!text) return [];
+
+                // Parse the comma-separated list
+                const suggestions = text.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                return suggestions.slice(0, 8); // Limit to 8 suggestions
+                
+            } catch (error) {
+                console.error('AI suggestion error:', error);
+                return [];
+            }
+        }
 
         // Focus effect for search
         conditionSearch.addEventListener('focus', () => {
@@ -455,19 +745,273 @@
             loading.style.display = 'block';
             results.style.display = 'none';
 
-            // Simulate AI analysis delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            generateRecommendations();
+            // Call AI for personalized recommendations
+            await generateRecommendations();
 
             loading.style.display = 'none';
             results.style.display = 'block';
             results.scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Generate personalized recommendations
-        function generateRecommendations() {
+        // Generate AI-powered personalized recommendations using Gemini 2.0 Flash
+        async function generateRecommendations() {
+            try {
+                // Get condition names
+                const conditionNames = selectedConditions.map(id => {
+                    const condition = allConditions.find(c => c.id === id);
+                    return condition ? condition.name : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }).join(', ');
+
+                console.log('🤖 Requesting AI recommendations for:', conditionNames);
+                console.log('🔑 Using API key:', geminiApiKey.substring(0, 20) + '...');
+
+                // Try multiple models in case of overload
+                const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+                let lastError = null;
+
+                for (const model of models) {
+                    try {
+                        console.log(`🔄 Trying model: ${model}`);
+                        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
+                        console.log('🌐 API URL:', geminiUrl.replace(geminiApiKey, 'KEY_HIDDEN'));
+                
+                const response = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `You are a nutrition and health expert. A person has the following health conditions: ${conditionNames}.
+
+IMPORTANT: Return ONLY valid JSON with no additional text, markdown, or code blocks.
+
+{
+  "summary": "Brief overview of dietary needs (2-3 sentences)",
+  "recommendations": [
+    {
+      "category": "Category name (e.g., Beverages, Snacks, Grains, Dairy)",
+      "icon": "fas fa-coffee",
+      "advice": "Specific advice for this category",
+      "safeProducts": ["Product 1", "Product 2", "Product 3"],
+      "avoidProducts": ["Product 1", "Product 2", "Product 3"],
+      "keyNutrients": ["Nutrient 1 to watch", "Nutrient 2 to watch"]
+    }
+  ],
+  "generalTips": ["Tip 1", "Tip 2", "Tip 3", "Tip 4", "Tip 5"]
+}
+
+Provide 4-6 food categories with specific product examples commonly available in India. Use Font Awesome icons like: fas fa-coffee, fas fa-apple-alt, fas fa-bread-slice, fas fa-cheese, fas fa-carrot, fas fa-cookie. Be medically accurate and practical.
+
+Return ONLY the JSON object, nothing else.`
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 2500
+                        }
+                    })
+                });
+
+                console.log('📡 API Response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ API Error with ${model}:`, errorText);
+                    
+                    // If model is overloaded, try next model
+                    if (response.status === 503 || errorText.includes('overloaded') || errorText.includes('503')) {
+                        console.log(`⏭️ Model ${model} is overloaded, trying next...`);
+                        lastError = new Error(`Model overloaded: ${model}`);
+                        continue;
+                    }
+                    
+                    throw new Error('Gemini API error: ' + response.status);
+                }
+
+                const data = await response.json();
+                console.log('📦 Raw API response:', JSON.stringify(data, null, 2));
+                
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                
+                if (!text) {
+                    console.error('❌ No text in response');
+                    console.error('Response structure:', data);
+                    lastError = new Error('No response from AI');
+                    continue;
+                }
+
+                console.log('📝 AI Text response:', text);
+
+                // Parse JSON from response (remove markdown code blocks if present)
+                let jsonText = text;
+                if (text.includes('```json')) {
+                    jsonText = text.match(/```json\n?([\s\S]*?)\n?```/)?.[1] || text;
+                } else if (text.includes('```')) {
+                    jsonText = text.match(/```\n?([\s\S]*?)\n?```/)?.[1] || text;
+                }
+
+                // Try to parse JSON
+                let aiRecommendations;
+                try {
+                    aiRecommendations = JSON.parse(jsonText.trim());
+                    console.log('✅ Parsed recommendations:', aiRecommendations);
+                } catch (parseError) {
+                    console.error('❌ JSON Parse Error:', parseError);
+                    console.error('Raw text:', jsonText);
+                    
+                    // Try to find JSON object in the text
+                    const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        aiRecommendations = JSON.parse(jsonMatch[0]);
+                        console.log('✅ Parsed recommendations (second attempt):', aiRecommendations);
+                    } else {
+                        lastError = new Error('Could not extract valid JSON from response');
+                        continue;
+                    }
+                }
+
+                // Validate the structure
+                if (!aiRecommendations.summary || !aiRecommendations.recommendations || !aiRecommendations.generalTips) {
+                    console.error('❌ Invalid response structure:', aiRecommendations);
+                    lastError = new Error('AI response missing required fields');
+                    continue;
+                }
+                
+                // Success! Display AI recommendations
+                console.log(`✅ Successfully got recommendations from ${model}`);
+                displayAIRecommendations(aiRecommendations, conditionNames);
+                return; // Exit function on success
+
+                    } catch (modelError) {
+                        console.error(`❌ Error with model ${model}:`, modelError);
+                        lastError = modelError;
+                        continue;
+                    }
+                }
+
+                // If all models failed, show fallback
+                console.error('💥 All models failed:', lastError);
+                displayFallbackRecommendations();
+
+            } catch (error) {
+                console.error('💥 AI recommendation error:', error);
+                console.error('Stack:', error.stack);
+                // Fallback to basic recommendations
+                displayFallbackRecommendations();
+            }
+        }
+
+        // Display AI-powered recommendations
+        function displayAIRecommendations(data, conditionNames) {
+            results.innerHTML = `
+                <div class="card">
+                    <div class="section-title" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <i class="fas fa-robot" style="font-size: 2rem;"></i>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.3rem;">AI-Powered Personalized Analysis</h3>
+                                <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 0.9rem;">Based on: ${conditionNames}</p>
+                            </div>
+                        </div>
+                        <p style="margin: 10px 0 0 0; font-size: 1rem; opacity: 0.95;">${data.summary}</p>
+                    </div>
+
+                    ${data.recommendations.map(rec => `
+                        <div class="recommendation-card" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 20%); border-left: 4px solid var(--primary); margin-bottom: 20px;">
+                            <h4 style="color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <i class="${rec.icon}" style="font-size: 1.3rem;"></i>
+                                ${rec.category}
+                            </h4>
+                            <p style="color: #2d3748; margin-bottom: 15px; font-weight: 500;">${rec.advice}</p>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div style="background: #d4edda; padding: 15px; border-radius: 8px;">
+                                    <h5 style="color: #155724; margin: 0 0 10px 0;"><i class="fas fa-check-circle"></i> Safe Options</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #155724;">
+                                        ${rec.safeProducts.map(p => `<li style="margin: 5px 0;">${p}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div style="background: #f8d7da; padding: 15px; border-radius: 8px;">
+                                    <h5 style="color: #721c24; margin: 0 0 10px 0;"><i class="fas fa-times-circle"></i> Avoid</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #721c24;">
+                                        ${rec.avoidProducts.map(p => `<li style="margin: 5px 0;">${p}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px; padding: 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
+                                <strong style="color: var(--primary);"><i class="fas fa-exclamation-triangle"></i> Watch Out For:</strong>
+                                <span style="color: #4a5568; margin-left: 8px;">${rec.keyNutrients.join(', ')}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <div class="recommendation-card" style="background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border-left: 4px solid #fdcb6e;">
+                        <h4 style="color: #2d3748;"><i class="fas fa-lightbulb"></i> AI General Health Tips</h4>
+                        <ul style="padding-left: 20px; margin-top: 10px; color: #2d3748;">
+                            ${data.generalTips.map(tip => `<li style="margin: 8px 0;">${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #e6f3ff; border-radius: 8px; border: 1px dashed #667eea;">
+                        <p style="color: #667eea; margin: 0; font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> This is AI-generated advice. Always consult with healthcare professionals for personalized medical guidance.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fallback recommendations if AI fails
+        function displayFallbackRecommendations() {
+            const conditionNames = selectedConditions.map(id => {
+                const condition = allConditions.find(c => c.id === id);
+                return condition ? condition.name : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            }).join(', ');
+
             const recommendations = getRecommendationsForConditions(selectedConditions);
+
+            // If no specific recommendations, show generic advice
+            if (recommendations.length === 0) {
+                results.innerHTML = `
+                    <div class="card">
+                        <div class="section-title" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                            <h3 style="margin: 0;"><i class="fas fa-exclamation-triangle"></i> AI Recommendations Unavailable</h3>
+                            <p style="margin: 10px 0 0 0; opacity: 0.9;">Conditions selected: ${conditionNames}</p>
+                        </div>
+
+                        <div class="recommendation-card" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-info-circle"></i> General Dietary Guidance</h4>
+                            <p style="color: #856404;">For <strong>${conditionNames}</strong>, we recommend consulting with a healthcare professional for personalized advice. In the meantime, focus on:</p>
+                            <ul style="padding-left: 20px; margin-top: 10px; color: #856404;">
+                                <li>Eating a balanced diet with fresh fruits and vegetables</li>
+                                <li>Staying hydrated with plenty of water</li>
+                                <li>Avoiding processed and packaged foods</li>
+                                <li>Reading nutrition labels carefully</li>
+                                <li>Getting adequate rest and exercise</li>
+                            </ul>
+                        </div>
+
+                        <div class="recommendation-card" style="background: #d1ecf1; border-left: 4px solid #17a2b8;">
+                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Product Selection Tips</h4>
+                            <ul style="padding-left: 20px; margin-top: 10px; color: #0c5460;">
+                                <li>Choose products with less than 5g sugar per serving</li>
+                                <li>Avoid products with high sodium (>400mg per serving)</li>
+                                <li>Look for high fiber content (>3g per serving)</li>
+                                <li>Check for artificial additives and preservatives</li>
+                                <li>Prefer natural and whole food options</li>
+                            </ul>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8d7da; border-radius: 8px;">
+                            <p style="color: #721c24; margin: 0;">
+                                <i class="fas fa-robot"></i> <strong>Note:</strong> AI recommendations are temporarily unavailable. Please try again or consult with a healthcare professional.
+                            </p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
 
             results.innerHTML = `
                 <div class="card">

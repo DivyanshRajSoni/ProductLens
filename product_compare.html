@@ -18,10 +18,10 @@
             --success: #48bb78;
             --warning: #ed8936;
             --danger: #f56565;
-            --text: #e2e8f0;
-            --light: #1a202c;
-            --card-bg: #2d3748;
-            --border: #4a5568;
+            --text: #2d3748;
+            --light: #f5f7fa;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
         }
 
         body {
@@ -35,7 +35,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             backdrop-filter: blur(10px);
             padding: 15px 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -99,7 +99,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
         }
 
@@ -174,7 +174,7 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .compare-btn {
@@ -188,7 +188,7 @@
             font-weight: 600;
             display: block;
             margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: transform 0.3s;
         }
 
@@ -201,7 +201,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             margin-top: 40px;
             border: 1px solid var(--border);
         }
@@ -327,7 +327,7 @@
         }
 
         .spinner {
-            border: 4px solid rgba(0,0,0,0.1);
+            border: 4px solid rgba(0,0,0,0.05);
             border-left-color: var(--primary);
             border-radius: 50%;
             width: 50px;
@@ -340,6 +340,7 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Tablet */
         @media (max-width: 968px) {
             .comparison-container {
                 grid-template-columns: 1fr;
@@ -348,16 +349,173 @@
 
             .vs-circle {
                 transform: rotate(90deg);
+                margin: 20px auto;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo img {
+                height: 30px !important;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 20px 10px;
+            }
+
+            .page-title h1 {
+                font-size: 1.75rem;
+            }
+
+            .page-title p {
+                font-size: 1rem;
+            }
+
+            .comparison-container {
+                gap: 15px;
+            }
+
+            .product-input-card {
+                padding: 20px;
+            }
+
+            .product-label {
+                font-size: 1.1rem;
+            }
+
+            input[type="text"] {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+
+            .upload-btn, .compare-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .results-card {
+                padding: 20px;
+            }
+
+            .product-name {
+                font-size: 1.3rem;
+            }
+
+            .nutrition-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .nutrition-item {
+                padding: 12px;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .logo img {
+                height: 25px !important;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+                padding: 5px 8px;
+            }
+
+            .page-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-title p {
+                font-size: 0.9rem;
+            }
+
+            .product-input-card {
+                padding: 15px;
+            }
+
+            .product-label {
+                font-size: 1rem;
+            }
+
+            input[type="text"] {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .upload-btn, .compare-btn {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .results-card {
+                padding: 15px;
+            }
+
+            .product-name {
+                font-size: 1.2rem;
+            }
+
+            .nutrition-item h4 {
+                font-size: 0.85rem;
+            }
+
+            .nutrition-item .value {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo"><i class="fas fa-apple-alt"></i> ProductLens AI</div>
+        <div class="logo">
+            <img src="productLens.png" alt="ProductLens" style="height: 40px; vertical-align: middle; margin-right: 8px;"> ProductLens
+        </div>
         <div class="nav-links">
             <a href="lens_search.html"><i class="fas fa-camera"></i> Scanner</a>
-            <a href="ai_studio_code (6).html"><i class="fas fa-search"></i> Search</a>
+            <a href="index.html"><i class="fas fa-search"></i> Search</a>
             <a href="health_analysis.html"><i class="fas fa-heartbeat"></i> Health</a>
         </div>
     </div>
@@ -460,27 +618,79 @@
             }
         });
 
-        // Recognize product using Gemini AI
+        // Automatic product recognition using Gemini Vision API
         async function recognizeProduct(imageData, productNumber) {
+            const geminiApiKey = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s';
+            const geminiVisionUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
             try {
-                const response = await fetch('http://localhost:3000/api/gemini/recognize', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: imageData })
-                });
+                // Show loading state
+                console.log(`🔍 Starting recognition for Product ${productNumber}...`);
+                if (productNumber === 1) {
+                    product1Name.value = '🔍 Scanning...';
+                } else {
+                    product2Name.value = '🔍 Scanning...';
+                }
+
+                const base64Image = imageData.split(',')[1];
+                console.log(`📦 Image size: ${base64Image.length} characters`);
+
+                console.log('🌐 Calling Gemini API...');
+                const response = await Promise.race([
+                    fetch(`${geminiVisionUrl}?key=${geminiApiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    {
+                                        text: "Identify the product in this image. Return ONLY the product name (brand + product type), nothing else. For example: 'Coca Cola', 'Lays Chips', 'Cadbury Dairy Milk', 'Maaza Mango Drink', etc. If you cannot identify it, return 'Unknown Product'."
+                                    },
+                                    {
+                                        inline_data: {
+                                            mime_type: "image/jpeg",
+                                            data: base64Image
+                                        }
+                                    }
+                                ]
+                            }]
+                        })
+                    }),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout after 30 seconds')), 30000))
+                ]);
+
+                console.log('📡 Response status:', response.status);
 
                 if (response.ok) {
-                    const productInfo = await response.json();
-                    if (productNumber === 1) {
-                        product1Name.value = productInfo.searchQuery || productInfo.productName;
+                    const data = await response.json();
+                    console.log('📥 API Response:', data);
+                    const productName = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+                    if (productName && productName !== 'Unknown Product') {
+                        if (productNumber === 1) {
+                            product1Name.value = productName;
+                        } else {
+                            product2Name.value = productName;
+                        }
+                        console.log(`✅ Product ${productNumber} recognized: ${productName}`);
+                        alert(`✅ Product recognized: ${productName}`);
                     } else {
-                        product2Name.value = productInfo.searchQuery || productInfo.productName;
+                        throw new Error('Could not identify product');
                     }
-                    alert(`✓ Product ${productNumber} recognized: ${productInfo.productName}`);
+                } else {
+                    const errorData = await response.json();
+                    console.error('❌ API Error Response:', errorData);
+                    throw new Error(`API Error: ${errorData.error?.message || response.statusText}`);
                 }
             } catch (error) {
-                console.error('Recognition error:', error);
-                alert('Failed to recognize product. Please enter name manually.');
+                console.error('❌ Recognition error:', error);
+                // Clear the loading state and show error
+                if (productNumber === 1) {
+                    product1Name.value = '';
+                } else {
+                    product2Name.value = '';
+                }
+                alert(`❌ Failed to recognize Product ${productNumber}\n\nError: ${error.message}\n\nYou can type the product name manually in the text field above.`);
             }
         }
 

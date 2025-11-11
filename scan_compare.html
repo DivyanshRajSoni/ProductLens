@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan to Compare - ProductLens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3182ce;
+            --secondary: #e53e3e;
+            --text: #2d3748;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --success: #48bb78;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .header {
+            background: var(--white);
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-banner h2 {
+            margin-bottom: 10px;
+        }
+
+        .original-product {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+
+        .camera-container {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: #f8f9fa;
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+            display: none;
+        }
+
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        #captured-image {
+            width: 100%;
+            height: auto;
+            display: none;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c5aa0;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #c53030;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .comparison-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .comparison-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .winner-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .winner-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .separator {
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Tablet */
+        @media (max-width: 968px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header h1 img {
+                height: 30px !important;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header h1 img {
+                height: 28px !important;
+            }
+
+            .header h1 span {
+                font-size: 0.7em !important;
+            }
+
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 10px;
+                margin: 15px auto;
+            }
+
+            .info-banner {
+                padding: 15px;
+            }
+
+            .info-banner h2 {
+                font-size: 1.3rem;
+            }
+
+            .original-product {
+                font-size: 1.1rem;
+            }
+
+            .camera-container {
+                padding: 20px;
+            }
+
+            .upload-area {
+                padding: 30px 15px;
+            }
+
+            .upload-area h3 {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            #camera-feed, #captured-image {
+                max-height: 300px;
+            }
+
+            .result-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .comparison-cards {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .nutrition-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header h1 img {
+                height: 25px !important;
+            }
+
+            .header h1 span {
+                display: block;
+                margin-left: 0 !important;
+                margin-top: 5px;
+            }
+
+            .back-btn {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 8px;
+            }
+
+            .info-banner {
+                padding: 12px;
+            }
+
+            .info-banner h2 {
+                font-size: 1.1rem;
+            }
+
+            .original-product {
+                font-size: 1rem;
+            }
+
+            .camera-container {
+                padding: 15px;
+            }
+
+            .upload-area {
+                padding: 25px 12px;
+            }
+
+            .upload-area i {
+                font-size: 2.5rem;
+            }
+
+            .upload-area h3 {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .result-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .product-card {
+                padding: 15px;
+            }
+
+            .product-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .nutrition-item h4 {
+                font-size: 0.85rem;
+            }
+
+            .nutrition-item .value {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <img src="productLens.png" alt="ProductLens" style="height: 35px; vertical-align: middle; margin-right: 8px;">
+            ProductLens
+            <span style="font-size: 0.6em; font-weight: 400; margin-left: 10px;">- Scan to Compare</span>
+        </h1>
+        <a href="javascript:history.back()" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="info-banner">
+            <h2>📊 Compare Products</h2>
+            <p>Original Product:</p>
+            <p class="original-product" id="original-product-name">Loading...</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Now scan or upload the product you want to compare with</p>
+        </div>
+
+        <div class="camera-container">
+            <div class="upload-area" id="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Upload Product Image</h3>
+                <p style="color: #718096; margin-top: 10px;">Click to browse or drag & drop</p>
+                <p style="color: #718096; font-size: 0.9rem; margin-top: 5px;">Supports: JPG, PNG, WebP</p>
+            </div>
+
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+
+            <div class="separator">OR</div>
+
+            <div style="text-align: center;">
+                <div id="video-container">
+                    <video id="camera-feed" autoplay playsinline></video>
+                </div>
+                <img id="captured-image" alt="Captured product">
+
+                <button class="btn btn-primary" id="start-camera-btn">
+                    <i class="fas fa-camera"></i> Start Camera
+                </button>
+                <button class="btn btn-success" id="capture-btn" style="display: none;">
+                    <i class="fas fa-camera"></i> Capture Photo
+                </button>
+                <button class="btn btn-secondary" id="retake-btn" style="display: none;">
+                    <i class="fas fa-redo"></i> Retake
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing and comparing products...</p>
+            <p style="font-size: 0.9rem; color: #718096; margin-top: 10px;">This may take a few seconds</p>
+        </div>
+
+        <div class="result-container" id="result-container">
+            <div id="comparison-result"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 Script loaded!');
+
+        // Get original product name from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productParam = urlParams.get('product');
+        const originalProduct = productParam ? decodeURIComponent(productParam) : 'Please select a product first';
+
+        // Display product name
+        document.getElementById('original-product-name').textContent = originalProduct;
+        console.log('✅ Original Product:', originalProduct);
+
+        // API Configuration
+        const USDA_API_KEY = 'HKPEjy4nzeBg0WnLZ4eaYW5sHRWxHmqD6QRAFPcK';
+        // Gemini API removed - using manual product entry instead
+
+        // Elements
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const videoContainer = document.getElementById('video-container');
+        const cameraFeed = document.getElementById('camera-feed');
+        const capturedImage = document.getElementById('captured-image');
+        const startCameraBtn = document.getElementById('start-camera-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('result-container');
+        const comparisonResult = document.getElementById('comparison-result');
+
+        let stream = null;
+
+        console.log('✅ Elements loaded');
+
+        // Upload area click
+        uploadArea.addEventListener('click', function() {
+            console.log('📤 Upload area clicked');
+            fileInput.click();
+        });
+
+        // File input change
+        fileInput.addEventListener('change', function(e) {
+            console.log('📁 File selected');
+            const file = e.target.files[0];
+            if (file) {
+                console.log('✅ File:', file.name);
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imageDataUrl = event.target.result;
+                    capturedImage.src = imageDataUrl;
+                    capturedImage.style.display = 'block';
+                    videoContainer.style.display = 'none';
+                    startCameraBtn.style.display = 'none';
+                    captureBtn.style.display = 'none';
+                    retakeBtn.style.display = 'inline-flex';
+                    uploadArea.style.display = 'none';
+                    analyzeAndCompare(imageDataUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#3182ce';
+            uploadArea.style.backgroundColor = '#f8f9fa';
+        });
+
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.style.borderColor = '';
+            uploadArea.style.backgroundColor = '';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            console.log('📥 File dropped');
+            uploadArea.style.borderColor = '';
+            uploadArea.style.backgroundColor = '';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+
+        // Start Camera
+        startCameraBtn.addEventListener('click', async function() {
+            console.log('🎥 Start camera clicked');
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera API not supported');
+                }
+
+                console.log('📹 Requesting camera...');
+
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' }
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Back camera failed, trying front...');
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                }
+
+                console.log('✅ Camera access granted!');
+                cameraFeed.srcObject = stream;
+                videoContainer.style.display = 'block';
+                startCameraBtn.style.display = 'none';
+                captureBtn.style.display = 'inline-flex';
+                uploadArea.style.display = 'none';
+
+            } catch (error) {
+                console.error('❌ Camera error:', error);
+                let errorMsg = '📷 Unable to access camera!\n\n';
+
+                if (error.name === 'NotAllowedError') {
+                    errorMsg += '❌ Permission denied.\n\n✅ Fix: Click camera icon in address bar and allow.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg += '❌ No camera found.';
+                } else if (error.name === 'NotSupportedError') {
+                    errorMsg += '❌ Camera not supported (file:// protocol)\n\n✅ Use Upload Image instead or run on localhost!';
+                } else {
+                    errorMsg += '❌ Error: ' + error.message;
+                }
+
+                alert(errorMsg);
+            }
+        });
+
+        // Capture Photo
+        captureBtn.addEventListener('click', function() {
+            console.log('📸 Capture clicked');
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraFeed.videoWidth;
+            canvas.height = cameraFeed.videoHeight;
+            canvas.getContext('2d').drawImage(cameraFeed, 0, 0);
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+
+            capturedImage.src = imageDataUrl;
+            capturedImage.style.display = 'block';
+            videoContainer.style.display = 'none';
+            captureBtn.style.display = 'none';
+            retakeBtn.style.display = 'inline-flex';
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            analyzeAndCompare(imageDataUrl);
+        });
+
+        // Retake
+        retakeBtn.addEventListener('click', function() {
+            console.log('🔄 Retake clicked');
+            capturedImage.style.display = 'none';
+            capturedImage.src = '';
+            videoContainer.style.display = 'none';
+            startCameraBtn.style.display = 'inline-flex';
+            retakeBtn.style.display = 'none';
+            resultContainer.style.display = 'none';
+            uploadArea.style.display = 'block';
+        });
+
+        // Analyze and compare
+        async function analyzeAndCompare(imageDataUrl) {
+            console.log('🔍 Analyzing product...');
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            try {
+                // Automatic product recognition using Gemini Vision API
+                const geminiApiKey = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s';
+                const geminiVisionUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+                console.log('🤖 Calling Gemini API for automatic product recognition...');
+                const base64Image = imageDataUrl.split(',')[1];
+
+                const response = await fetch(`${geminiVisionUrl}?key=${geminiApiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                {
+                                    text: "Identify the product in this image. Return ONLY the product name (brand + product type), nothing else. For example: 'Coca Cola', 'Lays Chips', 'Cadbury Dairy Milk', 'Maaza Mango Drink', etc. Be specific and concise."
+                                },
+                                {
+                                    inline_data: {
+                                        mime_type: "image/jpeg",
+                                        data: base64Image
+                                    }
+                                }
+                            ]
+                        }]
+                    })
+                });
+
+                console.log('📡 Gemini Response Status:', response.status);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('❌ Gemini API Error:', errorData);
+                    throw new Error('Product recognition failed: ' + (errorData.error?.message || response.statusText));
+                }
+
+                const data = await response.json();
+                console.log('📥 Gemini Response:', data);
+
+                const scannedProduct = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                console.log('✅ Gemini recognized product:', scannedProduct);
+
+                if (!scannedProduct) {
+                    throw new Error('Could not identify product from image');
+                }
+
+                // Fetch nutritional data
+                console.log('📊 Fetching nutritional data...');
+                console.log('📊 Product 1:', originalProduct);
+                console.log('📊 Product 2:', scannedProduct);
+
+                const [product1Data, product2Data] = await Promise.all([
+                    fetchNutritionalData(originalProduct),
+                    fetchNutritionalData(scannedProduct)
+                ]);
+
+                console.log('✅ Product 1 Data:', product1Data ? 'Found' : 'Not Found');
+                console.log('✅ Product 2 Data:', product2Data ? 'Found' : 'Not Found');
+
+                // Display comparison
+                displayComparison(product1Data, product2Data, scannedProduct);
+
+            } catch (error) {
+                console.error('❌ Full Error:', error);
+                console.error('❌ Error Stack:', error.stack);
+                loading.style.display = 'none';
+
+                let errorMsg = '❌ Failed to analyze product!\n\n';
+                errorMsg += '📝 Error: ' + error.message + '\n\n';
+                errorMsg += '💡 Possible Solutions:\n';
+                errorMsg += '1. Try a clearer image\n';
+                errorMsg += '2. Make sure product label is visible\n';
+                errorMsg += '3. Check your internet connection\n';
+                errorMsg += '4. Press F12 to see console logs\n\n';
+                errorMsg += '🔍 Check browser console (F12) for details';
+
+                alert(errorMsg);
+            }
+        }
+
+        // Fetch nutritional data
+        async function fetchNutritionalData(productName) {
+            try {
+                console.log('🔍 Fetching data for:', productName);
+                const searchUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${USDA_API_KEY}&query=${encodeURIComponent(productName)}&pageSize=1`;
+                console.log('🌐 USDA URL:', searchUrl);
+
+                const response = await fetch(searchUrl);
+                console.log('📡 USDA Response Status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ USDA API Error:', errorText);
+                    throw new Error('USDA API Error: ' + response.statusText);
+                }
+
+                const data = await response.json();
+                console.log('📥 USDA Response:', data);
+
+                if (!data.foods || data.foods.length === 0) {
+                    console.warn('⚠️ No nutritional data found for:', productName);
+                    // Return dummy data for testing
+                    return {
+                        productName: productName,
+                        nutrients: {
+                            calories: 0,
+                            protein: 0,
+                            carbs: 0,
+                            sugar: 0,
+                            fat: 0,
+                            sodium: 0,
+                            fiber: 0
+                        }
+                    };
+                }
+
+                const food = data.foods[0];
+                const nutrients = {
+                    calories: food.foodNutrients.find(n => n.nutrientName === 'Energy')?.value || 0,
+                    protein: food.foodNutrients.find(n => n.nutrientName === 'Protein')?.value || 0,
+                    carbs: food.foodNutrients.find(n => n.nutrientName === 'Carbohydrate, by difference')?.value || 0,
+                    sugar: food.foodNutrients.find(n => n.nutrientName === 'Sugars, total including NLEA')?.value || 0,
+                    fat: food.foodNutrients.find(n => n.nutrientName === 'Total lipid (fat)')?.value || 0,
+                    sodium: food.foodNutrients.find(n => n.nutrientName === 'Sodium, Na')?.value || 0,
+                    fiber: food.foodNutrients.find(n => n.nutrientName === 'Fiber, total dietary')?.value || 0
+                };
+
+                console.log('✅ Nutrients found:', nutrients);
+                return { productName: food.description, nutrients };
+            } catch (error) {
+                console.error('❌ Error fetching nutritional data:', error);
+                // Return dummy data instead of null
+                return {
+                    productName: productName,
+                    nutrients: {
+                        calories: 0,
+                        protein: 0,
+                        carbs: 0,
+                        sugar: 0,
+                        fat: 0,
+                        sodium: 0,
+                        fiber: 0
+                    }
+                };
+            }
+        }
+
+        // Display comparison
+        function displayComparison(product1Data, product2Data, scannedProductName) {
+            console.log('📊 Displaying comparison...');
+            console.log('📦 Product 1:', product1Data);
+            console.log('📦 Product 2:', product2Data);
+
+            loading.style.display = 'none';
+
+            if (!product1Data || !product2Data) {
+                console.error('❌ Missing product data!');
+                comparisonResult.innerHTML = `
+                    <div class="comparison-card">
+                        <h3>⚠️ Comparison Unavailable</h3>
+                        <p>Unable to fetch nutritional data for one or both products.</p>
+                        <p><strong>Original Product:</strong> ${originalProduct}</p>
+                        <p><strong>Scanned Product:</strong> ${scannedProductName}</p>
+                        <p style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                            <strong>💡 Tip:</strong> Nutritional data might not be available for all products.
+                            Try using common product names like "Orange Juice", "Apple", "Coca Cola", etc.
+                        </p>
+                    </div>
+                `;
+                resultContainer.style.display = 'block';
+                return;
+            }
+
+            const p1Name = product1Data.productName.substring(0, 50);
+            const p2Name = product2Data.productName.substring(0, 50);
+
+            // Calculate winner based on nutritional profile
+            const nutrients = [
+                { key: 'calories', betterWhen: 'lower', weight: 3, name: 'Calories' },
+                { key: 'protein', betterWhen: 'higher', weight: 3, name: 'Protein' },
+                { key: 'sugar', betterWhen: 'lower', weight: 4, name: 'Sugar' },
+                { key: 'fat', betterWhen: 'lower', weight: 2, name: 'Fat' },
+                { key: 'sodium', betterWhen: 'lower', weight: 2, name: 'Sodium' },
+                { key: 'fiber', betterWhen: 'higher', weight: 3, name: 'Fiber' }
+            ];
+
+            let product1Score = 0;
+            let product2Score = 0;
+            let product1Wins = 0;
+            let product2Wins = 0;
+            let ties = 0;
+
+            // Build table rows with winner highlighting
+            let tableRows = '';
+
+            nutrients.forEach(nutrient => {
+                const v1 = parseFloat(product1Data.nutrients[nutrient.key]) || 0;
+                const v2 = parseFloat(product2Data.nutrients[nutrient.key]) || 0;
+
+                let style1 = '';
+                let style2 = '';
+                let winnerIcon = '';
+
+                if (v1 && v2 && v1 !== v2) {
+                    if (nutrient.betterWhen === 'lower') {
+                        if (v1 < v2) {
+                            product1Score += nutrient.weight;
+                            product1Wins++;
+                            style1 = 'background-color: #d4edda; font-weight: 700; border-left: 4px solid #28a745;';
+                            winnerIcon = '<span style="color: #28a745; font-size: 1.2rem;">✓</span>';
+                        } else {
+                            product2Score += nutrient.weight;
+                            product2Wins++;
+                            style2 = 'background-color: #d4edda; font-weight: 700; border-left: 4px solid #28a745;';
+                        }
+                    } else {
+                        if (v1 > v2) {
+                            product1Score += nutrient.weight;
+                            product1Wins++;
+                            style1 = 'background-color: #d4edda; font-weight: 700; border-left: 4px solid #28a745;';
+                            winnerIcon = '<span style="color: #28a745; font-size: 1.2rem;">✓</span>';
+                        } else {
+                            product2Score += nutrient.weight;
+                            product2Wins++;
+                            style2 = 'background-color: #d4edda; font-weight: 700; border-left: 4px solid #28a745;';
+                        }
+                    }
+                } else if (v1 === v2) {
+                    ties++;
+                }
+
+                const unit = nutrient.key === 'sodium' ? 'mg' : 'g';
+                const displayUnit = nutrient.key === 'calories' ? 'kcal' : unit;
+
+                tableRows += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--border);"><strong>${nutrient.name}</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--border); text-align: center; ${style1}">
+                            ${winnerIcon} ${v1.toFixed(1)} <span style="color: #718096; font-size: 0.9rem;">${displayUnit}</span>
+                        </td>
+                        <td style="padding: 12px; border: 1px solid var(--border); text-align: center; ${style2}">
+                            ${!winnerIcon && style2 ? '<span style="color: #28a745; font-size: 1.2rem;">✓</span>' : ''} ${v2.toFixed(1)} <span style="color: #718096; font-size: 0.9rem;">${displayUnit}</span>
+                        </td>
+                    </tr>
+                `;
+                winnerIcon = '';
+            });
+
+            // Determine overall winner
+            let winnerName = '';
+            let winnerIcon = '';
+            let winnerColor = '';
+            let winnerMessage = '';
+
+            if (product1Score > product2Score) {
+                winnerName = p1Name;
+                winnerIcon = '🏆';
+                winnerColor = '#ffd700';
+                winnerMessage = 'has better nutritional profile!';
+            } else if (product2Score > product1Score) {
+                winnerName = p2Name;
+                winnerIcon = '🏆';
+                winnerColor = '#ffd700';
+                winnerMessage = 'has better nutritional profile!';
+            } else {
+                winnerName = 'It\'s a Tie';
+                winnerIcon = '🤝';
+                winnerColor = '#3182ce';
+                winnerMessage = 'Both products are equally matched!';
+            }
+
+            // Build HTML
+            const comparisonHTML = `
+                <div class="comparison-card">
+                    <!-- Winner Banner -->
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 16px; text-align: center; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
+                        <div style="font-size: 4rem; margin-bottom: 15px; animation: bounce 1s infinite;">${winnerIcon}</div>
+                        <h2 style="margin: 0 0 10px 0; font-size: 2rem; color: ${winnerColor}; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                            ${winnerName}
+                        </h2>
+                        <p style="font-size: 1.2rem; margin: 10px 0;">${winnerMessage}</p>
+                        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2.5rem; font-weight: 700; color: ${product1Score > product2Score ? winnerColor : 'white'};">${product1Score}</div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;">${p1Name}</div>
+                            </div>
+                            <div style="font-size: 2rem; display: flex; align-items: center;">VS</div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2.5rem; font-weight: 700; color: ${product2Score > product1Score ? winnerColor : 'white'};">${product2Score}</div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;">${p2Name}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Score Summary -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                        <div style="background: #e6f7ff; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #1890ff;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #1890ff;">${product1Wins}</div>
+                            <div style="font-size: 0.9rem; color: #666;">Wins for ${p1Name.substring(0, 20)}...</div>
+                        </div>
+                        <div style="background: #f6ffed; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #52c41a;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #52c41a;">${product2Wins}</div>
+                            <div style="font-size: 0.9rem; color: #666;">Wins for ${p2Name.substring(0, 20)}...</div>
+                        </div>
+                        <div style="background: #fff7e6; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #faad14;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #faad14;">${ties}</div>
+                            <div style="font-size: 0.9rem; color: #666;">Ties</div>
+                        </div>
+                    </div>
+
+                    <!-- Nutritional Comparison Table -->
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">
+                        <i class="fas fa-balance-scale"></i> Detailed Nutritional Comparison
+                    </h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 15px;">
+                        📊 Per 100g serving | ✓ = Better choice | Green highlight = Winner
+                    </p>
+                    <div style="overflow-x: auto;">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    <th style="text-align: center;">${p1Name}</th>
+                                    <th style="text-align: center;">${p2Name}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Health Tip -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white;">
+                        <h4 style="margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-lightbulb"></i> Health Insight
+                        </h4>
+                        <p style="margin: 0; line-height: 1.6;">
+                            ${winnerName !== 'It\'s a Tie' ?
+                                `<strong>${winnerName}</strong> is the better choice with <strong>${Math.abs(product1Score - product2Score)} more points</strong> in nutritional value. ` :
+                                'Both products have similar nutritional profiles. '}
+                            Choose based on your dietary goals: lower calories/sugar for weight management, higher protein/fiber for satiety.
+                        </p>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes bounce {
+                        0%, 100% { transform: translateY(0); }
+                        50% { transform: translateY(-10px); }
+                    }
+                </style>
+            `;
+
+            comparisonResult.innerHTML = comparisonHTML;
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        console.log('✅ All event listeners attached!');
+    </script>
+</body>
+</html>

@@ -755,7 +755,10 @@
 <body>
 
     <header class="site-header">
-        <a href="#" class="logo">ProductLens</a>
+        <a href="#" class="logo">
+            <img src="productLens.png" alt="ProductLens" style="height: 35px; vertical-align: middle; margin-right: 8px;">
+            ProductLens
+        </a>
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Search for products like 'Maaza'...">
             <button id="search-btn" title="Search" style="position:absolute; right:6px; top:6px; padding:6px 10px; border-radius:6px; border:none; background:var(--blue-violet); color:#fff; cursor:pointer;">Search</button>
@@ -778,11 +781,7 @@
 
             <div class="alert alert-info" id="api-notice">
                 <strong><i class="fas fa-bullseye"></i> Product Recognition System - Powered by AI! <i class="fas fa-check-circle"></i></strong>
-                <br><strong><i class="fas fa-robot"></i> Gemini AI:</strong> Upload product images for instant recognition!
-                <br><strong><i class="fas fa-search"></i> Google Custom Search API:</strong> Fetches real product images & live prices from internet
-                <br><strong><i class="fas fa-dollar-sign"></i> Live Pricing:</strong> Real-time price ranges from Google Shopping results
-                <br><strong><i class="fas fa-chart-bar"></i> Nutrition Data:</strong> <strong>USDA API</strong> → <strong>API Ninjas</strong> → <strong>Open Food Facts</strong>
-                <br><strong><i class="fas fa-shopping-cart"></i> Shopping:</strong> <strong>Amazon, Flipkart, Meesho, BigBasket, Blinkit, JioMart</strong>
+              
             </div>
 
             <div id="drop-zone" title="Click to upload a file">
@@ -1295,31 +1294,57 @@
                         const base64Image = e.target.result;
 
                         try {
-                            // Call Gemini API for product recognition
-                            const response = await fetch('/api/gemini/recognize', {
+                            // Call Gemini Vision API directly for product recognition
+                            const geminiApiKey = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s';
+                            const geminiVisionUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+                            console.log('🔍 Calling Gemini Vision API for product recognition...');
+                            const base64Data = base64Image.split(',')[1];
+
+                            const response = await fetch(`${geminiVisionUrl}?key=${geminiApiKey}`, {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ image: base64Image })
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    contents: [{
+                                        parts: [
+                                            {
+                                                text: "Identify the product in this image. Return ONLY the product name (brand + product type), nothing else. For example: 'Coca Cola', 'Lays Chips', 'Cadbury Dairy Milk', 'Maaza Mango Drink', etc. Be specific and concise."
+                                            },
+                                            {
+                                                inline_data: {
+                                                    mime_type: "image/jpeg",
+                                                    data: base64Data
+                                                }
+                                            }
+                                        ]
+                                    }]
+                                })
                             });
 
                             if (!response.ok) {
+                                const errorData = await response.json();
+                                console.error('Gemini API Error:', errorData);
                                 throw new Error('Product recognition failed');
                             }
 
-                            const productInfo = await response.json();
-                            console.log('Gemini recognized product:', productInfo);
+                            const data = await response.json();
+                            const productName = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+                            console.log('✅ Gemini recognized product:', productName);
+
+                            if (!productName) {
+                                throw new Error('Could not identify product');
+                            }
 
                             // Create a product object compatible with displayProductInfo
                             const product = {
-                                name: productInfo.productName || 'Unidentified Product',
+                                name: productName,
                                 price: 'Price not available',
-                                searchQuery: productInfo.searchQuery || productInfo.productName,
+                                searchQuery: productName,
                                 healthInfo: {
                                     isHealthy: true,
-                                    status: `AI Identified (${productInfo.confidence || 'medium'} confidence)`,
-                                    summary: productInfo.description || 'Product identified using AI. Fetching nutritional information...'
+                                    status: 'AI Identified',
+                                    summary: 'Product identified using AI. Fetching nutritional information...'
                                 },
                                 patientSuitability: {
                                     canHave: ['Please check nutritional data below'],
@@ -1333,8 +1358,7 @@
 
                         } catch (error) {
                             console.error('Gemini API error:', error);
-                            alert('Product recognition failed. Using generic data.');
-                            displayProductInfo(mockProductDatabase['generic']);
+                            alert(`❌ Product recognition failed!\n\nError: ${error.message}\n\nYou can try:\n• Using the search box above\n• Uploading a clearer image\n• Taking a better photo`);
                             stopLoading();
                         }
                     };
@@ -2371,6 +2395,11 @@
                     </a>`).join('');
 
                 productInfoContainer.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <button class="btn" id="back-to-home-btn" style="background-color: var(--blue-violet); display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-arrow-left"></i> Back to Home
+                        </button>
+                    </div>
                     <div class="info-card">
                         <h2 style="text-align:center; color: var(--rich-black);">${name}</h2>
                         <p id="product-price-display" style="text-align:center; font-size: 1.5rem; font-weight: 600; color: var(--magenta-rose);">
@@ -2539,6 +2568,12 @@
                 }
 
                 // Add event listeners
+                // Back to home button
+                document.getElementById('back-to-home-btn').addEventListener('click', () => {
+                    // Use the existing resetUI function to return to home
+                    resetUI();
+                });
+
                 document.getElementById('reset-btn').addEventListener('click', () => {
                     // Open the camera scanner page
                     window.location.href = 'lens_search.html';

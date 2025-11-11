@@ -313,18 +313,137 @@
             font-size: 1rem;
         }
 
-        @media (max-width: 600px) {
-            .camera-container {
+        /* Tablet */
+        @media (max-width: 968px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header h1 img {
+                height: 30px !important;
+            }
+
+            .container {
                 padding: 15px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header h1 img {
+                height: 28px !important;
+            }
+
+            .header > div {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 10px;
+                margin: 15px auto;
+            }
+
+            .camera-container {
+                padding: 20px;
+            }
+
+            .btn, .upload-label {
+                padding: 10px 16px;
+                font-size: 0.9rem;
             }
 
             .controls {
                 flex-direction: column;
+                gap: 10px;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .feature-card {
+                padding: 12px;
+            }
+
+            .feature-icon {
+                font-size: 1.5rem;
+            }
+
+            .feature-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header h1 img {
+                height: 25px !important;
+            }
+
+            .back-btn {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 8px;
+            }
+
+            .camera-container {
+                padding: 15px;
             }
 
             .btn, .upload-label {
                 width: 100%;
                 justify-content: center;
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .feature-card {
+                padding: 10px;
+            }
+
+            .feature-icon {
+                font-size: 1.3rem;
+            }
+
+            .feature-text {
+                font-size: 0.8rem;
             }
         }
 
@@ -357,11 +476,11 @@
 <body>
     <div class="header">
         <h1>
-            <span><i class="fas fa-camera"></i></span>
-            AI Lens Scanner
+            <img src="productLens.png" alt="ProductLens" style="height: 35px; vertical-align: middle; margin-right: 8px;">
+            ProductLens - AI Scanner
         </h1>
         <div style="display: flex; gap: 15px;">
-            <a href="ai_studio_code (6).html" class="back-btn"><i class="fas fa-search"></i> Search</a>
+            <a href="index.html" class="back-btn"><i class="fas fa-search"></i> Search</a>
             <a href="product_compare.html" class="back-btn"><i class="fas fa-balance-scale"></i> Compare</a>
             <a href="health_analysis.html" class="back-btn"><i class="fas fa-heartbeat"></i> Health</a>
         </div>
@@ -551,7 +670,7 @@
         });
 
         // Gemini Vision API Configuration
-        const GEMINI_API_KEY = 'AIzaSyDrPxRbNfZaUjsw1WgnuX7TrHSAIGFcEfk';
+        const GEMINI_API_KEY = 'AIzaSyC3i5qg9sTBoJUGjsAEGRuT8Es1Ft34J9E';
         const GEMINI_VISION_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
         // Analyze product using Gemini AI
