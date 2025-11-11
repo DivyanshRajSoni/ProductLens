@@ -252,7 +252,23 @@
 
         <div class="card">
             <div class="section-title">
-                <i class="fas fa-hospital"></i> Select Your Health Conditions
+                <i class="fas fa-search"></i> Search Health Condition
+            </div>
+            
+            <div style="position: relative; margin-bottom: 30px;">
+                <input type="text" 
+                       id="condition-search" 
+                       placeholder="Search for conditions like diabetes, hypertension, obesity..." 
+                       style="width: 100%; padding: 15px 45px 15px 15px; font-size: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; transition: all 0.3s;">
+                <i class="fas fa-search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #a0aec0; font-size: 1.2rem;"></i>
+                
+                <div id="search-suggestions" style="display: none; position: absolute; width: 100%; background: white; border: 2px solid #e2e8f0; border-radius: 12px; margin-top: 5px; max-height: 250px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); z-index: 100;">
+                    <!-- Suggestions will appear here -->
+                </div>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-hospital"></i> Or Select From Common Conditions
             </div>
 
             <div class="condition-grid">
@@ -296,8 +312,123 @@
         const analyzeBtn = document.getElementById('analyze-btn');
         const loading = document.getElementById('loading');
         const results = document.getElementById('results');
+        const conditionSearch = document.getElementById('condition-search');
+        const searchSuggestions = document.getElementById('search-suggestions');
 
         let selectedConditions = [];
+
+        // All available health conditions with keywords
+        const allConditions = [
+            { id: 'diabetes', name: 'Diabetes', icon: 'fa-tint', keywords: ['sugar', 'glucose', 'insulin', 'blood sugar', 'diabetic'] },
+            { id: 'hypertension', name: 'Hypertension', icon: 'fa-heart', keywords: ['blood pressure', 'high bp', 'hypertensive', 'bp'] },
+            { id: 'obesity', name: 'Obesity', icon: 'fa-weight', keywords: ['weight', 'overweight', 'fat', 'weight loss', 'bmi'] },
+            { id: 'heart-disease', name: 'Heart Disease', icon: 'fa-heartbeat', keywords: ['cardiac', 'heart', 'cardiovascular', 'cholesterol'] },
+            { id: 'kidney', name: 'Kidney Issues', icon: 'fa-notes-medical', keywords: ['kidney', 'renal', 'kidney disease', 'dialysis'] },
+            { id: 'fitness', name: 'Fitness Goals', icon: 'fa-dumbbell', keywords: ['fitness', 'workout', 'exercise', 'muscle', 'gym', 'athlete'] },
+            { id: 'celiac', name: 'Celiac Disease', icon: 'fa-bread-slice', keywords: ['gluten', 'celiac', 'wheat allergy', 'gluten free'] },
+            { id: 'lactose', name: 'Lactose Intolerance', icon: 'fa-ice-cream', keywords: ['lactose', 'dairy', 'milk allergy', 'dairy free'] },
+            { id: 'anemia', name: 'Anemia', icon: 'fa-prescription-bottle', keywords: ['anemia', 'iron', 'hemoglobin', 'blood deficiency'] },
+            { id: 'thyroid', name: 'Thyroid Issues', icon: 'fa-capsules', keywords: ['thyroid', 'hypothyroid', 'hyperthyroid', 'iodine'] },
+            { id: 'pcos', name: 'PCOS', icon: 'fa-venus', keywords: ['pcos', 'pcod', 'hormonal', 'ovary'] },
+            { id: 'gout', name: 'Gout', icon: 'fa-bone', keywords: ['gout', 'uric acid', 'joint pain', 'arthritis'] }
+        ];
+
+        // Search functionality
+        conditionSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            
+            if (query.length === 0) {
+                searchSuggestions.style.display = 'none';
+                return;
+            }
+
+            // Filter conditions based on search query
+            const matches = allConditions.filter(condition => {
+                return condition.name.toLowerCase().includes(query) || 
+                       condition.keywords.some(keyword => keyword.includes(query));
+            });
+
+            if (matches.length > 0) {
+                searchSuggestions.innerHTML = matches.map(condition => `
+                    <div class="suggestion-item" data-condition="${condition.id}" style="padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e2e8f0; transition: all 0.2s; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas ${condition.icon}" style="color: var(--primary); font-size: 1.1rem;"></i>
+                        <span style="flex: 1;">${condition.name}</span>
+                        ${selectedConditions.includes(condition.id) ? '<i class="fas fa-check-circle" style="color: var(--success);"></i>' : ''}
+                    </div>
+                `).join('');
+                searchSuggestions.style.display = 'block';
+
+                // Add hover effect
+                document.querySelectorAll('.suggestion-item').forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        item.style.background = '#f7fafc';
+                    });
+                    item.addEventListener('mouseleave', () => {
+                        item.style.background = 'white';
+                    });
+                    item.addEventListener('click', () => {
+                        selectConditionFromSearch(item.dataset.condition);
+                    });
+                });
+            } else {
+                searchSuggestions.innerHTML = `
+                    <div style="padding: 15px; text-align: center; color: #a0aec0;">
+                        <i class="fas fa-search"></i> No conditions found for "${query}"
+                    </div>
+                `;
+                searchSuggestions.style.display = 'block';
+            }
+        });
+
+        // Select condition from search
+        function selectConditionFromSearch(conditionId) {
+            const btn = document.querySelector(`.condition-btn[data-condition="${conditionId}"]`);
+            
+            if (btn) {
+                // If button exists, click it
+                btn.click();
+                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                // If condition not in visible buttons, add it manually
+                if (!selectedConditions.includes(conditionId)) {
+                    selectedConditions.push(conditionId);
+                    const condition = allConditions.find(c => c.id === conditionId);
+                    
+                    // Create a temporary selected indicator
+                    const indicator = document.createElement('div');
+                    indicator.style.cssText = 'display: inline-block; padding: 8px 15px; margin: 5px; background: var(--success); color: white; border-radius: 20px; font-size: 0.9rem;';
+                    indicator.innerHTML = `<i class="fas ${condition.icon}"></i> ${condition.name} <i class="fas fa-times" style="margin-left: 8px; cursor: pointer;"></i>`;
+                    
+                    indicator.querySelector('.fa-times').addEventListener('click', () => {
+                        selectedConditions = selectedConditions.filter(c => c !== conditionId);
+                        indicator.remove();
+                    });
+                    
+                    document.querySelector('.condition-grid').insertAdjacentElement('afterend', indicator);
+                }
+            }
+            
+            conditionSearch.value = '';
+            searchSuggestions.style.display = 'none';
+        }
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!conditionSearch.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+
+        // Focus effect for search
+        conditionSearch.addEventListener('focus', () => {
+            conditionSearch.style.borderColor = 'var(--primary)';
+            conditionSearch.style.boxShadow = '0 0 0 3px rgba(49, 130, 206, 0.1)';
+        });
+
+        conditionSearch.addEventListener('blur', () => {
+            conditionSearch.style.borderColor = '#e2e8f0';
+            conditionSearch.style.boxShadow = 'none';
+        });
 
         // Handle condition selection
         conditionBtns.forEach(btn => {
