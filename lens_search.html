@@ -443,12 +443,26 @@
 
         let stream = null;
 
-        // Start camera
+        // Start camera with better error handling
         startCameraBtn.addEventListener('click', async () => {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment' }
-                });
+                // Check if mediaDevices is supported
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera API not supported in this browser');
+                }
+
+                // Try different camera constraints
+                let constraints = { video: { facingMode: 'environment' } };
+
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                } catch (envErr) {
+                    console.warn('Environment camera failed, trying any camera:', envErr);
+                    // Fallback to any available camera
+                    constraints = { video: true };
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                }
+
                 video.srcObject = stream;
                 videoContainer.style.display = 'block';
                 capturedImage.style.display = 'none';
@@ -457,7 +471,33 @@
                 retakeBtn.style.display = 'none';
             } catch (err) {
                 console.error('Camera error:', err);
-                alert('Unable to access camera. Please check permissions or use Upload Image option.');
+
+                let errorMsg = '📷 Unable to access camera!\n\n';
+
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorMsg += '❌ Camera permission denied.\n\n';
+                    errorMsg += '✅ To fix:\n';
+                    errorMsg += '1. Click the camera icon in address bar\n';
+                    errorMsg += '2. Allow camera access\n';
+                    errorMsg += '3. Refresh the page\n\n';
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMsg += '❌ No camera found on this device.\n\n';
+                } else if (err.name === 'NotSupportedError') {
+                    errorMsg += '❌ Camera not supported.\n\n';
+                    errorMsg += '📝 This page must be opened via:\n';
+                    errorMsg += '• HTTPS (https://...)\n';
+                    errorMsg += '• OR localhost (http://localhost/...)\n';
+                    errorMsg += '• OR 127.0.0.1 (http://127.0.0.1/...)\n\n';
+                    errorMsg += '🔧 Solution: Run a local server or use HTTPS\n\n';
+                } else {
+                    errorMsg += '❌ Error: ' + err.message + '\n\n';
+                }
+
+                errorMsg += '💡 Use "Upload Image" option instead!';
+                alert(errorMsg);
+
+                // Scroll to upload section
+                document.getElementById('file-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
 
@@ -636,7 +676,7 @@ Only return valid JSON, no additional text.`
 
         // Redirect to full app with search query
         function viewFullDetails(searchQuery) {
-            window.location.href = `ai_studio_code (6).html?search=${searchQuery}`;
+            window.location.href = `index.html?search=${searchQuery}`;
         }
     </script>
 </body>
