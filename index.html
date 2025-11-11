@@ -250,16 +250,505 @@
             color: #0c5460;
         }
 
-        @media (max-width: 768px) {
-            .site-header { flex-wrap: wrap; justify-content: center; padding: 15px 20px; }
-            .search-container { order: 3; width: 100%; max-width: 100%; margin-top: 10px; }
-            .main-nav { order: 2; }
-            .logo { order: 1; }
+        /* Compare Modal Styles */
+        .compare-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .compare-modal-content {
+            background-color: var(--container-bg);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .compare-modal h3 {
+            color: var(--blue-violet);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .compare-modal .close-btn {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--muted-text);
+            cursor: pointer;
+            line-height: 20px;
+            transition: color 0.3s;
+        }
+
+        .compare-modal .close-btn:hover {
+            color: var(--magenta-rose);
+        }
+
+        .compare-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .compare-input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .compare-input-group input:focus {
+            outline: none;
+            border-color: var(--blue-violet);
+        }
+
+        .compare-suggestions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .compare-suggestion-btn {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--egg-shell);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .compare-suggestion-btn:hover {
+            background-color: var(--blue-violet);
+            color: white;
+            border-color: var(--blue-violet);
+            transform: translateY(-2px);
+        }
+
+        .compare-modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .compare-modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .compare-modal-actions .btn-primary {
+            background-color: var(--blue-violet);
+            color: white;
+        }
+
+        .compare-modal-actions .btn-primary:hover {
+            background-color: var(--magenta-rose);
+            transform: translateY(-2px);
+        }
+
+        .compare-modal-actions .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .compare-modal-actions .btn-secondary:hover {
+            background-color: var(--muted-text);
+            color: white;
+        }
+
+        /* Improved Comparison Table */
+        .comparison-table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .comparison-table thead tr {
+            background: linear-gradient(135deg, var(--blue-violet) 0%, var(--magenta-rose) 100%);
+            color: white;
+        }
+
+        .comparison-table th {
+            padding: 15px 12px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-table th:first-child {
+            border-top-left-radius: 8px;
+        }
+
+        .comparison-table th:last-child {
+            border-top-right-radius: 8px;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .winner-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .winner-summary h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+        }
+
+        .winner-summary p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+
+        .percentage-diff {
+            font-size: 0.85rem;
+            color: var(--muted-text);
+            font-style: italic;
+        }
+
+        /* Scan to Compare Modal */
+        .scan-compare-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .scan-compare-modal-content {
+            background-color: var(--container-bg);
+            margin: 8% auto;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            animation: slideDown 0.3s ease;
+        }
+
+        .scan-compare-modal h3 {
+            color: var(--blue-violet);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .scan-compare-dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .scan-compare-dropzone:hover {
+            border-color: var(--blue-violet);
+            background-color: #f8f9fa;
+        }
+
+        .scan-compare-dropzone.dragover {
+            background-color: #fce4ec;
+            border-color: var(--magenta-rose);
+        }
+
+        .scan-compare-dropzone i {
+            font-size: 3rem;
+            color: var(--blue-violet);
+            margin-bottom: 15px;
+        }
+
+        .scan-preview-container {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .scan-preview-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scan-compare-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .scan-compare-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .scan-compare-loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .scan-compare-loader .loader {
+            margin: 0 auto;
+        }
+
+        /* Tablet Styles */
+        @media (max-width: 768px) {
+            .site-header {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 15px 20px;
+            }
+            .search-container {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+                margin-top: 10px;
+            }
+            .main-nav {
+                order: 2;
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .main-nav a {
+                margin-left: 0;
+                font-size: 0.9rem;
+                padding: 5px 10px;
+            }
+            .logo {
+                order: 1;
+                font-size: 1.3rem;
+            }
+            .container {
+                padding: 30px 20px;
+                margin: 30px 20px;
+            }
+            .intro-content h1 {
+                font-size: 2rem;
+            }
+            .intro-content p.subtitle {
+                font-size: 1rem;
+            }
+            #drop-zone {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Mobile Styles */
         @media (max-width: 600px) {
-            .container { padding: 20px; margin: 20px; }
-            .intro-content h1 { font-size: 2rem; }
-            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .site-header {
+                padding: 12px 15px;
+            }
+            .logo {
+                font-size: 1.2rem;
+            }
+            .main-nav {
+                width: 100%;
+                order: 2;
+                margin-top: 10px;
+            }
+            .main-nav a {
+                font-size: 0.85rem;
+                padding: 5px 8px;
+            }
+            .main-nav a i {
+                font-size: 0.9rem;
+            }
+            .container {
+                padding: 20px 15px;
+                margin: 20px 10px;
+                border-radius: 12px;
+            }
+            .intro-content h1 {
+                font-size: 1.75rem;
+                margin-bottom: 8px;
+            }
+            .intro-content p.subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+            #drop-zone {
+                padding: 25px 15px;
+            }
+            #drop-zone p {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .product-card {
+                padding: 12px;
+            }
+            .product-card img {
+                max-width: 60px;
+                height: 60px;
+            }
+            .product-card h4 {
+                font-size: 0.9rem;
+            }
+            .product-card p {
+                font-size: 0.8rem;
+            }
+            .info-card {
+                padding: 15px;
+            }
+            .info-card h3 {
+                font-size: 1.2rem;
+            }
+            .product-image-gallery img {
+                max-width: 100%;
+            }
+            .compare-modal-content {
+                margin: 15% 5%;
+                padding: 20px;
+                width: 90%;
+            }
+            .compare-modal h3 {
+                font-size: 1.2rem;
+            }
+            .compare-suggestions {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .comparison-table {
+                min-width: 100%;
+                font-size: 0.85rem;
+            }
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 6px;
+            }
+            .winner-summary h4 {
+                font-size: 1.1rem;
+            }
+            .winner-summary p {
+                font-size: 0.9rem;
+            }
+            .winner-badge {
+                font-size: 0.75rem;
+                padding: 3px 8px;
+            }
+            .scan-compare-modal-content {
+                margin: 10% 5%;
+                padding: 20px;
+            }
+            .scan-compare-dropzone {
+                padding: 30px 15px;
+            }
+            .scan-compare-dropzone i {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 480px) {
+            .site-header {
+                padding: 10px;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
+            .main-nav a {
+                font-size: 0.75rem;
+                padding: 4px 6px;
+            }
+            .container {
+                padding: 15px 10px;
+                margin: 15px 5px;
+            }
+            .intro-content h1 {
+                font-size: 1.5rem;
+            }
+            .intro-content p.subtitle {
+                font-size: 0.9rem;
+            }
+            #drop-zone {
+                padding: 20px 10px;
+            }
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .example-products h2 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -325,7 +814,74 @@
         <div class="loader" id="loader"></div>
         <div id="product-info-container"></div>
     </main>
-    
+
+    <!-- Compare Product Modal -->
+    <div id="compare-modal" class="compare-modal">
+        <div class="compare-modal-content">
+            <span class="close-btn" id="close-compare-modal">&times;</span>
+            <h3><i class="fas fa-balance-scale"></i> Compare with Another Product</h3>
+            <p style="color: var(--muted-text); margin-bottom: 20px; font-size: 0.95rem;">
+                Enter a product name or choose from popular options below:
+            </p>
+
+            <div class="compare-input-group">
+                <input type="text" id="compare-product-input" placeholder="e.g., Coca Cola, Apple, Banana..." autocomplete="off">
+            </div>
+
+            <div class="compare-suggestions">
+                <div class="compare-suggestion-btn" data-product="Coca Cola">🥤 Coca Cola</div>
+                <div class="compare-suggestion-btn" data-product="Pepsi">🥤 Pepsi</div>
+                <div class="compare-suggestion-btn" data-product="Apple">🍎 Apple</div>
+                <div class="compare-suggestion-btn" data-product="Banana">🍌 Banana</div>
+                <div class="compare-suggestion-btn" data-product="Orange Juice">🍊 Orange Juice</div>
+                <div class="compare-suggestion-btn" data-product="Milk">🥛 Milk</div>
+            </div>
+
+            <div class="compare-modal-actions">
+                <button class="btn-secondary" id="cancel-compare">Cancel</button>
+                <button class="btn-primary" id="confirm-compare">Compare</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan to Compare Modal -->
+    <div id="scan-compare-modal" class="scan-compare-modal">
+        <div class="scan-compare-modal-content">
+            <span class="close-btn" id="close-scan-compare-modal">&times;</span>
+            <h3><i class="fas fa-camera"></i> Scan Product to Compare</h3>
+            <p style="color: var(--muted-text); margin-bottom: 20px; font-size: 0.95rem;">
+                Upload or drag an image of the product you want to compare with
+            </p>
+
+            <div id="scan-compare-dropzone" class="scan-compare-dropzone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p style="margin: 0; font-size: 1.1rem; color: var(--text-color);">
+                    Drop an image here or <span style="color: var(--blue-violet); font-weight: 600;">click to browse</span>
+                </p>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--muted-text);">
+                    Supports: JPG, PNG, WebP
+                </p>
+            </div>
+
+            <div id="scan-preview-container" class="scan-preview-container" style="text-align: center;">
+                <img id="scan-preview-image" src="" alt="Preview">
+                <p id="scan-detected-product" style="font-size: 1.1rem; font-weight: 600; color: var(--blue-violet);"></p>
+            </div>
+
+            <div id="scan-compare-loader" class="scan-compare-loader">
+                <div class="loader" style="display: block;"></div>
+                <p style="margin-top: 15px; color: var(--muted-text);">Analyzing product image...</p>
+            </div>
+
+            <input type="file" id="scan-compare-file-input" accept="image/*" style="display: none;">
+
+            <div class="scan-compare-actions">
+                <button class="btn-secondary" id="cancel-scan-compare">Cancel</button>
+                <button class="btn-primary" id="confirm-scan-compare" style="display: none;">Compare Now</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="site-footer">
         <p>&copy; 2025-2026 ProductLens. All Rights Reserved.</p>
     </footer>
@@ -1289,31 +1845,98 @@
                     return '<p>Unable to compare products. Nutritional data not available for one or both products.</p>';
                 }
 
-                const p1Name = product1Data.productName.split(' ').slice(0, 3).join(' ') + '...';
-                const p2Name = product2Data.productName.split(' ').slice(0, 3).join(' ') + '...';
+                const p1Name = product1Data.productName.split(' ').slice(0, 4).join(' ');
+                const p2Name = product2Data.productName.split(' ').slice(0, 4).join(' ');
+
+                // Calculate overall winner
+                const comparisonResults = {
+                    product1Wins: 0,
+                    product2Wins: 0,
+                    ties: 0
+                };
+
+                const nutrients = [
+                    { name: 'Calories', key: 'calories', betterWhen: 'lower', unit: 'kcal', weight: 3 },
+                    { name: 'Protein', key: 'protein', betterWhen: 'higher', unit: 'g', weight: 2 },
+                    { name: 'Carbs', key: 'carbs', betterWhen: 'lower', unit: 'g', weight: 1 },
+                    { name: 'Sugar', key: 'sugar', betterWhen: 'lower', unit: 'g', weight: 3 },
+                    { name: 'Fat', key: 'fat', betterWhen: 'lower', unit: 'g', weight: 2 },
+                    { name: 'Sodium', key: 'sodium', betterWhen: 'lower', unit: 'mg', weight: 2 },
+                    { name: 'Fiber', key: 'fiber', betterWhen: 'higher', unit: 'g', weight: 2 }
+                ];
+
+                // Calculate winners for each nutrient
+                nutrients.forEach(nutrient => {
+                    const v1 = parseFloat(product1Data.nutrients[nutrient.key]) || 0;
+                    const v2 = parseFloat(product2Data.nutrients[nutrient.key]) || 0;
+
+                    if (v1 && v2 && v1 !== v2) {
+                        if (nutrient.betterWhen === 'lower') {
+                            if (v1 < v2) comparisonResults.product1Wins += nutrient.weight;
+                            else comparisonResults.product2Wins += nutrient.weight;
+                        } else {
+                            if (v1 > v2) comparisonResults.product1Wins += nutrient.weight;
+                            else comparisonResults.product2Wins += nutrient.weight;
+                        }
+                    } else if (v1 === v2) {
+                        comparisonResults.ties++;
+                    }
+                });
+
+                // Determine overall winner
+                let overallWinner = '';
+                let winnerIcon = '';
+                if (comparisonResults.product1Wins > comparisonResults.product2Wins) {
+                    overallWinner = p1Name;
+                    winnerIcon = '🏆';
+                } else if (comparisonResults.product2Wins > comparisonResults.product1Wins) {
+                    overallWinner = p2Name;
+                    winnerIcon = '🏆';
+                } else {
+                    overallWinner = 'Tie';
+                    winnerIcon = '🤝';
+                }
 
                 const comparisonHTML = `
+                    ${overallWinner !== 'Tie' ? `
+                    <div class="winner-summary">
+                        <h4>${winnerIcon} Overall Winner: ${overallWinner}</h4>
+                        <p>Based on nutritional profile comparison</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">
+                            <strong>${p1Name}:</strong> ${comparisonResults.product1Wins} points |
+                            <strong>${p2Name}:</strong> ${comparisonResults.product2Wins} points
+                        </p>
+                    </div>
+                    ` : `
+                    <div class="winner-summary">
+                        <h4>🤝 It's a Tie!</h4>
+                        <p>Both products have similar nutritional profiles</p>
+                    </div>
+                    `}
+
                     <div style="overflow-x: auto;">
-                        <p style="font-size: 0.9rem; color: var(--muted-text);">Values below are per 100${product1Data.servingUnit} (USDA data standard).</p>
-                        <table style="width: 100%; min-width: 500px; border-collapse: collapse; margin-top: 15px;">
+                        <p style="font-size: 0.9rem; color: var(--muted-text); margin-bottom: 10px;">
+                            📊 Values below are per 100${product1Data.servingUnit} (USDA data standard)
+                        </p>
+                        <table class="comparison-table">
                             <thead>
-                                <tr style="background-color: var(--egg-shell);">
-                                    <th style="padding: 12px; text-align: left; border: 1px solid var(--border-color);">Nutrient</th>
-                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">${p1Name}</th>
-                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">${p2Name}</th>
-                                    <th style="padding: 12px; text-align: center; border: 1px solid var(--border-color);">Better Choice</th>
+                                <tr>
+                                    <th style="text-align: left;">Nutrient</th>
+                                    <th style="text-align: center;">${p1Name}</th>
+                                    <th style="text-align: center;">${p2Name}</th>
+                                    <th style="text-align: center;">Difference</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${createComparisonRow('Calories', product1Data.nutrients.calories, product2Data.nutrients.calories, 'lower', 'kcal')}
-                                ${createComparisonRow('Protein', product1Data.nutrients.protein, product2Data.nutrients.protein, 'higher', 'g')}
-                                ${createComparisonRow('Carbs', product1Data.nutrients.carbs, product2Data.nutrients.carbs, 'lower', 'g')}
-                                ${createComparisonRow('Sugar', product1Data.nutrients.sugar, product2Data.nutrients.sugar, 'lower', 'g')}
-                                ${createComparisonRow('Fat', product1Data.nutrients.fat, product2Data.nutrients.fat, 'lower', 'g')}
-                                ${createComparisonRow('Sodium', product1Data.nutrients.sodium, product2Data.nutrients.sodium, 'lower', 'mg')}
-                                ${createComparisonRow('Fiber', product1Data.nutrients.fiber, product2Data.nutrients.fiber, 'higher', 'g')}
+                                ${nutrients.map(n => createComparisonRow(n.name, product1Data.nutrients[n.key], product2Data.nutrients[n.key], n.betterWhen, n.unit)).join('')}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--blue-violet);">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-color);">
+                            <strong>💡 Pro Tip:</strong> Consider your dietary goals when choosing. Lower calories and sugar are generally better for weight management, while higher protein and fiber support satiety and digestion.
+                        </p>
                     </div>
                 `;
 
@@ -1324,40 +1947,48 @@
                 const v1 = parseFloat(value1) || 0;
                 const v2 = parseFloat(value2) || 0;
 
-                let winner = '—';
+                let differenceText = '—';
                 let style1 = '';
                 let style2 = '';
-                
+
                 const formatValue = (v) => v ? v.toFixed(v < 10 ? 1 : 0) : 'N/A';
 
                 if (v1 && v2) {
+                    const diff = Math.abs(v1 - v2);
+                    const avgValue = (v1 + v2) / 2;
+                    const percentDiff = avgValue > 0 ? ((diff / avgValue) * 100).toFixed(1) : 0;
+
                     if (v1 === v2) {
-                        winner = 'Tie';
+                        differenceText = '<span class="winner-badge" style="background-color: #6c757d;">Equal</span>';
                     } else if (betterWhen === 'lower') {
                         if (v1 < v2) {
-                            winner = 'Product 1 (Lower)';
+                            differenceText = `<span class="winner-badge">✓ ${percentDiff}% less</span>`;
                             style1 = 'background-color: #d4edda; font-weight: 600;';
                         } else {
-                            winner = 'Product 2 (Lower)';
+                            differenceText = `<span class="winner-badge">✓ ${percentDiff}% less</span>`;
                             style2 = 'background-color: #d4edda; font-weight: 600;';
                         }
                     } else {
                         if (v1 > v2) {
-                            winner = 'Product 1 (Higher)';
+                            differenceText = `<span class="winner-badge">✓ ${percentDiff}% more</span>`;
                             style1 = 'background-color: #d4edda; font-weight: 600;';
                         } else {
-                            winner = 'Product 2 (Higher)';
+                            differenceText = `<span class="winner-badge">✓ ${percentDiff}% more</span>`;
                             style2 = 'background-color: #d4edda; font-weight: 600;';
                         }
                     }
                 }
 
                 return `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 10px; border: 1px solid var(--border-color);"><strong>${nutrient}</strong></td>
-                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; ${style1}">${formatValue(v1)} ${unit}</td>
-                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; ${style2}">${formatValue(v2)} ${unit}</td>
-                        <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; font-size: 0.9rem;">${winner}</td>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--border-color);"><strong>${nutrient}</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--border-color); text-align: center; ${style1}">
+                            ${formatValue(v1)} <span style="color: var(--muted-text); font-size: 0.9rem;">${unit}</span>
+                        </td>
+                        <td style="padding: 12px; border: 1px solid var(--border-color); text-align: center; ${style2}">
+                            ${formatValue(v2)} <span style="color: var(--muted-text); font-size: 0.9rem;">${unit}</span>
+                        </td>
+                        <td style="padding: 12px; border: 1px solid var(--border-color); text-align: center;">${differenceText}</td>
                     </tr>
                 `;
             }
@@ -1779,8 +2410,11 @@
                             <p class="image-placeholder">Loading price comparisons...</p>
                         </div>
                     </div>
-                    <button class="btn" id="compare-btn" style="margin-top: 20px; background-color: var(--magenta-rose);">Compare with Another Product</button>
-                    <button class="btn" id="reset-btn" style="margin-top: 10px;">Scan Another Product</button>
+                    <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                        <button class="btn" id="compare-btn" style="flex: 1; min-width: 200px; background-color: var(--magenta-rose);"><i class="fas fa-keyboard"></i> Type to Compare</button>
+                        <button class="btn" id="scan-compare-btn" style="flex: 1; min-width: 200px; background-color: var(--blue-violet);"><i class="fas fa-camera"></i> Scan to Compare</button>
+                    </div>
+                    <button class="btn" id="reset-btn" style="margin-top: 10px; width: 100%;"><i class="fas fa-redo"></i> Scan Another Product</button>
                 `;
                 
                 // Fetch and display images
@@ -1905,22 +2539,245 @@
                 }
 
                 // Add event listeners
-                document.getElementById('reset-btn').addEventListener('click', resetUI);
+                document.getElementById('reset-btn').addEventListener('click', () => {
+                    // Open the camera scanner page
+                    window.location.href = 'lens_search.html';
+                });
 
-                document.getElementById('compare-btn').addEventListener('click', async () => {
-                    const product2Name = prompt('Enter the name of another product to compare with:\n\nExamples:\n• "Coca Cola"\n• "Pepsi"\n• "Orange Juice"\n• "Apple"\n• "Banana"');
-                    
-                    if (product2Name && product2Name.trim()) {
+                // Compare button - open modal
+                document.getElementById('compare-btn').addEventListener('click', () => {
+                    const modal = document.getElementById('compare-modal');
+                    const input = document.getElementById('compare-product-input');
+                    modal.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                });
+
+                // Modal close handlers
+                document.getElementById('close-compare-modal').addEventListener('click', () => {
+                    document.getElementById('compare-modal').style.display = 'none';
+                });
+
+                document.getElementById('cancel-compare').addEventListener('click', () => {
+                    document.getElementById('compare-modal').style.display = 'none';
+                });
+
+                // Click outside modal to close
+                window.addEventListener('click', (e) => {
+                    const modal = document.getElementById('compare-modal');
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+
+                // Suggestion buttons
+                document.querySelectorAll('.compare-suggestion-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const productName = btn.getAttribute('data-product');
+                        document.getElementById('compare-product-input').value = productName;
+                    });
+                });
+
+                // Confirm compare
+                document.getElementById('confirm-compare').addEventListener('click', async () => {
+                    const product2Name = document.getElementById('compare-product-input').value.trim();
+
+                    if (product2Name) {
+                        document.getElementById('compare-modal').style.display = 'none';
+
                         const compareContainer = document.createElement('div');
                         compareContainer.className = 'info-card';
-                        compareContainer.innerHTML = '<h3>Product Comparison</h3><p class="image-placeholder">Loading comparison data from USDA database...</p>';
+                        compareContainer.innerHTML = '<h3><i class="fas fa-balance-scale"></i> Product Comparison</h3><p class="image-placeholder">Loading comparison data from USDA database...</p>';
                         productInfoContainer.appendChild(compareContainer);
                         compareContainer.scrollIntoView({ behavior: 'smooth' });
 
-                        const comparisonHTML = await compareProducts(name, product2Name.trim());
-                        compareContainer.innerHTML = '<h3>Product Comparison</h3>' + comparisonHTML;
+                        const comparisonHTML = await compareProducts(name, product2Name);
+                        compareContainer.innerHTML = '<h3><i class="fas fa-balance-scale"></i> Product Comparison</h3>' + comparisonHTML;
                     }
                 });
+
+                // Enter key to confirm
+                document.getElementById('compare-product-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        document.getElementById('confirm-compare').click();
+                    }
+                });
+
+                // ========== SCAN TO COMPARE FEATURE ==========
+                let scannedProductName = '';
+                const scanCompareModal = document.getElementById('scan-compare-modal');
+                const scanCompareDropzone = document.getElementById('scan-compare-dropzone');
+                const scanCompareFileInput = document.getElementById('scan-compare-file-input');
+                const scanPreviewContainer = document.getElementById('scan-preview-container');
+                const scanPreviewImage = document.getElementById('scan-preview-image');
+                const scanDetectedProduct = document.getElementById('scan-detected-product');
+                const scanCompareLoader = document.getElementById('scan-compare-loader');
+                const confirmScanCompareBtn = document.getElementById('confirm-scan-compare');
+
+                // Open scan compare page
+                document.getElementById('scan-compare-btn').addEventListener('click', () => {
+                    // Open the scanner page with the current product name
+                    console.log('Scan Compare clicked. Product name:', name);
+                    const compareUrl = `scan_compare.html?product=${encodeURIComponent(name)}`;
+                    console.log('Navigating to:', compareUrl);
+                    window.location.href = compareUrl;
+                });
+
+                // Close scan compare modal
+                document.getElementById('close-scan-compare-modal').addEventListener('click', () => {
+                    scanCompareModal.style.display = 'none';
+                });
+
+                document.getElementById('cancel-scan-compare').addEventListener('click', () => {
+                    scanCompareModal.style.display = 'none';
+                });
+
+                // Click outside to close
+                window.addEventListener('click', (e) => {
+                    if (e.target === scanCompareModal) {
+                        scanCompareModal.style.display = 'none';
+                    }
+                });
+
+                // Dropzone click
+                scanCompareDropzone.addEventListener('click', () => {
+                    scanCompareFileInput.click();
+                });
+
+                // Drag and drop
+                scanCompareDropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    scanCompareDropzone.classList.add('dragover');
+                });
+
+                scanCompareDropzone.addEventListener('dragleave', () => {
+                    scanCompareDropzone.classList.remove('dragover');
+                });
+
+                scanCompareDropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    scanCompareDropzone.classList.remove('dragover');
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        processCompareImage(file);
+                    }
+                });
+
+                // File input change
+                scanCompareFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        processCompareImage(file);
+                    }
+                });
+
+                // Process and identify product from image
+                async function processCompareImage(file) {
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        scanPreviewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Hide dropzone, show loader
+                    scanCompareDropzone.style.display = 'none';
+                    scanCompareLoader.style.display = 'block';
+
+                    try {
+                        // Convert to base64
+                        const base64 = await fileToBase64(file);
+
+                        // Use Gemini Vision API to identify product
+                        const identifiedProduct = await identifyProductFromImage(base64);
+
+                        if (identifiedProduct) {
+                            scannedProductName = identifiedProduct;
+
+                            // Show preview with detected product
+                            scanCompareLoader.style.display = 'none';
+                            scanPreviewContainer.style.display = 'block';
+                            scanDetectedProduct.textContent = `Detected: ${identifiedProduct}`;
+                            confirmScanCompareBtn.style.display = 'block';
+                        } else {
+                            throw new Error('Could not identify product');
+                        }
+                    } catch (error) {
+                        console.error('Error identifying product:', error);
+                        scanCompareLoader.style.display = 'none';
+                        scanCompareDropzone.style.display = 'block';
+                        alert('Could not identify the product. Please try another image or use text search.');
+                    }
+                }
+
+                // File to base64
+                function fileToBase64(file) {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const base64 = reader.result.split(',')[1];
+                            resolve(base64);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                // Identify product using Gemini Vision API
+                async function identifyProductFromImage(base64Image) {
+                    const geminiApiKey = 'AIzaSyBpBCdgfYsDJks7KcwCYc282xp3-1__T3s';
+                    const geminiVisionUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+
+                    try {
+                        const response = await fetch(geminiVisionUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{
+                                    parts: [
+                                        {
+                                            text: "Identify the product in this image. Return ONLY the product name (brand + product type), nothing else. For example: 'Coca Cola', 'Lays Chips', 'Cadbury Dairy Milk', etc. If you cannot identify it, return 'Unknown'."
+                                        },
+                                        {
+                                            inline_data: {
+                                                mime_type: "image/jpeg",
+                                                data: base64Image
+                                            }
+                                        }
+                                    ]
+                                }]
+                            })
+                        });
+
+                        const data = await response.json();
+                        const productName = data.candidates[0]?.content?.parts[0]?.text?.trim();
+
+                        if (productName && productName !== 'Unknown') {
+                            return productName;
+                        }
+                        return null;
+                    } catch (error) {
+                        console.error('Gemini Vision API error:', error);
+                        return null;
+                    }
+                }
+
+                // Confirm scan compare
+                confirmScanCompareBtn.addEventListener('click', async () => {
+                    if (scannedProductName) {
+                        scanCompareModal.style.display = 'none';
+
+                        const compareContainer = document.createElement('div');
+                        compareContainer.className = 'info-card';
+                        compareContainer.innerHTML = '<h3><i class="fas fa-balance-scale"></i> Product Comparison (Scanned)</h3><p class="image-placeholder">Loading comparison data from USDA database...</p>';
+                        productInfoContainer.appendChild(compareContainer);
+                        compareContainer.scrollIntoView({ behavior: 'smooth' });
+
+                        const comparisonHTML = await compareProducts(name, scannedProductName);
+                        compareContainer.innerHTML = '<h3><i class="fas fa-balance-scale"></i> Product Comparison (Scanned)</h3>' + comparisonHTML;
+                    }
+                });
+                // ========== END SCAN TO COMPARE FEATURE ==========
 
                 // Show the results
                 inputInterface.style.display = 'none';
@@ -1951,6 +2808,21 @@
             function closeAutocomplete() { 
                 suggestionsContainer.innerHTML = ''; 
                 suggestionsContainer.style.display = 'none'; 
+            }
+
+            // Auto-search from URL parameter (coming from Lens Scanner)
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+
+            if (searchQuery) {
+                // Decode and search
+                const decodedQuery = decodeURIComponent(searchQuery);
+                searchInput.value = decodedQuery;
+
+                // Trigger search after a brief delay to let UI load
+                setTimeout(() => {
+                    performSearch(decodedQuery);
+                }, 500);
             }
         });
 
@@ -2045,23 +2917,6 @@
         } else {
             loadFrontPageProductImages();
         }
-
-        // Auto-search from URL parameter (coming from Lens Scanner)
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchQuery = urlParams.get('search');
-
-            if (searchQuery) {
-                // Decode and search
-                const decodedQuery = decodeURIComponent(searchQuery);
-                document.getElementById('product-search').value = decodedQuery;
-
-                // Trigger search after a brief delay to let UI load
-                setTimeout(() => {
-                    performSearch(decodedQuery);
-                }, 500);
-            }
-        });
 
     </script>
 </body>
