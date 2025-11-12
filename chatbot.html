@@ -281,14 +281,297 @@
             margin-bottom: 10px;
         }
 
-        @media (max-width: 768px) {
+        /* Tablet Styles (768px - 1024px) */
+        @media (max-width: 1024px) {
             .chat-container {
+                max-width: 90%;
+                height: 85vh;
+            }
+
+            .chat-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .message-content {
+                max-width: 75%;
+            }
+        }
+
+        /* Mobile Landscape & Small Tablets (600px - 768px) */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .chat-container {
+                max-width: 100%;
                 height: 100vh;
                 border-radius: 0;
             }
 
+            .chat-header {
+                padding: 15px;
+            }
+
+            .chat-header h1 {
+                font-size: 1.2rem;
+                gap: 8px;
+            }
+
+            .header-buttons {
+                gap: 8px;
+            }
+
+            .header-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .header-btn span {
+                display: none; /* Hide text on mobile, keep icons */
+            }
+
+            .chat-messages {
+                padding: 15px;
+            }
+
+            .message {
+                margin-bottom: 15px;
+            }
+
+            .message-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .message-content {
+                max-width: 80%;
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+
+            .chat-input-container {
+                padding: 15px;
+            }
+
+            .quick-suggestions {
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .suggestion-chip {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            #chat-input {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+
+            #send-btn {
+                padding: 10px 18px;
+                font-size: 0.95rem;
+            }
+
+            .welcome-message {
+                padding: 30px 15px;
+            }
+
+            .welcome-message i {
+                font-size: 3rem;
+            }
+
+            .welcome-message h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Mobile Portrait (up to 600px) */
+        @media (max-width: 600px) {
+            .chat-header {
+                padding: 12px;
+                flex-wrap: wrap;
+            }
+
+            .chat-header h1 {
+                font-size: 1.1rem;
+                flex: 1 1 100%;
+                margin-bottom: 8px;
+            }
+
+            .header-buttons {
+                flex: 1 1 100%;
+                justify-content: flex-start;
+                gap: 6px;
+            }
+
+            .header-btn {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
+
+            .chat-messages {
+                padding: 12px;
+            }
+
+            .message {
+                margin-bottom: 12px;
+                gap: 8px;
+            }
+
+            .message-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
             .message-content {
                 max-width: 85%;
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+
+            .chat-input-container {
+                padding: 12px;
+            }
+
+            .quick-suggestions {
+                gap: 6px;
+                margin-bottom: 10px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .quick-suggestions::-webkit-scrollbar {
+                display: none;
+            }
+
+            .suggestion-chip {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .input-wrapper {
+                gap: 8px;
+            }
+
+            #chat-input {
+                padding: 9px 12px;
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+
+            #send-btn {
+                padding: 9px 14px;
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+
+            #send-btn span {
+                display: none; /* Hide "Send" text on small screens */
+            }
+
+            .welcome-message {
+                padding: 20px 12px;
+            }
+
+            .welcome-message i {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .welcome-message h2 {
+                font-size: 1.2rem;
+            }
+
+            .welcome-message p {
+                font-size: 0.9rem;
+            }
+
+            .product-card-inline {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra Small Mobile (up to 400px) */
+        @media (max-width: 400px) {
+            .chat-header h1 {
+                font-size: 1rem;
+            }
+
+            .header-btn {
+                padding: 4px 6px;
+            }
+
+            .message-content {
+                max-width: 88%;
+                font-size: 0.85rem;
+            }
+
+            #chat-input {
+                font-size: 0.85rem;
+            }
+
+            #send-btn {
+                padding: 8px 12px;
+            }
+
+            .suggestion-chip {
+                font-size: 0.7rem;
+                padding: 5px 8px;
+            }
+        }
+
+        /* Landscape Mode for Mobiles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .chat-container {
+                height: 100vh;
+            }
+
+            .chat-header {
+                padding: 10px 15px;
+            }
+
+            .chat-header h1 {
+                font-size: 1rem;
+            }
+
+            .chat-messages {
+                padding: 10px 15px;
+            }
+
+            .message {
+                margin-bottom: 10px;
+            }
+
+            .message-avatar {
+                width: 30px;
+                height: 30px;
+            }
+
+            .chat-input-container {
+                padding: 10px 15px;
+            }
+
+            .welcome-message {
+                padding: 15px;
+            }
+
+            .welcome-message i {
+                font-size: 2rem;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -301,7 +584,7 @@
                 Product Assistant
             </h1>
             <div class="header-buttons">
-                <a href="ai_studio_code (6).html" class="header-btn">
+                <a href="index.html" class="header-btn">
                     <i class="fas fa-search"></i> Search Products
                 </a>
                 <button class="header-btn" onclick="clearChat()">
