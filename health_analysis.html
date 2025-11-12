@@ -333,6 +333,29 @@
             .page-header h1 {
                 font-size: 2rem;
             }
+
+            .analyze-btn {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+
+            .recommendation-card {
+                padding: 18px;
+                margin-bottom: 15px;
+            }
+
+            .product-list li {
+                padding: 10px;
+                font-size: 0.95rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .badge {
+                font-size: 0.8rem;
+                padding: 3px 10px;
+            }
         }
 
         /* Mobile */
@@ -398,6 +421,7 @@
             .analyze-btn {
                 padding: 12px 20px;
                 font-size: 1rem;
+                width: 100%;
             }
 
             .results {
@@ -406,10 +430,42 @@
 
             .recommendation-card {
                 padding: 15px;
+                margin-bottom: 12px;
             }
 
             .recommendation-card h3 {
                 font-size: 1.2rem;
+            }
+
+            .recommendation-card h4 {
+                font-size: 1.1rem;
+            }
+
+            .recommendation-card p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .product-list li {
+                padding: 10px;
+                font-size: 0.9rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 3px 8px;
+            }
+
+            .loading p {
+                font-size: 1rem;
+            }
+
+            .spinner {
+                width: 40px;
+                height: 40px;
             }
         }
 
@@ -467,6 +523,11 @@
             .analyze-btn {
                 padding: 12px 18px;
                 font-size: 0.95rem;
+                width: 100%;
+            }
+
+            .analyze-btn i {
+                font-size: 0.9rem;
             }
 
             .results {
@@ -475,15 +536,94 @@
 
             .recommendation-card {
                 padding: 12px;
+                margin-bottom: 10px;
             }
 
             .recommendation-card h3 {
                 font-size: 1.1rem;
             }
 
+            .recommendation-card h4 {
+                font-size: 0.95rem;
+            }
+
             .recommendation-card p,
             .recommendation-card ul li {
                 font-size: 0.9rem;
+                line-height: 1.5;
+            }
+
+            .product-list li {
+                padding: 8px;
+                font-size: 0.85rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+
+            .loading p {
+                font-size: 0.9rem;
+            }
+
+            .spinner {
+                width: 35px;
+                height: 35px;
+            }
+
+            .condition-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .condition-btn i {
+                font-size: 1rem;
+            }
+        }
+
+        /* Landscape Orientation */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .header {
+                padding: 8px 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            .analyze-btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+
+            .recommendation-card {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+
+            .recommendation-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .recommendation-card p {
+                font-size: 0.9rem;
+            }
+
+            .product-list li {
+                padding: 8px;
             }
         }
     </style>
