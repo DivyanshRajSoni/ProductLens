@@ -1629,13 +1629,34 @@
 
                         food.foodNutrients.forEach(nutrient => {
                             const name = nutrient.nutrientName.toLowerCase();
-                            if (name.includes('energy')) nutrients.calories = nutrient.value;
-                            if (name.includes('protein')) nutrients.protein = nutrient.value;
-                            if (name.includes('carbohydrate') && !name.includes('by')) nutrients.carbs = nutrient.value;
-                            if (name.includes('sugars, total')) nutrients.sugar = nutrient.value;
-                            if (name.includes('total lipid')) nutrients.fat = nutrient.value;
-                            if (name.includes('sodium')) nutrients.sodium = nutrient.value;
-                            if (name.includes('fiber')) nutrients.fiber = nutrient.value;
+                            // Energy/Calories
+                            if (name.includes('energy') && nutrient.unitName === 'KCAL') {
+                                nutrients.calories = nutrient.value;
+                            }
+                            // Protein
+                            if (name.includes('protein')) {
+                                nutrients.protein = nutrient.value;
+                            }
+                            // Carbohydrates (including "by difference")
+                            if (name.includes('carbohydrate') && !nutrients.carbs) {
+                                nutrients.carbs = nutrient.value;
+                            }
+                            // Sugars (Total Sugars or Sugars, total)
+                            if ((name.includes('total sugars') || name.includes('sugars, total')) && !nutrients.sugar) {
+                                nutrients.sugar = nutrient.value;
+                            }
+                            // Fat (Total lipid)
+                            if (name.includes('total lipid') || name === 'fat') {
+                                nutrients.fat = nutrient.value;
+                            }
+                            // Sodium
+                            if (name.includes('sodium')) {
+                                nutrients.sodium = nutrient.value;
+                            }
+                            // Fiber (total dietary fiber)
+                            if (name.includes('fiber')) {
+                                nutrients.fiber = nutrient.value;
+                            }
                         });
 
                         return {
