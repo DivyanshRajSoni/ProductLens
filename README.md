@@ -136,6 +136,6 @@ Open source - Free for personal and commercial use
 
 ---
 
-**Made with ❤️ by Divyansh Raj Soni **
+**Made with ❤️ by Divyansh Raj Soni**
 
 **Live Demo:** https://your-app.vercel.app (Update after deployment)
