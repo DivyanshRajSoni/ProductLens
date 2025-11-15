@@ -1091,13 +1091,34 @@
 
                         food.foodNutrients.forEach(nutrient => {
                             const name = nutrient.nutrientName.toLowerCase();
-                            if (name.includes('energy')) nutrients.calories = nutrient.value;
-                            if (name.includes('protein')) nutrients.protein = nutrient.value;
-                            if (name.includes('carbohydrate') && !name.includes('by')) nutrients.carbs = nutrient.value;
-                            if (name.includes('sugars, total')) nutrients.sugar = nutrient.value;
-                            if (name.includes('total lipid')) nutrients.fat = nutrient.value;
-                            if (name.includes('sodium')) nutrients.sodium = nutrient.value;
-                            if (name.includes('fiber')) nutrients.fiber = nutrient.value;
+                            // Energy/Calories
+                            if (name.includes('energy') && nutrient.unitName === 'KCAL') {
+                                nutrients.calories = nutrient.value;
+                            }
+                            // Protein
+                            if (name.includes('protein')) {
+                                nutrients.protein = nutrient.value;
+                            }
+                            // Carbohydrates (including "by difference")
+                            if (name.includes('carbohydrate') && !nutrients.carbs) {
+                                nutrients.carbs = nutrient.value;
+                            }
+                            // Sugars (Total Sugars or Sugars, total)
+                            if ((name.includes('total sugars') || name.includes('sugars, total')) && !nutrients.sugar) {
+                                nutrients.sugar = nutrient.value;
+                            }
+                            // Fat (Total lipid)
+                            if (name.includes('total lipid') || name === 'fat') {
+                                nutrients.fat = nutrient.value;
+                            }
+                            // Sodium
+                            if (name.includes('sodium')) {
+                                nutrients.sodium = nutrient.value;
+                            }
+                            // Fiber (total dietary fiber)
+                            if (name.includes('fiber')) {
+                                nutrients.fiber = nutrient.value;
+                            }
                         });
 
                         return {
@@ -1400,9 +1421,28 @@
                     </div>
                     `}
 
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                        <div style="padding: 15px; background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 12px; border: 2px solid #667eea;">
+                            <h4 style="margin: 0 0 10px 0; color: var(--blue-violet);">
+                                <i class="fas fa-box"></i> ${product1Data.productName}
+                            </h4>
+                            <p style="font-size: 0.9rem; margin: 5px 0;"><strong>Brand:</strong> ${product1Data.brandOwner}</p>
+                            <p style="font-size: 0.9rem; margin: 5px 0;"><strong>Serving:</strong> ${product1Data.servingSize}${product1Data.servingUnit}</p>
+                            ${product1Data.apiSource ? `<p style="font-size: 0.85rem; color: var(--blue-violet); margin: 5px 0;"><i class="fas fa-database"></i> Source: <strong>${product1Data.apiSource}</strong></p>` : ''}
+                        </div>
+                        <div style="padding: 15px; background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%); border-radius: 12px; border: 2px solid #f5576c;">
+                            <h4 style="margin: 0 0 10px 0; color: var(--magenta-rose);">
+                                <i class="fas fa-box"></i> ${product2Data.productName}
+                            </h4>
+                            <p style="font-size: 0.9rem; margin: 5px 0;"><strong>Brand:</strong> ${product2Data.brandOwner}</p>
+                            <p style="font-size: 0.9rem; margin: 5px 0;"><strong>Serving:</strong> ${product2Data.servingSize}${product2Data.servingUnit}</p>
+                            ${product2Data.apiSource ? `<p style="font-size: 0.85rem; color: var(--magenta-rose); margin: 5px 0;"><i class="fas fa-database"></i> Source: <strong>${product2Data.apiSource}</strong></p>` : ''}
+                        </div>
+                    </div>
+
                     <div style="overflow-x: auto;">
                         <p style="font-size: 0.9rem; color: var(--muted-text); margin-bottom: 10px;">
-                            📊 Values below are per 100${product1Data.servingUnit} (USDA data standard)
+                            📊 Nutritional Comparison (per 100${product1Data.servingUnit})
                         </p>
                         <table class="comparison-table">
                             <thead>
@@ -1417,6 +1457,25 @@
                                 ${nutrients.map(n => createComparisonRow(n.name, product1Data.nutrients[n.key], product2Data.nutrients[n.key], n.betterWhen, n.unit)).join('')}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                        <details style="padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: var(--blue-violet);">
+                                <i class="fas fa-list-ul"></i> ${p1Name} Ingredients
+                            </summary>
+                            <p style="margin-top: 10px; font-size: 0.9rem; line-height: 1.6;">
+                                ${product1Data.ingredients || 'Not available'}
+                            </p>
+                        </details>
+                        <details style="padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: var(--magenta-rose);">
+                                <i class="fas fa-list-ul"></i> ${p2Name} Ingredients
+                            </summary>
+                            <p style="margin-top: 10px; font-size: 0.9rem; line-height: 1.6;">
+                                ${product2Data.ingredients || 'Not available'}
+                            </p>
+                        </details>
                     </div>
 
                     <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--blue-violet);">
@@ -1918,6 +1977,8 @@
                 // Fetch and display nutritional data
                 const nutritionalContainer = document.getElementById('nutritional-data-container');
                 fetchNutritionalData(name).then(nutritionData => {
+                    console.log('📊 Nutritional Data Received:', nutritionData);
+                    
                     if (nutritionData) {
                         // Analyze health data and update Health Summary section
                         const healthAnalysis = analyzeHealthData(nutritionData);
@@ -2004,6 +2065,7 @@
                             </details>
                         `;
                         nutritionalContainer.innerHTML = nutrientsHTML;
+                        console.log('✅ Nutritional data HTML inserted into container');
                     } else {
                         nutritionalContainer.innerHTML = `
                             <div class="alert alert-warning">
@@ -2011,6 +2073,15 @@
                             </div>
                         `;
                     }
+                }).catch(error => {
+                    console.error('❌ Error fetching nutritional data:', error);
+                    nutritionalContainer.innerHTML = `
+                        <div class="alert alert-warning">
+                            <strong><i class="fas fa-exclamation-circle"></i> Error Loading Nutritional Data</strong><br>
+                            ${error.message || 'An error occurred while fetching nutritional information.'}<br><br>
+                            <p style="margin-top: 10px;">Please try refreshing the page or searching for a different product.</p>
+                        </div>
+                    `;
                 });
 
                 // Enhanced price comparison with real-time fetching
