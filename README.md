@@ -136,6 +136,6 @@ Open source - Free for personal and commercial use
 
 ---
 
-**Made with ❤️ using Google Gemini AI**
+**Made with ❤️ by Divyansh Raj Soni **
 
 **Live Demo:** https://your-app.vercel.app (Update after deployment)
